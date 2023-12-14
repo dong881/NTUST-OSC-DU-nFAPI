@@ -1116,9 +1116,9 @@ uint8_t readVnfCfg()
    nfapi_vnf_cfg->config->pnf_nr_config_resp = &pnf_nr_config_resp_cb;
    nfapi_vnf_cfg->config->pnf_nr_start_resp = &pnf_nr_start_resp_cb;
 
-   nfapi_vnf_cfg->config->pnf_nr_param_resp = &nr_param_resp_cb;
-   nfapi_vnf_cfg->config->pnf_nr_config_resp = &nr_config_resp_cb;
-   nfapi_vnf_cfg->config->pnf_nr_start_resp = &nr_start_resp_cb;
+   nfapi_vnf_cfg->config->nr_param_resp = &nr_param_resp_cb;
+   nfapi_vnf_cfg->config->nr_config_resp = &nr_config_resp_cb;
+   nfapi_vnf_cfg->config->nr_start_resp = &nr_start_resp_cb;
    nfapi_vnf_cfg->config->intgr_nr_config_resp = &intgr_lwr_mac_procConfigRspEvt;
    nfapi_vnf_cfg->config->intgr_nr_start_resp = &intgr_lwr_mac_procStartRspEvt;
    nfapi_vnf_cfg->config->user_data = nfapi_vnf_cfg->vnf;
