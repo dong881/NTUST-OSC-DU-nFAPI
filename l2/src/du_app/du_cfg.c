@@ -1127,7 +1127,7 @@ uint8_t readVnfCfg()
 
    // config->codec_config.allocate = &vnf_allocate;
    // config->codec_config.deallocate = &vnf_deallocate;
-   DU_LOG("\nINFO    --> [NFAPI] DU_APP: readVnfCfg() Conpleted");
+   DU_LOG("\nINFO    --> [NFAPI] DU_APP: readVnfCfg() Completed");
    return ROK;
 }
 #endif //NFAPI
