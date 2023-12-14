@@ -1585,13 +1585,11 @@ int nr_param_resp_cb(nfapi_vnf_config_t *config, int p5_idx, nfapi_nr_param_resp
 
   DU_LOG("\nINFO   --> [VNF] Received NFAPI_PARAM_RESP idx:%d phy_id:%d\n", p5_idx, resp->header.phy_id);
   /* ======== small cell integration ======== */
-  /*
   vnf_info *vnf = (vnf_info *)(config->user_data);
   vnf_p7_info *p7_vnf = vnf->p7_vnfs;
   pnf_info *pnf = vnf->pnfs;
   phy_info *phy = pnf->phys;
   struct sockaddr_in pnf_p7_sockaddr;
-  nfapi_nr_config_request_scf_t *req = &RC.nrmac[0]->config[0]; // check
   phy->remote_port = resp->nfapi_config.p7_pnf_port.value;
   //phy->remote_port = 32123;//resp->nfapi_config.p7_pnf_port.value;
   memcpy(&pnf_p7_sockaddr.sin_addr.s_addr, &(resp->nfapi_config.p7_pnf_address_ipv4.address[0]), 4);
@@ -1599,6 +1597,7 @@ int nr_param_resp_cb(nfapi_vnf_config_t *config, int p5_idx, nfapi_nr_param_resp
   // for now just 1
   DU_LOG("\nINFO   --> [VNF] %d.%d pnf p7 %s:%d timing %u %u %u %u\n", p5_idx, phy->id, phy->remote_addr, phy->remote_port, p7_vnf->timing_window, p7_vnf->periodic_timing_period, p7_vnf->aperiodic_timing_enabled,
          p7_vnf->periodic_timing_period);
+  nfapi_nr_config_request_scf_t *req = (nfapi_nr_config_request_scf_t*) calloc(1, sizeof(nfapi_nr_config_request_scf_t));   
   req->header.message_id = NFAPI_NR_PHY_MSG_TYPE_CONFIG_REQUEST;
   req->header.phy_id = phy->id;
   DU_LOG("\nINFO   --> [VNF] Send NFAPI_CONFIG_REQUEST\n");
@@ -1643,7 +1642,6 @@ req->nfapi_config.tx_data_timing_offset.tl.tag = NFAPI_NR_NFAPI_TX_DATA_TIMING_O
   req->vendor_extension = &ve2.tl;
   nfapi_nr_vnf_config_req(config, p5_idx, req);
   printf("[VNF] Sent NFAPI_VNF_CONFIG_REQ num_tlv:%u\n",req->num_tlv);
-  */
   return 0;
 }
 
