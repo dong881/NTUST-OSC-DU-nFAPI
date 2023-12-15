@@ -2030,7 +2030,7 @@ uint8_t lwr_mac_procIqSamplesReqEvt(void *msg)
 
 uint8_t lwr_mac_procConfigReqEvt(void *msg)
 {
-#ifdef INTEL_FAPI
+   printf("%s\n", "lwr_mac_procConfigReqEvt");
 #ifdef CALL_FLOW_DEBUG_LOG
    DU_LOG("\nCall Flow: ENTMAC -> ENTLWRMAC : CONFIG_REQ\n");
 #endif
@@ -2056,6 +2056,7 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
 
    cellId = (uint16_t *)msg;
    GET_CELL_IDX(*cellId, cellIdx);
+
    macCfgParams = macCb.macCell[cellIdx]->macCellCfg;
 
    /* Fill Cell Configuration in lwrMacCb */
@@ -2106,12 +2107,8 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
    configReq = (fapi_config_req_t *)(cfgReqQElem + 1);
    memset(configReq, 0, sizeof(fapi_config_req_t));
    fillMsgHeader(&configReq->header, FAPI_CONFIG_REQUEST, sizeof(fapi_config_req_t));
-#ifndef NR_TDD
-   configReq->number_of_tlvs = 25;
-#else
-   configReq->number_of_tlvs = 25 + 1 + MAX_TDD_PERIODICITY_SLOTS * MAX_SYMB_PER_SLOT;
-#endif
 
+   configReq->number_of_tlvs = 25;
    msgLen = sizeof(configReq->number_of_tlvs);
 
    fillTlvs(&configReq->tlvs[index++], FAPI_DL_BANDWIDTH_TAG,           \
@@ -2186,29 +2183,34 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
       macCfgParams.prachCfg.fdm[0].unsuedRootSeq = NULL;
       }*/
 
-   fillTlvs(&configReq->tlvs[index++], FAPI_SSB_PER_RACH_TAG,              \
-         sizeof(uint8_t), macCfgParams.prachCfg.ssbPerRach, &msgLen);
+   fillTlvs(&configReq->tlvs[index++], FAPI_SSB_PER_RACH_TAG,
+            sizeof(uint8_t), macCfgParams.prachCfg.ssbPerRach, &msgLen);
+
    //fillTlvs(&configReq->tlvs[index++], FAPI_PRACH_MULTIPLE_CARRIERS_IN_A_BAND_TAG,  \
    sizeof(uint8_t), macCfgParams.prachCfg.prachMultCarrBand, &msgLen);
 
    /* fill SSB table */
-   fillTlvs(&configReq->tlvs[index++], FAPI_SSB_OFFSET_POINT_A_TAG,        \
-         sizeof(uint16_t), macCfgParams.ssbCfg.ssbOffsetPointA, &msgLen);
-   //fillTlvs(&configReq->tlvs[index++], FAPI_BETA_PSS_TAG,                  \
+   fillTlvs(&configReq->tlvs[index++], FAPI_SSB_OFFSET_POINT_A_TAG,
+            sizeof(uint16_t), macCfgParams.ssbCfg.ssbOffsetPointA, &msgLen);
+
+   //fillTlvs(&configReq->tlvs[index++], FAPI_BETA_PSS_TAG,                \
    sizeof(uint8_t),  macCfgParams.ssbCfg.betaPss, &msgLen);
-   fillTlvs(&configReq->tlvs[index++], FAPI_SSB_PERIOD_TAG,                \
-         sizeof(uint8_t),  macCfgParams.ssbCfg.ssbPeriod, &msgLen);
-   fillTlvs(&configReq->tlvs[index++], FAPI_SSB_SUBCARRIER_OFFSET_TAG,     \
-         sizeof(uint8_t),  macCfgParams.ssbCfg.ssbScOffset, &msgLen);
+   fillTlvs(&configReq->tlvs[index++], FAPI_SSB_PERIOD_TAG,
+            sizeof(uint8_t), macCfgParams.ssbCfg.ssbPeriod, &msgLen);
+
+   fillTlvs(&configReq->tlvs[index++], FAPI_SSB_SUBCARRIER_OFFSET_TAG,
+            sizeof(uint8_t), macCfgParams.ssbCfg.ssbScOffset, &msgLen);
 
    setMibPdu(macCfgParams.ssbCfg.mibPdu, &mib, 0);
-   fillTlvs(&configReq->tlvs[index++], FAPI_MIB_TAG ,                      \
-         sizeof(uint32_t), mib, &msgLen);
+   fillTlvs(&configReq->tlvs[index++], FAPI_MIB_TAG,
+            sizeof(uint32_t), mib, &msgLen);
 
-   fillTlvs(&configReq->tlvs[index++], FAPI_SSB_MASK_TAG,                  \
-         sizeof(uint32_t), macCfgParams.ssbCfg.ssbMask[0], &msgLen);
-   fillTlvs(&configReq->tlvs[index++], FAPI_BEAM_ID_TAG,                   \
-         sizeof(uint8_t),  macCfgParams.ssbCfg.beamId[0], &msgLen);
+   fillTlvs(&configReq->tlvs[index++], FAPI_SSB_MASK_TAG,
+            sizeof(uint32_t), macCfgParams.ssbCfg.ssbMask[0], &msgLen);
+
+   fillTlvs(&configReq->tlvs[index++], FAPI_BEAM_ID_TAG,
+            sizeof(uint8_t), macCfgParams.ssbCfg.beamId[0], &msgLen);
+
    //fillTlvs(&configReq->tlvs[index++], FAPI_SS_PBCH_MULTIPLE_CARRIERS_IN_A_BAND_TAG, \
    sizeof(uint8_t), macCfgParams.ssbCfg.multCarrBand, &msgLen);
    //fillTlvs(&configReq->tlvs[index++], FAPI_MULTIPLE_CELLS_SS_PBCH_IN_A_CARRIER_TAG, \
@@ -2216,59 +2218,31 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
 
 #ifdef NR_TDD
    /* fill TDD table */
-   fillTlvs(&configReq->tlvs[index++], FAPI_TDD_PERIOD_TAG,                \
-         sizeof(uint8_t), macCfgParams.tddCfg.tddPeriod, &msgLen);
-
-   for(slotIdx =0 ;slotIdx < MAX_TDD_PERIODICITY_SLOTS; slotIdx++) 
+   fillTlvs(&configReq->tlvs[index++], FAPI_TDD_PERIOD_TAG,
+            sizeof(uint8_t), macCfgParams.tddCfg.tddPeriod, &msgLen);
+   for (slotIdx = 0; slotIdx < MAX_TDD_PERIODICITY_SLOTS; slotIdx++)
    {
-      for(symbolIdx = 0; symbolIdx < MAX_SYMB_PER_SLOT; symbolIdx++)
+      for (symbolIdx = 0; symbolIdx < MAX_SYMB_PER_SLOT; symbolIdx++)
       {
-         /*Fill Full-DL Slots as well as DL symbols ini 1st Flexi Slo*/
-         if(slotIdx < macCfgParams.tddCfg.nrOfDlSlots || \
-               (slotIdx == macCfgParams.tddCfg.nrOfDlSlots && symbolIdx < macCfgParams.tddCfg.nrOfDlSymbols)) 
-         {
-            fillTlvs(&configReq->tlvs[index++], FAPI_SLOT_CONFIG_TAG,               \
-                  sizeof(uint8_t), DL_SYMBOL, &msgLen);
-         }
-
-         /*Fill Full-FLEXI SLOT and as well as Flexi Symbols in 1 slot preceding FULL-UL slot*/ 
-         else if(slotIdx < (MAX_TDD_PERIODICITY_SLOTS - macCfgParams.tddCfg.nrOfUlSlots -1) ||  \
-               (slotIdx == (MAX_TDD_PERIODICITY_SLOTS - macCfgParams.tddCfg.nrOfUlSlots -1) && \
-                symbolIdx < (MAX_SYMB_PER_SLOT - macCfgParams.tddCfg.nrOfUlSymbols)))
-         {
-            fillTlvs(&configReq->tlvs[index++], FAPI_SLOT_CONFIG_TAG,               \
-                  sizeof(uint8_t), FLEXI_SYMBOL, &msgLen);
-         }
-         /*Fill Partial UL symbols and Full-UL slot*/
-         else
-         {
-            fillTlvs(&configReq->tlvs[index++], FAPI_SLOT_CONFIG_TAG,               \
-                  sizeof(uint8_t), UL_SYMBOL, &msgLen);
-         }
+         fillTlvs(&configReq->tlvs[index++], FAPI_SLOT_CONFIG_TAG,
+                  sizeof(uint8_t), macCfgParams.tddCfg.slotCfg[slotIdx][symbolIdx], &msgLen);
+         DU_LOG("\n[LWR_MAC] ->  tag : 0x%4x value : %d", FAPI_SLOT_CONFIG_TAG, macCfgParams.tddCfg.slotCfg[slotIdx][symbolIdx]);
       }
    }
-#endif   
+#endif
 
-   /* fill measurement config */
-   //fillTlvs(&configReq->tlvs[index++], FAPI_RSSI_MEASUREMENT_TAG,          \
-   sizeof(uint8_t), macCfgParams.rssiUnit, &msgLen);
-
-   /* fill DMRS Type A Pos */
-   fillTlvs(&configReq->tlvs[index++], FAPI_DMRS_TYPE_A_POS_TAG,           \
-         sizeof(uint8_t), macCfgParams.ssbCfg.dmrsTypeAPos, &msgLen);
-
-   /* Fill message header */
+printf("123\n");
 #ifndef NFAPI
+   /* Fill message header */
    LWR_MAC_ALLOC(headerElem, (sizeof(fapi_api_queue_elem_t) + sizeof(fapi_msg_header_t)));
-   if(!headerElem)
+   if (!headerElem)
    {
       DU_LOG("\nERROR  -->  LWR_MAC: Memory allocation failed for vendor msg in config req");
-      LWR_MAC_FREE(cfgReqQElem, (sizeof(fapi_api_queue_elem_t) + sizeof(fapi_config_req_t)));
-      LWR_MAC_FREE(vendorMsgQElem, (sizeof(fapi_api_queue_elem_t) + sizeof(fapi_vendor_msg_t)));
+      LWR_MAC_ALLOC(cfgReqQElem, (sizeof(fapi_api_queue_elem_t) + sizeof(fapi_config_req_t)));
+      LWR_MAC_ALLOC(vendorMsgQElem, (sizeof(fapi_api_queue_elem_t) + sizeof(fapi_vendor_msg_t)));
       return RFAILED;
    }
-   FILL_FAPI_LIST_ELEM(headerElem, cfgReqQElem, FAPI_VENDOR_MSG_HEADER_IND, 1, \
-         sizeof(fapi_msg_header_t));
+   FILL_FAPI_LIST_ELEM(headerElem, cfgReqQElem, FAPI_VENDOR_MSG_HEADER_IND, 1, sizeof(fapi_msg_header_t));
    msgHeader = (fapi_msg_header_t *)(headerElem + 1);
    msgHeader->num_msg = 2; /* Config req msg and vendor specific msg */
    msgHeader->handle = 0;
@@ -2277,12 +2251,11 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
    LwrMacSendToL1(headerElem);
 #else
 /* ======== small cell integration ======== */
+printf("[DEBUG] -> intgr_fapi_config being called\n");
    intgr_fapi_config = configReq;
    (glb_config->nr_param_resp)(glb_config, intgr_p5_idx, intgr_resp);
 /* ======================================== */
 #endif // NFAPI
-#endif
-
    return ROK;
 } /* lwr_mac_handleConfigReqEvt */
 
@@ -5043,7 +5016,7 @@ lwrMacFsmHdlr nfapiEvtHdlr[PNF_MAX_STATE][MAX_EVENT] = {
 #endif
         lwr_mac_procInvalidEvt,
         lwr_mac_procInvalidEvt,
-        lwr_mac_procInvalidEvt,
+        lwr_mac_procConfigReqEvt,
         lwr_mac_procInvalidEvt,
         lwr_mac_procInvalidEvt,
         lwr_mac_procInvalidEvt,
@@ -5063,7 +5036,7 @@ lwrMacFsmHdlr nfapiEvtHdlr[PNF_MAX_STATE][MAX_EVENT] = {
 #endif
         lwr_mac_procInvalidEvt,
         lwr_mac_procInvalidEvt,
-        lwr_mac_procInvalidEvt,
+        lwr_mac_procConfigReqEvt,
         lwr_mac_procInvalidEvt,
         lwr_mac_procInvalidEvt,
         lwr_mac_procInvalidEvt,
@@ -5083,7 +5056,7 @@ lwrMacFsmHdlr nfapiEvtHdlr[PNF_MAX_STATE][MAX_EVENT] = {
 #endif
         lwr_mac_procInvalidEvt,
         lwr_mac_procInvalidEvt,
-        lwr_mac_procInvalidEvt,
+        lwr_mac_procConfigReqEvt,
         lwr_mac_procInvalidEvt,
         lwr_mac_procInvalidEvt,
         lwr_mac_procInvalidEvt,
