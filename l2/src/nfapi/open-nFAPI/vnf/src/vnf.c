@@ -93,18 +93,18 @@ void nfapi_vnf_pnf_list_add(nfapi_vnf_config_t* config, nfapi_vnf_pnf_info_t* no
 
 nfapi_vnf_pnf_info_t* nfapi_vnf_pnf_list_find(nfapi_vnf_config_t* config, int p5_idx)
 {
-	NFAPI_TRACE(NFAPI_TRACE_DEBUG, "config->pnf_list:%p\n", config->pnf_list);
+	//NFAPI_TRACE(NFAPI_TRACE_DEBUG, "config->pnf_list:%p\n", config->pnf_list);
 
 	nfapi_vnf_pnf_info_t* curr = config->pnf_list;
 	while(curr != 0)
 	{
 		if(curr->p5_idx == p5_idx)
                 {
-                  NFAPI_TRACE(NFAPI_TRACE_ERROR, "%s : curr->p5_idx:%d p5_idx:%d\n", __FUNCTION__, curr->p5_idx, p5_idx);
+                  //NFAPI_TRACE(NFAPI_TRACE_ERROR, "%s : curr->p5_idx:%d p5_idx:%d\n", __FUNCTION__, curr->p5_idx, p5_idx);
 			return curr;
                         }
 
-                NFAPI_TRACE(NFAPI_TRACE_ERROR, "%s : curr->next:%p\n", __FUNCTION__, curr->next);
+                //NFAPI_TRACE(NFAPI_TRACE_ERROR, "%s : curr->next:%p\n", __FUNCTION__, curr->next);
 
 		curr = curr->next;
 	}
@@ -418,7 +418,8 @@ void vnf_nr_handle_param_response(void *pRecvMsg, int recvMsgLen, nfapi_vnf_conf
 	}
 	else
 	{
-		NFAPI_TRACE(NFAPI_TRACE_INFO, "Received PARAM_RESPONSE\n");
+		printf("\n[NFAPI VNF]  ->  Received PARAM_RESPONSE");
+		//NFAPI_TRACE(NFAPI_TRACE_INFO, "Received PARAM_RESPONSE\n");
 		
 		nfapi_nr_param_response_scf_t msg;
 		
@@ -435,8 +436,8 @@ void vnf_nr_handle_param_response(void *pRecvMsg, int recvMsgLen, nfapi_vnf_conf
 					struct sockaddr_in sockAddr;
 		
 					(void)memcpy(&sockAddr.sin_addr.s_addr, msg.nfapi_config.p7_pnf_address_ipv4.address, NFAPI_IPV4_ADDRESS_LENGTH);
-					NFAPI_TRACE(NFAPI_TRACE_INFO, "PNF P7 IPv4 address: %s\n", inet_ntoa(sockAddr.sin_addr));
-		
+					//NFAPI_TRACE(NFAPI_TRACE_INFO, "PNF P7 IPv4 address: %s\n", inet_ntoa(sockAddr.sin_addr));
+					printf("\n[NFAPI VNF]  ->  PNF P7 IPv4 address: %s", inet_ntoa(sockAddr.sin_addr));
 					// store address
 					phy_info->p7_pnf_address.sin_addr = sockAddr.sin_addr;
 				}
@@ -446,20 +447,23 @@ void vnf_nr_handle_param_response(void *pRecvMsg, int recvMsgLen, nfapi_vnf_conf
 					struct sockaddr_in6 sockAddr6;
 					char addr6[64];
 					(void)memcpy(&sockAddr6.sin6_addr, msg.nfapi_config.p7_pnf_address_ipv6.address, NFAPI_IPV6_ADDRESS_LENGTH);
-					NFAPI_TRACE(NFAPI_TRACE_INFO, "PNF P7 IPv6 address: %s\n", inet_ntop(AF_INET6, &sockAddr6.sin6_addr, addr6, sizeof(addr6)));
+					//NFAPI_TRACE(NFAPI_TRACE_INFO, "PNF P7 IPv6 address: %s\n", inet_ntop(AF_INET6, &sockAddr6.sin6_addr, addr6, sizeof(addr6)));
+					printf("\n[NFAPI VNF]  ->  PNF P7 IPv6 address: %s", inet_ntop(AF_INET6, &sockAddr6.sin6_addr, addr6, sizeof(addr6)));
 				}
 				
 				if (msg.nfapi_config.p7_pnf_port.tl.tag)
 				{
-					NFAPI_TRACE(NFAPI_TRACE_INFO, "PNF P7 Port: %d\n", msg.nfapi_config.p7_pnf_port.value);
-		
+					//NFAPI_TRACE(NFAPI_TRACE_INFO, "PNF P7 Port: %d\n", msg.nfapi_config.p7_pnf_port.value);
+					printf("\n[NFAPI VNF]  ->  PNF P7 Port: %d", msg.nfapi_config.p7_pnf_port.value);
 					// store port
 					phy_info->p7_pnf_address.sin_port = htons(msg.nfapi_config.p7_pnf_port.value);
 				}
 			}
-			
-			if(config->nr_param_resp)
+			// original code is: if(config->nr_param_resp), but it will cause the PNF to be blocked
+			int ret = config->nr_param_resp(config, p5_idx, &msg);
+			if(ret)
 			{
+				printf("\n[NFAPI VNF]  ->  Invoke the nr_param_resp");
 				/* ======== small cell intergartion ========*/
 				#ifdef NFAPI
 				extern PNF_Lock_t *pnf_state_lock;
@@ -1099,7 +1103,7 @@ void vnf_nr_handle_p4_p5_message(void *pRecvMsg, int recvMsgLen, int p5_idx, nfa
 		NFAPI_TRACE(NFAPI_TRACE_ERROR, "Unpack message header failed, ignoring\n");
 		return;
 	}
-
+	printf("messageHeader.message_id = %d\n", messageHeader.message_id);
 	switch (messageHeader.message_id)
 	{
 		case NFAPI_NR_PHY_MSG_TYPE_PNF_PARAM_RESPONSE:
@@ -1513,11 +1517,11 @@ int vnf_read_dispatch_message(nfapi_vnf_config_t* config, nfapi_vnf_pnf_info_t* 
 
 static int vnf_send_p5_msg(nfapi_vnf_pnf_info_t* pnf, const void *msg, int len, uint8_t stream)
 {
-	// printf("\n MESSAGE SENT: \n");
-	// for(int i=0; i<len; i++){
-	// 	printf("%d", *(uint8_t *)(msg + i));
-	// }
-	// printf("\n");
+	printf("\n MESSAGE SENT: \n");
+	for(int i=0; i<len; i++){
+	printf("%d", *(uint8_t *)(msg + i));
+	}
+	printf("\n");
 
 	//NFAPI_TRACE(NFAPI_TRACE_ERROR, "%s len:%d stream:%d\n", __FUNCTION__, len, stream);
 

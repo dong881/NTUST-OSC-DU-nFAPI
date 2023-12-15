@@ -489,7 +489,7 @@ uint8_t MacProcSchCellCfgCfm(Pst *pst, SchCellCfgCfm *schCellCfgCfm)
 #ifdef CALL_FLOW_DEBUG_LOG
    DU_LOG("\nCall Flow: ENTSCH -> ENTMAC : EVENT_SCH_CELL_CFG_CFM\n");
 #endif
-
+   printf("\nINFO  -->  MAC : Received SCH CELL config confirm at MAC");
    if(schCellCfgCfm->rsp == RSP_OK)
    {
       cellId = &schCellCfgCfm->cellId;

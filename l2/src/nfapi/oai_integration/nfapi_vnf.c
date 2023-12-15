@@ -1543,7 +1543,7 @@ int pnf_nr_start_resp_cb(nfapi_vnf_config_t *config, int p5_idx, nfapi_nr_pnf_st
     pthread_create(&vnf_p7_thread, NULL, &vnf_nr_p7_thread_start, p7_vnf);
     p7_vnf->thread_started = 1;
   } else {
-    // P7 thread already running.
+    printf("\n[NFAPI VNF]  ->  P7 thread has been running");
   }
 
   // start all the phys in the pnf.
@@ -1583,7 +1583,7 @@ extern uint32_t to_earfcn(int eutra_bandP,uint32_t dl_CarrierFreq,uint32_t bw);
 
 int nr_param_resp_cb(nfapi_vnf_config_t *config, int p5_idx, nfapi_nr_param_response_scf_t *resp) {
 
-  DU_LOG("\nINFO   --> [VNF] Received NFAPI_PARAM_RESP idx:%d phy_id:%d\n", p5_idx, resp->header.phy_id);
+  printf("\nINFO   --> [VNF] Received NFAPI_PARAM_RESP idx:%d phy_id:%d\n", p5_idx, resp->header.phy_id);
   /* ======== small cell integration ======== */
   vnf_info *vnf = (vnf_info *)(config->user_data);
   vnf_p7_info *p7_vnf = vnf->p7_vnfs;
@@ -1595,27 +1595,27 @@ int nr_param_resp_cb(nfapi_vnf_config_t *config, int p5_idx, nfapi_nr_param_resp
   memcpy(&pnf_p7_sockaddr.sin_addr.s_addr, &(resp->nfapi_config.p7_pnf_address_ipv4.address[0]), 4);
   phy->remote_addr = inet_ntoa(pnf_p7_sockaddr.sin_addr);
   // for now just 1
-  DU_LOG("\nINFO   --> [VNF] %d.%d pnf p7 %s:%d timing %u %u %u %u\n", p5_idx, phy->id, phy->remote_addr, phy->remote_port, p7_vnf->timing_window, p7_vnf->periodic_timing_period, p7_vnf->aperiodic_timing_enabled,
+  printf("\nINFO   --> [VNF] %d.%d pnf p7 %s:%d timing %u %u %u %u\n", p5_idx, phy->id, phy->remote_addr, phy->remote_port, p7_vnf->timing_window, p7_vnf->periodic_timing_period, p7_vnf->aperiodic_timing_enabled,
          p7_vnf->periodic_timing_period);
   nfapi_nr_config_request_scf_t *req = (nfapi_nr_config_request_scf_t*) calloc(1, sizeof(nfapi_nr_config_request_scf_t));   
   req->header.message_id = NFAPI_NR_PHY_MSG_TYPE_CONFIG_REQUEST;
   req->header.phy_id = phy->id;
-  DU_LOG("\nINFO   --> [VNF] Send NFAPI_CONFIG_REQUEST\n");
+  printf("\nINFO   --> [VNF] Send NFAPI_CONFIG_REQUEST\n");
   //DU_LOG("\nINFO   --> \n NR bandP =%d\n",req->nfapi_config.rf_bands.rf_band[0]);
 
   req->nfapi_config.p7_vnf_port.tl.tag = NFAPI_NR_NFAPI_P7_VNF_PORT_TAG;
   req->nfapi_config.p7_vnf_port.value = p7_vnf->local_port;
   req->num_tlv++;
-  DU_LOG("\nINFO   --> [VNF] Local_port:%d\n", ntohs(p7_vnf->local_port));
+  printf("\nINFO   --> [VNF] Local_port:%d\n", ntohs(p7_vnf->local_port));
   req->nfapi_config.p7_vnf_address_ipv4.tl.tag = NFAPI_NR_NFAPI_P7_VNF_ADDRESS_IPV4_TAG;
   struct sockaddr_in vnf_p7_sockaddr;
   vnf_p7_sockaddr.sin_addr.s_addr = inet_addr(p7_vnf->local_addr);
   memcpy(&(req->nfapi_config.p7_vnf_address_ipv4.address[0]), &vnf_p7_sockaddr.sin_addr.s_addr, 4);
   req->num_tlv++;
-  DU_LOG("\nINFO   --> [VNF] Local_addr:%s\n", p7_vnf->local_addr);
+  printf("\nINFO   --> [VNF] Local_addr:%s\n", p7_vnf->local_addr);
   req->nfapi_config.timing_window.tl.tag = NFAPI_NR_NFAPI_TIMING_WINDOW_TAG;
   req->nfapi_config.timing_window.value = p7_vnf->timing_window;
-  DU_LOG("\nINFO   --> \n[VNF]Timing window tag : %d Timing window:%u\n",NFAPI_NR_NFAPI_TIMING_WINDOW_TAG, p7_vnf->timing_window);
+  printf("\nINFO   --> \n[VNF]Timing window tag : %d Timing window:%u\n",NFAPI_NR_NFAPI_TIMING_WINDOW_TAG, p7_vnf->timing_window);
   req->num_tlv++;
 
   if(p7_vnf->periodic_timing_enabled || p7_vnf->aperiodic_timing_enabled) {
