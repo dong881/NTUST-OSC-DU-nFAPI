@@ -36,7 +36,6 @@
 #include "mac_utils.h"
 #include "lwr_mac_utils.h"
 
-#ifdef INTEL_FAPI
 /* Function pointer for slot indication from lower mac to mac */
 SlotIndFunc sendSlotIndOpts[] =
 {
@@ -85,6 +84,54 @@ UciIndFunc sendUciIndOpts[] =
    packUciInd
 };
 
+/*******************************************************************
+ *
+ * @brief Processes Slot Indication from PHY and sends to MAC
+ *
+ * @details
+ *
+ *    Function : SCF_procSlotInd
+ *
+ *    Functionality:
+ *     Processes Slot Indication from PHY and sends to MAC
+ *
+ * @params[in] fapi_slot_ind_t pointer
+ * @return ROK     - success
+ *         RFAILED - failure
+ *
+ * ****************************************************************/
+uint8_t SCF_procSlotInd(NR_UL_IND_t *UL_INFO)
+{
+   printf("[MWNL] %s", __FUNCTION__);
+   /* fill Pst structure to send to lwr_mac to MAC */
+   Pst pst;
+   uint16_t ret = 0;
+   SlotTimingInfo *slotInd = {0};
+
+   if(lwrMacCb.phyState == PHY_STATE_CONFIGURED)
+   {
+      DU_LOG("\nINFO  -->  LWR_MAC: PHY has moved to running state");
+      lwrMacCb.phyState = PHY_STATE_RUNNING;
+      lwrMacCb.cellCb[0].state = PHY_STATE_RUNNING;
+   }
+
+   MAC_ALLOC_SHRABL_BUF(UL_INFO, sizeof(NR_UL_IND_t));
+
+   if(UL_INFO)
+   {
+      UL_INFO->cellId = lwrMacCb.cellCb[0].cellId; 
+      FILL_PST_LWR_MAC_TO_MAC(pst, EVENT_SLOT_IND_TO_MAC);
+      pst.selector = ODU_SELECTOR_LWLC;
+      ret = (*sendSlotIndOpts[pst.selector])(&pst, UL_INFO);
+   }
+   else
+   {
+      DU_LOG("\nERROR  -->  LWR_MAC: Memory allocation failed in procSlotInd");
+      ret = RFAILED;
+   }
+   return ret;
+}
+#ifdef INTEL_FAPI
 /*******************************************************************
  *
  * @brief Processes Slot Indication from PHY and sends to MAC

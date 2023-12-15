@@ -30,6 +30,14 @@
 extern "C" {
 #endif
 
+/**! SCF migration, nFapi UL Queue **/ 
+queue_t gnb_rach_ind_queue;
+queue_t gnb_rx_ind_queue;
+queue_t gnb_crc_ind_queue;
+queue_t gnb_uci_ind_queue;
+queue_t gnb_slot_ind_queue;
+/*************************/
+
 #define NFAPI_MAX_PACKED_MESSAGE_SIZE 8192
 
 /*! The nfapi VNF phy configuration information
