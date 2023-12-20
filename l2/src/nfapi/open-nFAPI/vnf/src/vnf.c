@@ -459,9 +459,11 @@ void vnf_nr_handle_param_response(void *pRecvMsg, int recvMsgLen, nfapi_vnf_conf
 					phy_info->p7_pnf_address.sin_port = htons(msg.nfapi_config.p7_pnf_port.value);
 				}
 			}
-			// original code is: if(config->nr_param_resp), but it will cause the PNF to be blocked
-			int ret = config->nr_param_resp(config, p5_idx, &msg);
-			if(ret)
+			// [MWNL] original code is: if(config->nr_param_resp), but it will cause the PNF to be blocked
+			// [NTUST] original code is: 
+				// 	int ret = config->nr_param_resp(config, p5_idx, &msg);
+				//	if(ret)
+			if(config->nr_param_resp) //NTUST test
 			{
 				printf("\n[NFAPI VNF]  ->  Invoke the nr_param_resp");
 				/* ======== small cell intergartion ========*/
@@ -481,7 +483,7 @@ void vnf_nr_handle_param_response(void *pRecvMsg, int recvMsgLen, nfapi_vnf_conf
                 }
                 #else
 				/* ========================================= */
-				(config->nr_param_resp)(config, p5_idx, &msg);
+				//(config->nr_param_resp)(config, p5_idx, &msg);
 				#endif
 			}
 		}

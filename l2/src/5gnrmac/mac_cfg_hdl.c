@@ -490,6 +490,7 @@ uint8_t MacProcSchCellCfgCfm(Pst *pst, SchCellCfgCfm *schCellCfgCfm)
    DU_LOG("\nCall Flow: ENTSCH -> ENTMAC : EVENT_SCH_CELL_CFG_CFM\n");
 #endif
    printf("\nINFO  -->  MAC : Received SCH CELL config confirm at MAC");
+   printf("\n[NTUST] schCellCfgCfm->rsp = %d",schCellCfgCfm->rsp);
    if(schCellCfgCfm->rsp == RSP_OK)
    {
       cellId = &schCellCfgCfm->cellId;
@@ -501,8 +502,9 @@ uint8_t MacProcSchCellCfgCfm(Pst *pst, SchCellCfgCfm *schCellCfgCfm)
 #ifdef NFAPI
       // Wait for PNF connection
       extern PNF_Lock_t *pnf_state_lock;
+      printf("\n[NTUST] pnf_state_lock->flag = %d",pnf_state_lock->flag);
       while(!pnf_state_lock->flag){
-         sleep(1500);
+         //sleep(1); // [NTUST] original is sleep(1500);
          DU_LOG("\n[Small Cell] The NFAPI flag is set to YES and waiting for PNF connection ...\n");
          pthread_cond_wait( &(pnf_state_lock->cond), &(pnf_state_lock->mutex));
       }
