@@ -2030,7 +2030,7 @@ uint8_t lwr_mac_procIqSamplesReqEvt(void *msg)
 
 uint8_t lwr_mac_procConfigReqEvt(void *msg)
 {
-   printf("%s\n", "lwr_mac_procConfigReqEvt");
+   printf("\n%s\n", "lwr_mac_procConfigReqEvt");
 #ifdef CALL_FLOW_DEBUG_LOG
    DU_LOG("\nCall Flow: ENTMAC -> ENTLWRMAC : CONFIG_REQ\n");
 #endif
@@ -2108,7 +2108,7 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
    memset(configReq, 0, sizeof(fapi_config_req_t));
    fillMsgHeader(&configReq->header, FAPI_CONFIG_REQUEST, sizeof(fapi_config_req_t));
 
-   configReq->number_of_tlvs = 25;
+   configReq->number_of_tlvs = 24;
    msgLen = sizeof(configReq->number_of_tlvs);
 
    fillTlvs(&configReq->tlvs[index++], FAPI_DL_BANDWIDTH_TAG,           \
@@ -2231,7 +2231,7 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
    }
 #endif
 
-printf("123\n");
+printf("\n123\n");
 #ifndef NFAPI
    /* Fill message header */
    LWR_MAC_ALLOC(headerElem, (sizeof(fapi_api_queue_elem_t) + sizeof(fapi_msg_header_t)));
