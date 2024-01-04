@@ -1103,23 +1103,55 @@ static uint8_t pack_nr_param_response(void *msg, uint8_t **ppWritePackedMsg, uin
 ORAN_OAI_fapi_config_req_t *intgr_fapi_config;
 static uint8_t pack_nr_config_request(void *msg, uint8_t **ppWritePackedMsg, uint8_t *end, nfapi_p4_p5_codec_config_t *config)
 {
-   if(!intgr_fapi_config) {
+  if (!intgr_fapi_config)
+  {
     printf("\n[NFAPI P5]  ->  The intgr_fapi_config has not been filled!!!!!!\n");
     return 0;
   }
 
-	nfapi_nr_config_request_scf_t *pNfapiMsg = (nfapi_nr_config_request_scf_t*)msg;
-  pNfapiMsg->tdd_table.max_tdd_periodicity_list = (nfapi_nr_max_tdd_periodicity_t*) calloc(40, sizeof(nfapi_nr_max_tdd_periodicity_t));
-  for(int i = 0; i < 40; i++){
-    pNfapiMsg->tdd_table.max_tdd_periodicity_list[i].max_num_of_symbol_per_slot_list = 
-      (nfapi_nr_max_num_of_symbol_per_slot_t*)calloc(14, sizeof(nfapi_nr_max_num_of_symbol_per_slot_t));
+  nfapi_nr_config_request_scf_t *pNfapiMsg = (nfapi_nr_config_request_scf_t *)msg;
+
+  pNfapiMsg->tdd_table.max_tdd_periodicity_list = (nfapi_nr_max_tdd_periodicity_t *)calloc(40, sizeof(nfapi_nr_max_tdd_periodicity_t));
+  for (int i = 0; i < 40; i++)
+  {
+    pNfapiMsg->tdd_table.max_tdd_periodicity_list[i].max_num_of_symbol_per_slot_list =
+        (nfapi_nr_max_num_of_symbol_per_slot_t *)calloc(14, sizeof(nfapi_nr_max_num_of_symbol_per_slot_t));
+  }
+  push8((uint8_t)intgr_fapi_config->number_of_tlvs + 9, ppWritePackedMsg, end);
+  printf("\n[NFAPI P5]  ->  Number of TLVs in ORAN_OAI: %d", intgr_fapi_config->number_of_tlvs);
+  for (int i = 0; i < intgr_fapi_config->number_of_tlvs; i++)
+  {
+    ORAN_OAI_fapi_uint32_tlv_t tlv = intgr_fapi_config->tlvs[i];
+    switch (tlv.tl.length)
+    {
+    case 1: // 8 bits format
+      printf("\n[NFAPI P5]  ->  TAG 0x%x with value %lu and length %ld", tlv.tl.tag, tlv.value, tlv.tl.length);
+      // pack_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint8_tlv_value);
+      pack_nr_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint8_tlv_value);
+      break;
+    case 2: // 16 bits format
+      printf("\n[NFAPI P5]  ->  TAG 0x%x with value %lu and length %ld", tlv.tl.tag, tlv.value, tlv.tl.length);
+      // pack_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint16_tlv_value);
+      pack_nr_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint16_tlv_value);
+      break;
+    case 4: // 32 bits format
+      printf("\n[NFAPI P5]  ->  TAG 0x%x with value %lu and length %ld", tlv.tl.tag, tlv.value, tlv.tl.length);
+      // pack_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint32_tlv_value);
+      pack_nr_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint32_tlv_value);
+      break;
+    default:
+      printf("\n[NFAPI P5]  ->==============================================", __FUNCTION__);
+      printf("\n[NFAPI P5]  ->  Func : %s length failed", __FUNCTION__);
+      printf("\n[NFAPI P5]  ->  TAG 0x%x with value %d and length 0x%1x", tlv.tl.tag, tlv.value, tlv.tl.length);
+      break;
+    }
   }
 
-	// for(int i = 0; i<40; i++){ //packing tdd slot config
-	// 	for(int symbol = 0; symbol < 14;symbol++){
-	// 		push8((uint8_t)0, ppWritePackedMsg,end);
-	// 	}
-	// }
+  // for(int i = 0; i<40; i++){ //packing tdd slot config
+  // 	for(int symbol = 0; symbol < 14;symbol++){
+  // 		push8((uint8_t)0, ppWritePackedMsg,end);
+  // 	}
+  // }
 /*
       # tdd-UL-DL-ConfigurationCommon
       # subcarrierSpacing
@@ -1145,162 +1177,143 @@ static uint8_t pack_nr_config_request(void *msg, uint8_t **ppWritePackedMsg, uin
 #define NR_NUMBER_OF_SUBFRAMES_PER_FRAME 10
 #define NR_NUMBER_OF_SYMBOLS_PER_SLOT 14
 
-  int nrofDownlinkSlots   = 7;
+  int nrofDownlinkSlots = 7;
   int nrofDownlinkSymbols = 6;
-  int nrofUplinkSlots     = 2;
-  int nrofUplinkSymbols   = 4;
+  int nrofUplinkSlots = 2;
+  int nrofUplinkSymbols = 4;
 
-  int mu                    = 1;
-  int nb_slot_to_set        = TDD_CONFIG_NB_FRAMES * (1<<mu) * NR_NUMBER_OF_SUBFRAMES_PER_FRAME;
-  int nb_periods_per_frame  = 2; //TDD period case 6
-  int nb_slots_per_periods  = ((1<<mu) * NR_NUMBER_OF_SUBFRAMES_PER_FRAME)/nb_periods_per_frame;
-  int slot_number           = 0;
+  int mu = 1;
+  int nb_slot_to_set = TDD_CONFIG_NB_FRAMES * (1 << mu) * NR_NUMBER_OF_SUBFRAMES_PER_FRAME;
+  int nb_periods_per_frame = 2; // TDD period case 6
+  int nb_slots_per_periods = ((1 << mu) * NR_NUMBER_OF_SUBFRAMES_PER_FRAME) / nb_periods_per_frame;
+  int slot_number = 0;
 
-  while(slot_number != nb_slot_to_set){
-    for(int number_of_symbol = 0; \
-        number_of_symbol < nrofDownlinkSlots * NR_NUMBER_OF_SYMBOLS_PER_SLOT; \
-        number_of_symbol++)
+  while (slot_number != nb_slot_to_set)
+  {
+    for (int number_of_symbol = 0;
+         number_of_symbol < nrofDownlinkSlots * NR_NUMBER_OF_SYMBOLS_PER_SLOT;
+         number_of_symbol++)
     {
-      pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].
-      max_num_of_symbol_per_slot_list[number_of_symbol%NR_NUMBER_OF_SYMBOLS_PER_SLOT].
-      slot_config.value = 0;
+      pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].max_num_of_symbol_per_slot_list[number_of_symbol % NR_NUMBER_OF_SYMBOLS_PER_SLOT].slot_config.value = 0;
 
-      if((number_of_symbol+1)%NR_NUMBER_OF_SYMBOLS_PER_SLOT == 0) 
+      if ((number_of_symbol + 1) % NR_NUMBER_OF_SYMBOLS_PER_SLOT == 0)
         slot_number++;
     }
 
-    for(int number_of_symbol = 0; number_of_symbol < nrofDownlinkSymbols; number_of_symbol++)
+    for (int number_of_symbol = 0; number_of_symbol < nrofDownlinkSymbols; number_of_symbol++)
     {
-      pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].
-      max_num_of_symbol_per_slot_list[number_of_symbol].
-      slot_config.value= 0;
+      pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].max_num_of_symbol_per_slot_list[number_of_symbol].slot_config.value = 0;
     }
 
-    for(int number_of_symbol = nrofDownlinkSlots; 
-        number_of_symbol < NR_NUMBER_OF_SYMBOLS_PER_SLOT - nrofUplinkSymbols;
-        number_of_symbol++)
+    for (int number_of_symbol = nrofDownlinkSlots;
+         number_of_symbol < NR_NUMBER_OF_SYMBOLS_PER_SLOT - nrofUplinkSymbols;
+         number_of_symbol++)
     {
-      pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].
-      max_num_of_symbol_per_slot_list[number_of_symbol].
-      slot_config.value= 2;
+      pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].max_num_of_symbol_per_slot_list[number_of_symbol].slot_config.value = 2;
     }
-    
-    for(int number_of_symbol = NR_NUMBER_OF_SYMBOLS_PER_SLOT-nrofUplinkSymbols;
-        number_of_symbol < NR_NUMBER_OF_SYMBOLS_PER_SLOT;
-        number_of_symbol++) 
+
+    for (int number_of_symbol = NR_NUMBER_OF_SYMBOLS_PER_SLOT - nrofUplinkSymbols;
+         number_of_symbol < NR_NUMBER_OF_SYMBOLS_PER_SLOT;
+         number_of_symbol++)
     {
-      pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].
-      max_num_of_symbol_per_slot_list[number_of_symbol].
-      slot_config.value= 1;      
+      pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].max_num_of_symbol_per_slot_list[number_of_symbol].slot_config.value = 1;
     }
 
     slot_number++;
 
     for (int number_of_symbol = 0;
-        number_of_symbol < nrofUplinkSlots*NR_NUMBER_OF_SYMBOLS_PER_SLOT;
-        number_of_symbol++) 
+         number_of_symbol < nrofUplinkSlots * NR_NUMBER_OF_SYMBOLS_PER_SLOT;
+         number_of_symbol++)
     {
-        pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].
-        max_num_of_symbol_per_slot_list[number_of_symbol%NR_NUMBER_OF_SYMBOLS_PER_SLOT].
-        slot_config.value= 1;
+      pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].max_num_of_symbol_per_slot_list[number_of_symbol % NR_NUMBER_OF_SYMBOLS_PER_SLOT].slot_config.value = 1;
 
-        if((number_of_symbol+1)%NR_NUMBER_OF_SYMBOLS_PER_SLOT == 0)
-          slot_number++;
+      if ((number_of_symbol + 1) % NR_NUMBER_OF_SYMBOLS_PER_SLOT == 0)
+        slot_number++;
     }
   }
 
-  //packing tdd slot config
-  for(int i = 0; i<40; i++)
-  { 
-		for(int symbol = 0; symbol < 14;symbol++)
-    {
-			push8((uint8_t)pNfapiMsg->tdd_table.max_tdd_periodicity_list[i].
-            max_num_of_symbol_per_slot_list[symbol].
-            slot_config.value, 
-            ppWritePackedMsg,
-            end);
-		}
-	}
+  // packing tdd slot config
+  // for (int i = 0; i < 40; i++)
+  // {
+  //   for (int symbol = 0; symbol < 14; symbol++)
+  //   {
+  //     push8((uint8_t)pNfapiMsg->tdd_table.max_tdd_periodicity_list[i].max_num_of_symbol_per_slot_list[symbol].slot_config.value,
+  //           ppWritePackedMsg,
+  //           end);
+  //   }
+  // }
 
-  push8((uint8_t)intgr_fapi_config->number_of_tlvs + 9, ppWritePackedMsg, end);
-  
-  printf("\n[NFAPI P5]  ->  Number of TLVs in ORAN_OAI %d", intgr_fapi_config->number_of_tlvs);
-  for(int i = 0; i < intgr_fapi_config->number_of_tlvs; i++){
-      ORAN_OAI_fapi_uint32_tlv_t tlv = intgr_fapi_config->tlvs[i];
-      switch(tlv.tl.length){
-        case 1: // 8 bits format
-          printf("\n[NFAPI P5]  ->  TAG 0x%x with value %ld and length %ld", tlv.tl.tag, tlv.value, tlv.tl.length);
-          pack_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint8_tlv_value);
-          break;
-        case 2: // 16 bits format
-          printf("\n[NFAPI P5]  ->  TAG 0x%x with value %ld and length %ld", tlv.tl.tag, tlv.value, tlv.tl.length);
-          pack_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint16_tlv_value);
-          break;
-        case 4: // 32 bits format
-          printf("\n[NFAPI P5]  ->  TAG 0x%x with value %ld and length %ld", tlv.tl.tag, tlv.value, tlv.tl.length);
-          pack_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint32_tlv_value);
-          break;
-        default:
-          printf("\n[NFAPI P5]  ->==============================================", __FUNCTION__);
-          printf("\n[NFAPI P5]  ->  Func : %s length failed", __FUNCTION__);
-          printf("\n[NFAPI P5]  ->  TAG 0x%x with value %d and length 0x%1x", tlv.tl.tag, tlv.value, tlv.tl.length);
-          break;
-      }
-  }
+  printf("\n[NTUST]p7_vnf_address_ipv4: %u.%u.%u.%u\n",
+        pNfapiMsg->nfapi_config.p7_vnf_address_ipv4.address[0],
+        pNfapiMsg->nfapi_config.p7_vnf_address_ipv4.address[1],
+        pNfapiMsg->nfapi_config.p7_vnf_address_ipv4.address[2],
+        pNfapiMsg->nfapi_config.p7_vnf_address_ipv4.address[3]);
 
-	return (
-		  // pack_tlv(NFAPI_NR_CONFIG_DL_BANDWIDTH_TAG, &(pNfapiMsg->carrier_config.dl_bandwidth), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_DL_FREQUENCY_TAG, &(pNfapiMsg->carrier_config.dl_frequency), ppWritePackedMsg, end, &pack_uint32_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_DL_GRID_SIZE_TAG, &(pNfapiMsg->carrier_config.dl_grid_size[1]), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_DL_K0_TAG, &(pNfapiMsg->carrier_config.dl_k0[1]), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_NUM_RX_ANT_TAG, &(pNfapiMsg->carrier_config.num_rx_ant), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_NUM_TX_ANT_TAG, &(pNfapiMsg->carrier_config.num_tx_ant), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_UL_GRID_SIZE_TAG, &(pNfapiMsg->carrier_config.ul_grid_size[1]), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_UL_K0_TAG, &(pNfapiMsg->carrier_config.ul_k0[1]), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_UPLINK_BANDWIDTH_TAG, &(pNfapiMsg->carrier_config.uplink_bandwidth), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_UPLINK_FREQUENCY_TAG, &(pNfapiMsg->carrier_config.uplink_frequency), ppWritePackedMsg, end, &pack_uint32_tlv_value) &&
-			
-			// pack_tlv(NFAPI_NR_CONFIG_FRAME_DUPLEX_TYPE_TAG, &(pNfapiMsg->cell_config.frame_duplex_type), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_PHY_CELL_ID_TAG, &(pNfapiMsg->cell_config.phy_cell_id), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
-			
-			// pack_tlv(NFAPI_NR_CONFIG_NUM_PRACH_FD_OCCASIONS_TAG, &(pNfapiMsg->prach_config.num_prach_fd_occasions), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_PRACH_SEQUENCE_LENGTH_TAG, &(pNfapiMsg->prach_config.prach_sequence_length), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_RESTRICTED_SET_CONFIG_TAG, &(pNfapiMsg->prach_config.restricted_set_config), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_SSB_PER_RACH_TAG, &(pNfapiMsg->prach_config.ssb_per_rach), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+  printf("\n[NTUST]p7_vnf_port: %u\n",
+        pNfapiMsg->nfapi_config.p7_vnf_port.value);
+
+  return (
+      // pack_tlv(NFAPI_NR_CONFIG_DL_BANDWIDTH_TAG, &(pNfapiMsg->carrier_config.dl_bandwidth), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_DL_FREQUENCY_TAG, &(pNfapiMsg->carrier_config.dl_frequency), ppWritePackedMsg, end, &pack_uint32_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_DL_GRID_SIZE_TAG, &(pNfapiMsg->carrier_config.dl_grid_size[1]), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_DL_K0_TAG, &(pNfapiMsg->carrier_config.dl_k0[1]), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_NUM_RX_ANT_TAG, &(pNfapiMsg->carrier_config.num_rx_ant), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_NUM_TX_ANT_TAG, &(pNfapiMsg->carrier_config.num_tx_ant), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_UL_GRID_SIZE_TAG, &(pNfapiMsg->carrier_config.ul_grid_size[1]), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_UL_K0_TAG, &(pNfapiMsg->carrier_config.ul_k0[1]), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_UPLINK_BANDWIDTH_TAG, &(pNfapiMsg->carrier_config.uplink_bandwidth), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_UPLINK_FREQUENCY_TAG, &(pNfapiMsg->carrier_config.uplink_frequency), ppWritePackedMsg, end, &pack_uint32_tlv_value) &&
+
+      // pack_tlv(NFAPI_NR_CONFIG_FRAME_DUPLEX_TYPE_TAG, &(pNfapiMsg->cell_config.frame_duplex_type), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_PHY_CELL_ID_TAG, &(pNfapiMsg->cell_config.phy_cell_id), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+
+      // pack_tlv(NFAPI_NR_CONFIG_NUM_PRACH_FD_OCCASIONS_TAG, &(pNfapiMsg->prach_config.num_prach_fd_occasions), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_PRACH_SEQUENCE_LENGTH_TAG, &(pNfapiMsg->prach_config.prach_sequence_length), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_RESTRICTED_SET_CONFIG_TAG, &(pNfapiMsg->prach_config.restricted_set_config), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_SSB_PER_RACH_TAG, &(pNfapiMsg->prach_config.ssb_per_rach), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
       // pack_tlv(NFAPI_NR_CONFIG_PRACH_SUB_C_SPACING_TAG, &(pNfapiMsg->prach_config.prach_sub_c_spacing), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
       // pack_tlv(NFAPI_NR_CONFIG_PRACH_ROOT_SEQUENCE_INDEX_TAG, &(pNfapiMsg->prach_config.num_prach_fd_occasions_list[0].prach_root_sequence_index), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
       // pack_tlv(NFAPI_NR_CONFIG_K1_TAG, &(pNfapiMsg->prach_config.num_prach_fd_occasions_list[0].k1), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
       // pack_tlv(NFAPI_NR_CONFIG_PRACH_ZERO_CORR_CONF_TAG, &(pNfapiMsg->prach_config.num_prach_fd_occasions_list[0].prach_zero_corr_conf), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_NUM_ROOT_SEQUENCES_TAG, &(pNfapiMsg->prach_config.num_prach_fd_occasions_list[0].num_root_sequences), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_NUM_ROOT_SEQUENCES_TAG, &(pNfapiMsg->prach_config.num_prach_fd_occasions_list[0].num_root_sequences), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
 
+      // pack_tlv(NFAPI_NR_CONFIG_SCS_COMMON_TAG, &(pNfapiMsg->ssb_config.scs_common), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_SS_PBCH_POWER_TAG, &(pNfapiMsg->ssb_config.ss_pbch_power), ppWritePackedMsg, end, &pack_uint32_tlv_value) &&
 
-			// pack_tlv(NFAPI_NR_CONFIG_SCS_COMMON_TAG, &(pNfapiMsg->ssb_config.scs_common), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_SS_PBCH_POWER_TAG, &(pNfapiMsg->ssb_config.ss_pbch_power), ppWritePackedMsg, end, &pack_uint32_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_BETA_PSS_TAG, &(pNfapiMsg->ssb_table.beta_pss), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_MIB_TAG, &(pNfapiMsg->ssb_table.MIB), ppWritePackedMsg, end, &pack_uint32_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_SSB_MASK_TAG, &(pNfapiMsg->ssb_table.ssb_mask_list[0].ssb_mask), ppWritePackedMsg, end, &pack_uint32_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_SSB_MASK_TAG, &(pNfapiMsg->ssb_table.ssb_mask_list[1].ssb_mask), ppWritePackedMsg, end, &pack_uint32_tlv_value) &&
 
-			// pack_tlv(NFAPI_NR_CONFIG_BETA_PSS_TAG, &(pNfapiMsg->ssb_table.beta_pss), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_MIB_TAG, &(pNfapiMsg->ssb_table.MIB), ppWritePackedMsg, end, &pack_uint32_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_SSB_MASK_TAG, &(pNfapiMsg->ssb_table.ssb_mask_list[0].ssb_mask), ppWritePackedMsg, end, &pack_uint32_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_SSB_MASK_TAG, &(pNfapiMsg->ssb_table.ssb_mask_list[1].ssb_mask), ppWritePackedMsg, end, &pack_uint32_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_SSB_OFFSET_POINT_A_TAG, &(pNfapiMsg->ssb_table.ssb_offset_point_a), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_SSB_PERIOD_TAG, &(pNfapiMsg->ssb_table.ssb_period), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_SSB_SUBCARRIER_OFFSET_TAG, &(pNfapiMsg->ssb_table.ssb_subcarrier_offset), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
 
-			// pack_tlv(NFAPI_NR_CONFIG_SSB_OFFSET_POINT_A_TAG, &(pNfapiMsg->ssb_table.ssb_offset_point_a), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_SSB_PERIOD_TAG, &(pNfapiMsg->ssb_table.ssb_period), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
-			// pack_tlv(NFAPI_NR_CONFIG_SSB_SUBCARRIER_OFFSET_TAG, &(pNfapiMsg->ssb_table.ssb_subcarrier_offset), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+      // pack_tlv(NFAPI_NR_CONFIG_TDD_PERIOD_TAG, &(pNfapiMsg->tdd_table.tdd_period), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+      // pack_tlv(NFAPI_NR_NFAPI_P7_PNF_ADDRESS_IPV4_TAG, &(pNfapiMsg->nfapi_config.p7_pnf_address_ipv4), ppWritePackedMsg, end, &pack_ipv4_address_value) &&
+      
+      pack_nr_tlv(NFAPI_NR_NFAPI_P7_PNF_ADDRESS_IPV4_TAG, &(pNfapiMsg->nfapi_config.p7_pnf_address_ipv4), ppWritePackedMsg, end, &pack_ipv4_address_value) &&
 
-			// pack_tlv(NFAPI_NR_CONFIG_TDD_PERIOD_TAG, &(pNfapiMsg->tdd_table.tdd_period), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
-			pack_tlv(NFAPI_NR_NFAPI_P7_PNF_ADDRESS_IPV4_TAG, &(pNfapiMsg->nfapi_config.p7_pnf_address_ipv4), ppWritePackedMsg, end, &pack_ipv4_address_value) &&
-			pack_tlv(NFAPI_NR_NFAPI_P7_PNF_ADDRESS_IPV6_TAG, &(pNfapiMsg->nfapi_config.p7_pnf_address_ipv6), ppWritePackedMsg, end, &pack_ipv6_address_value) &&
-			pack_tlv(NFAPI_NR_NFAPI_P7_PNF_PORT_TAG, &(pNfapiMsg->nfapi_config.p7_pnf_port), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
-			pack_tlv(NFAPI_NR_NFAPI_P7_VNF_ADDRESS_IPV4_TAG, &(pNfapiMsg->nfapi_config.p7_vnf_address_ipv4), ppWritePackedMsg, end, &pack_ipv4_address_value) &&
-			pack_tlv(NFAPI_NR_NFAPI_P7_VNF_ADDRESS_IPV6_TAG, &(pNfapiMsg->nfapi_config.p7_vnf_address_ipv6), ppWritePackedMsg, end, &pack_ipv6_address_value) &&
-			pack_tlv(NFAPI_NR_NFAPI_P7_VNF_PORT_TAG, &(pNfapiMsg->nfapi_config.p7_vnf_port), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
-			//pack_tlv(NFAPI_NR_NFAPI_RF_BANDS_TAG, &(pNfapiMsg->nfapi_config.rf_bands), ppWritePackedMsg, end, &pack_rf_bands_value) &&
-			pack_tlv(NFAPI_NR_NFAPI_TIMING_INFO_MODE_TAG, &(pNfapiMsg->nfapi_config.timing_info_mode), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
-			pack_tlv(NFAPI_NR_NFAPI_TIMING_INFO_PERIOD_TAG, &(pNfapiMsg->nfapi_config.timing_info_period), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
-			pack_tlv(NFAPI_NR_NFAPI_TIMING_WINDOW_TAG, &(pNfapiMsg->nfapi_config.timing_window), ppWritePackedMsg, end, &pack_uint8_tlv_value) //&&
-			//pack_tlv(NFAPI_NR_NFAPI_UPLINK_UES_PER_SUBFRAME_TAG, &(pNfapiMsg->nfapi_config.ul_ue_per_sf), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+      // pack_tlv(NFAPI_NR_NFAPI_P7_PNF_ADDRESS_IPV6_TAG, &(pNfapiMsg->nfapi_config.p7_pnf_address_ipv6), ppWritePackedMsg, end, &pack_ipv6_address_value) &&
+      pack_nr_tlv(NFAPI_NR_NFAPI_P7_PNF_ADDRESS_IPV6_TAG, &(pNfapiMsg->nfapi_config.p7_pnf_address_ipv6), ppWritePackedMsg, end, &pack_ipv6_address_value) &&
+      // pack_tlv(NFAPI_NR_NFAPI_P7_PNF_PORT_TAG, &(pNfapiMsg->nfapi_config.p7_pnf_port), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
+      pack_nr_tlv(NFAPI_NR_NFAPI_P7_PNF_PORT_TAG, &(pNfapiMsg->nfapi_config.p7_pnf_port), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
+      // pack_tlv(NFAPI_NR_NFAPI_P7_VNF_ADDRESS_IPV4_TAG, &(pNfapiMsg->nfapi_config.p7_vnf_address_ipv4), ppWritePackedMsg, end, &pack_ipv4_address_value) &&
+      pack_nr_tlv(NFAPI_NR_NFAPI_P7_VNF_ADDRESS_IPV4_TAG, &(pNfapiMsg->nfapi_config.p7_vnf_address_ipv4), ppWritePackedMsg, end, &pack_ipv4_address_value) &&
+      // pack_tlv(NFAPI_NR_NFAPI_P7_VNF_ADDRESS_IPV6_TAG, &(pNfapiMsg->nfapi_config.p7_vnf_address_ipv6), ppWritePackedMsg, end, &pack_ipv6_address_value) &&
+      pack_nr_tlv(NFAPI_NR_NFAPI_P7_VNF_ADDRESS_IPV6_TAG, &(pNfapiMsg->nfapi_config.p7_vnf_address_ipv6), ppWritePackedMsg, end, &pack_ipv6_address_value) &&
+      // pack_tlv(NFAPI_NR_NFAPI_P7_VNF_PORT_TAG, &(pNfapiMsg->nfapi_config.p7_vnf_port), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
+      pack_nr_tlv(NFAPI_NR_NFAPI_P7_VNF_PORT_TAG, &(pNfapiMsg->nfapi_config.p7_vnf_port), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
+      // pack_tlv(NFAPI_NR_NFAPI_RF_BANDS_TAG, &(pNfapiMsg->nfapi_config.rf_bands), ppWritePackedMsg, end, &pack_rf_bands_value) &&
+      // pack_tlv(NFAPI_NR_NFAPI_TIMING_INFO_MODE_TAG, &(pNfapiMsg->nfapi_config.timing_info_mode), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+      pack_nr_tlv(NFAPI_NR_NFAPI_TIMING_INFO_MODE_TAG, &(pNfapiMsg->nfapi_config.timing_info_mode), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+      // pack_tlv(NFAPI_NR_NFAPI_TIMING_INFO_PERIOD_TAG, &(pNfapiMsg->nfapi_config.timing_info_period), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+      pack_nr_tlv(NFAPI_NR_NFAPI_TIMING_INFO_PERIOD_TAG, &(pNfapiMsg->nfapi_config.timing_info_period), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
+      // pack_tlv(NFAPI_NR_NFAPI_TIMING_WINDOW_TAG, &(pNfapiMsg->nfapi_config.timing_window), ppWritePackedMsg, end, &pack_uint8_tlv_value) //&&
+      pack_nr_tlv(NFAPI_NR_NFAPI_TIMING_WINDOW_TAG, &(pNfapiMsg->nfapi_config.timing_window), ppWritePackedMsg, end, &pack_uint8_tlv_value));
+  // pack_tlv(NFAPI_NR_NFAPI_UPLINK_UES_PER_SUBFRAME_TAG, &(pNfapiMsg->nfapi_config.ul_ue_per_sf), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
 
-			// pack_vendor_extension_tlv(pNfapiMsg->vendor_extension, ppWritePackedMsg, end, config) 
-      );
+  // pack_vendor_extension_tlv(pNfapiMsg->vendor_extension, ppWritePackedMsg, end, config)
 }
 
 static uint8_t pack_config_request(void *msg, uint8_t **ppWritePackedMsg, uint8_t *end, nfapi_p4_p5_codec_config_t *config)
@@ -1789,7 +1802,7 @@ static uint8_t pack_nr_p5_message_body(nfapi_p4_p5_message_header_t *header, uin
 
 static uint8_t pack_p5_message_body(nfapi_p4_p5_message_header_t *header, uint8_t **ppWritePackedMsg, uint8_t *end, nfapi_p4_p5_codec_config_t *config) {
   uint8_t result = 0;
-
+  
   // look for the specific message
   switch (header->message_id) {
     case NFAPI_PNF_PARAM_REQUEST:
