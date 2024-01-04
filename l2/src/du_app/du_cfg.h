@@ -53,14 +53,28 @@
 #define NR_FREQ_BAND 78
 #define NR_SCS SCS_30KHZ
 #define NR_BANDWIDTH BANDWIDTH_100MHZ
-#else
+#endif //FDD
+// #define DUPLEX_MODE DUP_MODE_FDD
+// #define NR_DL_ARFCN 428000
+// #define NR_UL_ARFCN 390000
+// #define NR_FREQ_BAND 1
+// #define NR_SCS SCS_15KHZ
+// #define NR_BANDWIDTH BANDWIDTH_20MHZ
+
+/* ======== small cell integration ======== */
+#ifdef NFAPI
+// For band 66 FDD
 #define DUPLEX_MODE DUP_MODE_FDD
-#define NR_DL_ARFCN 428000
-#define NR_UL_ARFCN 390000
-#define NR_FREQ_BAND 1
-#define NR_SCS SCS_15KHZ
+#define NR_NUMEROLOGY 1
+#define NR_DL_ARFCN 432000 //2160000kHz
+#define NR_UL_ARFCN 352000 //1750000kHz
+#define NR_FREQ_BAND 66
+#define NR_SCS SCS_30KHZ
 #define NR_BANDWIDTH BANDWIDTH_20MHZ
+#define NR_DL_FREQ 2160000 //kHz
+#define NR_UL_FREQ 1760000 //kHz
 #endif
+/* ======================================== */
 
 #define TRANS_ID 1
 #define DU_TAC 1
