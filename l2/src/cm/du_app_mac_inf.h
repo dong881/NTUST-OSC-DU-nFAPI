@@ -617,8 +617,8 @@ typedef struct carrierCfg
    uint32_t   dlFreq;                 /* Absolute frequency of DL point A in KHz */
    uint32_t   ulBw;                   /* UL bandwidth */
    uint32_t   ulFreq;                 /* Absolute frequency of UL point A in KHz */
-   uint16_t   numTxAnt;               /* Number of Tx antennas */
-   uint16_t   numRxAnt;               /* Number of Rx antennas */
+   uint32_t   numTxAnt;               /* Number of Tx antennas */
+   uint32_t   numRxAnt;               /* Number of Rx antennas */
 }CarrierCfg;
 
 typedef enum
