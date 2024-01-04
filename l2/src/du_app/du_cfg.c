@@ -125,7 +125,8 @@ uint8_t readMacCfg()
 #else
    duCfgParam.macCellCfg.cellId = NR_CELL_ID;
    duCfgParam.macCellCfg.carrCfg.dlBw = NR_BANDWIDTH;
-   duCfgParam.macCellCfg.carrCfg.dlFreq = convertArfcnToFreqKhz(NR_DL_ARFCN);
+   //duCfgParam.macCellCfg.carrCfg.dlFreq = convertArfcnToFreqKhz(NR_DL_ARFCN);
+   duCfgParam.macCellCfg.carrCfg.dlFreq = NR_DL_FREQ;
 #endif
    duCfgParam.macCellCfg.carrCfg.numTxAnt = NUM_TX_ANT;
    /* UL Carrier configuration */
@@ -134,7 +135,8 @@ uint8_t readMacCfg()
    duCfgParam.macCellCfg.carrCfg.ulFreq = convertArfcnToFreqKhz(cellParams.arfcnUL);
 #else   
    duCfgParam.macCellCfg.carrCfg.ulBw = NR_BANDWIDTH;
-   duCfgParam.macCellCfg.carrCfg.ulFreq =  convertArfcnToFreqKhz(NR_UL_ARFCN);
+   //duCfgParam.macCellCfg.carrCfg.ulFreq =  convertArfcnToFreqKhz(NR_UL_ARFCN);
+   duCfgParam.macCellCfg.carrCfg.ulFreq =  NR_UL_FREQ;
 #endif   
    duCfgParam.macCellCfg.carrCfg.numRxAnt = NUM_RX_ANT;
 
