@@ -4963,6 +4963,7 @@ uint8_t intgr_lwr_mac_procVnfCfgStartEvt(void *msg)
 
 uint8_t intgr_lwr_mac_procConfigRspEvt(uint32_t msgLen, void *msg)
 {
+   printf("\nINFO  -->  Func : %s \n", __FUNCTION__);
    sendToLowerMac(CONFIG_RESPONSE, msgLen, msg);
    return 0;
 }

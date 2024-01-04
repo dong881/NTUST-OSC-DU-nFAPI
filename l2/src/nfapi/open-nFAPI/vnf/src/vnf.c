@@ -509,7 +509,7 @@ void vnf_nr_handle_config_response(void *pRecvMsg, int recvMsgLen, nfapi_vnf_con
 	}
 	else
 	{
-		NFAPI_TRACE(NFAPI_TRACE_INFO, "Received CONFIG_RESPONSE\n");
+		printf("\n[NFAPI VNF]  -> Received CONFIG_RESPONSE\n");
 			
 		nfapi_nr_config_response_scf_t msg;
 		
@@ -518,7 +518,12 @@ void vnf_nr_handle_config_response(void *pRecvMsg, int recvMsgLen, nfapi_vnf_con
 		{
 			// check the error code:
 
-			if (msg.error_code == NFAPI_NR_CONFIG_MSG_OK){
+			if (msg.error_code == NFAPI_NR_CONFIG_MSG_OK)
+			{
+				if(config->intgr_nr_config_resp){
+                    (config->intgr_nr_config_resp)(recvMsgLen, (void*)&msg);
+                }
+
 				if(config->nr_config_resp)
 				{
 					(config->nr_config_resp)(config, p5_idx, &msg);
@@ -1274,6 +1279,7 @@ void vnf_handle_p4_p5_message(void *pRecvMsg, int recvMsgLen, int p5_idx, nfapi_
 
 int vnf_nr_read_dispatch_message(nfapi_vnf_config_t* config, nfapi_vnf_pnf_info_t* pnf)
 {
+  printf("\n[NFAPI VNF]  ->  Func : %s\n", __FUNCTION__);
   if (1) {
       int socket_connected = 1;
 
@@ -1521,7 +1527,7 @@ static int vnf_send_p5_msg(nfapi_vnf_pnf_info_t* pnf, const void *msg, int len, 
 {
 	printf("\n MESSAGE SENT: \n");
 	for(int i=0; i<len; i++){
-	printf("%d", *(uint8_t *)(msg + i));
+	printf(" %02x ", *(uint8_t *)(msg + i));
 	}
 	printf("\n");
 

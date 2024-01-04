@@ -1635,11 +1635,11 @@ req->nfapi_config.ul_tti_timing_offset.tl.tag = NFAPI_NR_NFAPI_UL_TTI_TIMING_OFF
 req->nfapi_config.ul_dci_timing_offset.tl.tag = NFAPI_NR_NFAPI_UL_DCI_TIMING_OFFSET;
 req->nfapi_config.tx_data_timing_offset.tl.tag = NFAPI_NR_NFAPI_TX_DATA_TIMING_OFFSET;
 
-  vendor_ext_tlv_2 ve2;
-  memset(&ve2, 0, sizeof(ve2));
-  ve2.tl.tag = VENDOR_EXT_TLV_2_TAG;
-  ve2.dummy = 2016;
-  req->vendor_extension = &ve2.tl;
+  // vendor_ext_tlv_2 ve2;
+  // memset(&ve2, 0, sizeof(ve2));
+  // ve2.tl.tag = VENDOR_EXT_TLV_2_TAG;
+  // ve2.dummy = 2016;
+  // req->vendor_extension = &ve2.tl;
   nfapi_nr_vnf_config_req(config, p5_idx, req);
   printf("[VNF] Sent NFAPI_VNF_CONFIG_REQ num_tlv:%u\n",req->num_tlv);
   return 0;
