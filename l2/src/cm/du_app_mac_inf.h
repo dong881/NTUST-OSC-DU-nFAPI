@@ -613,12 +613,14 @@ typedef struct failureCause
 
 typedef struct carrierCfg
 {
-   uint32_t   dlBw;                   /* DL bandwidth */
-   uint32_t   dlFreq;                 /* Absolute frequency of DL point A in KHz */
-   uint32_t   ulBw;                   /* UL bandwidth */
-   uint32_t   ulFreq;                 /* Absolute frequency of UL point A in KHz */
-   uint32_t   numTxAnt;               /* Number of Tx antennas */
-   uint32_t   numRxAnt;               /* Number of Rx antennas */
+   uint32_t   dlBw;                          /* DL bandwidth */
+   uint32_t   dlFreq;                        /* Absolute frequency of DL point A in KHz */
+   uint32_t   ulBw;                          /* UL bandwidth */
+   uint32_t   ulFreq;                        /* Absolute frequency of UL point A in KHz */
+   uint16_t   dlgridSize[NUM_NUMEROLOGY];    /* DL Grid size for each numerologies */
+   uint16_t   ulgridSize[NUM_NUMEROLOGY];    /* UL Grid size for each numerologies */   
+   uint32_t   numTxAnt;                      /* Number of Tx antennas */
+   uint32_t   numRxAnt;                      /* Number of Rx antennas */
 }CarrierCfg;
 
 typedef enum

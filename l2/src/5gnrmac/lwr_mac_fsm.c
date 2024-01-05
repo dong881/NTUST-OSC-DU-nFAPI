@@ -2108,7 +2108,7 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
    memset(configReq, 0, sizeof(fapi_config_req_t));
    fillMsgHeader(&configReq->header, FAPI_CONFIG_REQUEST, sizeof(fapi_config_req_t));
 
-   configReq->number_of_tlvs = 24;
+   configReq->number_of_tlvs = 26;
    msgLen = sizeof(configReq->number_of_tlvs);
 
    fillTlvs(&configReq->tlvs[index++], FAPI_DL_BANDWIDTH_TAG,           \
@@ -2119,8 +2119,10 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
     * needed to avoid error. Must be uncommented when FT bug is fixed */
    //fillTlvs(&configReq->tlvs[index++], FAPI_DL_K0_TAG,                  \
    sizeof(uint16_t), macCfgParams.dlCarrCfg.k0[0], &msgLen);
-   //fillTlvs(&configReq->tlvs[index++], FAPI_DL_GRIDSIZE_TAG,            \
-   sizeof(uint16_t), macCfgParams.dlCarrCfg.gridSize[0], &msgLen);
+   
+   // N_DL_RB
+   fillTlvs(&configReq->tlvs[index++], FAPI_DL_GRIDSIZE_TAG,            \
+   sizeof(uint16_t), macCfgParams.carrCfg.dlgridSize[0], &msgLen);
    fillTlvs(&configReq->tlvs[index++], FAPI_NUM_TX_ANT_TAG,             \
          sizeof(uint16_t), macCfgParams.carrCfg.numTxAnt, &msgLen);
    fillTlvs(&configReq->tlvs[index++], FAPI_UPLINK_BANDWIDTH_TAG,       \
@@ -2129,8 +2131,8 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
          sizeof(uint32_t), macCfgParams.carrCfg.ulFreq, &msgLen);
    //fillTlvs(&configReq->tlvs[index++], FAPI_UL_K0_TAG,                  \
    sizeof(uint16_t), macCfgParams.ulCarrCfg.k0[0], &msgLen);
-   //fillTlvs(&configReq->tlvs[index++], FAPI_UL_GRID_SIZE_TAG,           \
-   sizeof(uint16_t), macCfgParams.ulCarrCfg.gridSize[0], &msgLen);
+   fillTlvs(&configReq->tlvs[index++], FAPI_UL_GRID_SIZE_TAG,           \
+   sizeof(uint16_t), macCfgParams.carrCfg.ulgridSize[0], &msgLen);
    fillTlvs(&configReq->tlvs[index++], FAPI_NUM_RX_ANT_TAG,             \
          sizeof(uint16_t), macCfgParams.carrCfg.numRxAnt, &msgLen);
    //fillTlvs(&configReq->tlvs[index++], FAPI_FREQUENCY_SHIFT_7P5_KHZ_TAG,   \

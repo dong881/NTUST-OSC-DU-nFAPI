@@ -140,6 +140,21 @@ uint8_t readMacCfg()
 #endif   
    duCfgParam.macCellCfg.carrCfg.numRxAnt = NUM_RX_ANT;
 
+  /* ======== small cell integration ======= */
+  #ifdef NFAPI
+   duCfgParam.macCellCfg.carrCfg.dlgridSize[0] = 106;
+   duCfgParam.macCellCfg.carrCfg.dlgridSize[1] = 1;
+   duCfgParam.macCellCfg.carrCfg.dlgridSize[2] = 1;
+   duCfgParam.macCellCfg.carrCfg.dlgridSize[3] = 1;
+   duCfgParam.macCellCfg.carrCfg.dlgridSize[4] = 1;
+   duCfgParam.macCellCfg.carrCfg.ulgridSize[0] = 106;
+   duCfgParam.macCellCfg.carrCfg.ulgridSize[1] = 1;
+   duCfgParam.macCellCfg.carrCfg.ulgridSize[2] = 1;
+   duCfgParam.macCellCfg.carrCfg.ulgridSize[3] = 1;
+   duCfgParam.macCellCfg.carrCfg.ulgridSize[4] = 1;
+  #endif
+  /* ======================================= */
+
    /* Cell configuration */
 #ifdef O1_ENABLE
    duCfgParam.macCellCfg.cellCfg.opState    = cellParams.operationalState;
