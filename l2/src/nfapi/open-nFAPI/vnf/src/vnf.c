@@ -520,10 +520,11 @@ void vnf_nr_handle_config_response(void *pRecvMsg, int recvMsgLen, nfapi_vnf_con
 
 			if (msg.error_code == NFAPI_NR_CONFIG_MSG_OK)
 			{
+			/* ======== small cell integration ======== */
 				if(config->intgr_nr_config_resp){
                     (config->intgr_nr_config_resp)(recvMsgLen, (void*)&msg);
                 }
-
+			/* ======================================== */
 				if(config->nr_config_resp)
 				{
 					(config->nr_config_resp)(config, p5_idx, &msg);
