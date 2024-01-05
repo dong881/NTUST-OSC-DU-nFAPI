@@ -2322,7 +2322,7 @@ uint8_t lwr_mac_procConfigRspEvt(void *msg)
          DU_LOG("\nDEBUG  -->  LWR_MAC: PHY has moved to Configured state \n");
          lwrMacCb.phyState = PHY_STATE_CONFIGURED;
          lwrMacCb.cellCb[0].state = PHY_STATE_CONFIGURED;
-         /* TODO :
+         /* TODO : When connected to OAI CU, you can uncomment this part.
           * Store config response into an intermediate struture and send to MAC
           * Support LC and LWLC for sending config rsp to MAC
           */

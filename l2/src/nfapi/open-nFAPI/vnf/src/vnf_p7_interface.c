@@ -590,7 +590,7 @@ int nfapi_vnf_p7_stop(nfapi_vnf_p7_config_t* config)
 
 int nfapi_vnf_p7_add_pnf(nfapi_vnf_p7_config_t* config, const char* pnf_p7_addr, int pnf_p7_port, int phy_id)
 {
-	NFAPI_TRACE(NFAPI_TRACE_INFO, "%s(config:%p phy_id:%d pnf_addr:%s pnf_p7_port:%d)\n", __FUNCTION__, config, phy_id,  pnf_p7_addr, pnf_p7_port);
+	printf("\n%s(config:%p phy_id:%d pnf_addr:%s pnf_p7_port:%d)\n", __FUNCTION__, config, phy_id,  pnf_p7_addr, pnf_p7_port);
 
 	if(config == 0)
         {
