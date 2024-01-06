@@ -119,14 +119,16 @@ uint8_t SCF_procSlotInd(NR_UL_IND_t *UL_INFO)
 
    if(UL_INFO)
    {
+      printf("\n[DEBUG] memory allocation success, ready to send message to mac\n");
       UL_INFO->cellId = lwrMacCb.cellCb[0].cellId; 
       FILL_PST_LWR_MAC_TO_MAC(pst, EVENT_SLOT_IND_TO_MAC);
-      pst.selector = ODU_SELECTOR_LWLC;
+      printf("\n[DEBUG] FILL_PST_LWR_MAC_TO_MAC EVENT:%d\n", EVENT_SLOT_IND_TO_MAC);
+      pst.selector = ODU_SELECTOR_TC;
       ret = (*sendSlotIndOpts[pst.selector])(&pst, UL_INFO);
    }
    else
    {
-      DU_LOG("\nERROR  -->  LWR_MAC: Memory allocation failed in procSlotInd");
+      DU_LOG("\nERROR in function %s -->  LWR_MAC: Memory allocation failed in procSlotInd", __FUNCTION__);
       ret = RFAILED;
    }
    return ret;
@@ -167,7 +169,7 @@ uint8_t procSlotInd(fapi_slot_ind_t *fapiSlotInd)
    }
    else
    {
-      DU_LOG("\nERROR  -->  LWR_MAC: Memory allocation failed in procSlotInd");
+      DU_LOG("\nERROR in function %s  -->  LWR_MAC: Memory allocation failed in procSlotInd", __FUNCTION__);
       ret = RFAILED;
    }
    return ret;

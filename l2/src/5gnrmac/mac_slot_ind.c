@@ -515,12 +515,13 @@ uint8_t macProcSlotInd(SlotTimingInfo slotInd)
  *      -# ROK 
  *      -# RFAILED 
  **/
+
 uint8_t fapiMacSlotInd(Pst *pst, SlotTimingInfo *slotInd)
 {
    uint8_t               ret = ROK;
    uint16_t              cellIdx;
    volatile uint32_t     startTime=0;
-
+   printf("Received slot indication from PHY\n");
 #ifdef ODU_SLOT_IND_DEBUG_LOG
    DU_LOG("\nDEBUG  -->  MAC : Slot Indication received. [%d : %d]", slotInd->sfn, slotInd->slot);
 #endif

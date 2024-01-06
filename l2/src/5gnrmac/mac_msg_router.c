@@ -263,9 +263,11 @@ void MacHdlRlcEvents(Pst *pst, Buffer *mBuf)
  **/
 void MacHdlLwrMacEvents(Pst *pst, Buffer *mBuf)
 {
+   printf("\nMacHdlLwrMacEvents: pst->event = %d\n", pst->event);
    switch(pst->event)
    {
       case EVENT_SLOT_IND_TO_MAC:
+         DU_LOG("\nINFO   -->  [MAC] received EVENT_SLOT_IND_TO_MAC");
          unpackSlotInd(fapiMacSlotInd, pst, mBuf);
          break;
       case EVENT_STOP_IND_TO_MAC:
@@ -539,16 +541,18 @@ uint8_t macActvTsk(Pst *pst, Buffer *mBuf)
 #ifdef CALL_FLOW_DEBUG_LOG
    callFlowMacActvTsk(pst);
 #endif
-
+   printf("\n[MacActvTsk] Recieved pst from %x\n", pst->srcEnt);
    switch(pst->srcEnt)
    {
       case ENTDUAPP:
+         printf("[MacActvTsk] Recieved pst from DUAPP, event is %d\n", pst->event);
          MacHdlDuappEvents(pst, mBuf);
          break;
       case ENTRLC:
          MacHdlRlcEvents(pst, mBuf);
          break;
       case ENTLWRMAC:
+         printf("[MacActvTsk] Recieved pst from LWRMAC, event is %d\n", pst->event);
          MacHdlLwrMacEvents(pst, mBuf);
          break;
       default:
