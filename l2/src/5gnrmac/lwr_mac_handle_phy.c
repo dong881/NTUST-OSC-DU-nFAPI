@@ -40,7 +40,13 @@
 SlotIndFunc sendSlotIndOpts[] =
 {
    packSlotInd,  /* packing for loosely coupled */
+/* ======== small cell integration ======== */
+#ifdef NFAPI
+   OAI_OSC_fapiMacSlotInd, /* packing for tightly coupled */
+#else
    fapiMacSlotInd, /* packing for tightly coupled */
+#endif
+/* ======================================== */
    packSlotInd /* packing for light weight loosly coupled */
 };
 
@@ -102,7 +108,7 @@ UciIndFunc sendUciIndOpts[] =
  * ****************************************************************/
 uint8_t SCF_procSlotInd(NR_UL_IND_t *UL_INFO)
 {
-   printf("[MWNL] %s", __FUNCTION__);
+   printf("INFO  -->  FUNC : %s", __FUNCTION__);
    /* fill Pst structure to send to lwr_mac to MAC */
    Pst pst;
    uint16_t ret = 0;
@@ -115,16 +121,18 @@ uint8_t SCF_procSlotInd(NR_UL_IND_t *UL_INFO)
       lwrMacCb.cellCb[0].state = PHY_STATE_RUNNING;
    }
 
-   MAC_ALLOC_SHRABL_BUF(UL_INFO, sizeof(NR_UL_IND_t));
+   MAC_ALLOC_SHRABL_BUF(slotInd, sizeof(SlotTimingInfo));
 
-   if(UL_INFO)
+   if(slotInd)
    {
       printf("\n[DEBUG] memory allocation success, ready to send message to mac\n");
-      UL_INFO->cellId = lwrMacCb.cellCb[0].cellId; 
+      slotInd->sfn = UL_INFO->frame;
+      slotInd->slot = UL_INFO->slot;
+      slotInd->cellId = lwrMacCb.cellCb[0].cellId; 
       FILL_PST_LWR_MAC_TO_MAC(pst, EVENT_SLOT_IND_TO_MAC);
       printf("\n[DEBUG] FILL_PST_LWR_MAC_TO_MAC EVENT:%d\n", EVENT_SLOT_IND_TO_MAC);
       pst.selector = ODU_SELECTOR_TC;
-      ret = (*sendSlotIndOpts[pst.selector])(&pst, UL_INFO);
+      ret = (*sendSlotIndOpts[pst.selector])(&pst, slotInd);
    }
    else
    {
