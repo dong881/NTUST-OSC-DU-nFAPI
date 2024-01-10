@@ -353,7 +353,9 @@ uint8_t SCF_procUciInd(nfapi_nr_uci_indication_t  *nfapiUciInd)
    }
    if(!ret)
    {
-      //ret = OAI_OSC_nfapiMacUciInd(macUciInd);
+      /*Fill post and sent to MAC*/
+      FILL_PST_LWR_MAC_TO_MAC(pst, EVENT_UCI_IND_TO_MAC);
+      ret = (*sendUciIndOpts[pst.selector])(&pst, macUciInd);
    }
    else
    {
