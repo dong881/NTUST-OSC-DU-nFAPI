@@ -615,10 +615,10 @@ uint8_t OAI_OSC_fapiMacSlotInd(Pst *pst, SlotTimingInfo *slotInd)
    uint8_t               ret = ROK;
    uint16_t              cellIdx;
    volatile uint32_t     startTime=0;
-   printf("\nINFO  --> %s Received slot indication from PHY\n", __FUNCTION__);
-//#ifdef ODU_SLOT_IND_DEBUG_LOG
+   printf("\nINFO  -->  %s() Received slot indication from PHY\n", __FUNCTION__);
+#ifdef ODU_SLOT_IND_DEBUG_LOG
    printf("\nDEBUG  -->  MAC : Slot Indication received. cellID:%d [%d : %d]",slotInd->cellId ,slotInd->sfn, slotInd->slot);
-//#endif
+#endif
    /*starting Task*/
    ODU_START_TASK(&startTime, PID_MAC_TTI_IND);
    gSlotCount++;
@@ -629,7 +629,7 @@ uint8_t OAI_OSC_fapiMacSlotInd(Pst *pst, SlotTimingInfo *slotInd)
 	   macCb.macCell[cellIdx]->state = CELL_STATE_UP;
    }
 
-/* When testing L2 with Intel-L1, any changes specific to 
+/* When testing L2 with OAI-L1, any changes specific to 
  * timer mode testing must be guarded under INTEL_TIMER_MODE*/
 #ifndef INTEL_TIMER_MODE
    /* send slot indication to scheduler */

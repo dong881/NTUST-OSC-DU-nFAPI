@@ -653,6 +653,8 @@ uint8_t SchProcSlotInd(Pst *pst, SlotTimingInfo *slotInd)
    Inst           schInst = pst->dstInst-SCH_INST_START;
    CmLList        *node = NULLP;
    TotalPrbUsage  *dlTotalPrbUsage = NULLP;
+   
+   printf("\nINFO  -->  func : %s()\n", __FUNCTION__);
 
    cell = schCb[schInst].cells[schInst];
    if(cell == NULLP)
