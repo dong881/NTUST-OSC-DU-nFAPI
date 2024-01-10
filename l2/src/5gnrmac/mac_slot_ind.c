@@ -597,13 +597,13 @@ uint8_t fapiMacSlotInd(Pst *pst, SlotTimingInfo *slotInd)
 }  /* fapiMacSlotInd */
 
 /**
- * @brief Transmission time interval indication from PHY.
+ * @brief Transmission time interval indication from OAI PHY.
  *
  * @details
  *
- *     Function : OAI_OSC_fapiMacSlotInd 
+ *     Function : OAI_OSC_nfapiMacSlotInd 
  *      
- *      This API is invoked by PHY to indicate TTI indication to MAC for a cell.
+ *      This API is invoked by OAI PHY to indicate TTI indication to MAC for a cell.
  *           
  *  @param[in]  Pst            *pst
  *  @param[in]  SuId           suId 
@@ -613,7 +613,7 @@ uint8_t fapiMacSlotInd(Pst *pst, SlotTimingInfo *slotInd)
  *      -# RFAILED 
  **/
 
-uint8_t OAI_OSC_fapiMacSlotInd(Pst *pst, SlotTimingInfo *slotInd)
+uint8_t OAI_OSC_nfapiMacSlotInd(Pst *pst, SlotTimingInfo *slotInd)
 {
    uint8_t               ret = ROK;
    uint16_t              cellIdx;
@@ -688,7 +688,7 @@ uint8_t OAI_OSC_fapiMacSlotInd(Pst *pst, SlotTimingInfo *slotInd)
 #endif
 
    return ret;
-}  /* OAI_OSC_fapiMacSlotInd */
+}  /* OAI_OSC_nfapiMacSlotInd */
 
 
 
