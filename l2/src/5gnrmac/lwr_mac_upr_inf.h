@@ -225,7 +225,11 @@ uint8_t unpackSlotInd(SlotIndFunc func, Pst *pst, Buffer *mBuf);
 uint8_t fapiMacSlotInd(Pst  *pst, SlotTimingInfo  *slotInd);
 /* ======== small cell integration ======== */
 #ifdef NFAPI
-uint8_t OAI_OSC_fapiMacSlotInd(Pst  *pst, SlotTimingInfo  *slotInd);
+uint8_t OAI_OSC_nfapiMacSlotInd(Pst  *pst, SlotTimingInfo  *slotInd);
+uint8_t OAI_OSC_nfapiMacRxDataInd(Pst *pst, RxDataInd *rxDataInd);
+uint8_t OAI_OSC_nfapiMacCrcInd(Pst *pst, CrcInd *crcInd);
+uint8_t OAI_OSC_nfapiMacUciInd(Pst *pst, UciInd *uciInd);
+uint8_t OAI_OSC_nfapiMacRachInd(Pst *pst, RachInd *rachInd);
 #endif
 /* ========================================= */
 uint8_t packRachInd(Pst *pst, RachInd *rachInd);

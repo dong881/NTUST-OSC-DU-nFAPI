@@ -92,12 +92,14 @@ void LwrMacStartWlsRcvr();
 
 uint8_t LwrMacSendToL1(void *msg);
 
+/* ======== small cell integration ======== */
 // SCF integration functions
 uint8_t SCF_procSlotInd(NR_UL_IND_t *UL_INFO);
-uint8_t SCF_procRxDataInd(nfapi_nr_rx_data_indication_t  *fapiRxDataInd);
-uint8_t SCF_procCrcInd(nfapi_nr_crc_indication_t  *fapiCrcInd);
-uint8_t SCF_procUciInd(nfapi_nr_uci_indication_t  *fapiUciInd);
-uint8_t SCF_procRachInd(nfapi_nr_rach_indication_t  *fapiRachInd);
+uint8_t SCF_procRxDataInd(nfapi_nr_rx_data_indication_t  *nfapiRxDataInd);
+uint8_t SCF_procCrcInd(nfapi_nr_crc_indication_t  *nfapiCrcInd);
+uint8_t SCF_procUciInd(nfapi_nr_uci_indication_t  *nfapiUciInd);
+uint8_t SCF_procRachInd(nfapi_nr_rach_indication_t  *nfapiRachInd);
+/* ======================================== */
 #endif
 
 /**********************************************************************
