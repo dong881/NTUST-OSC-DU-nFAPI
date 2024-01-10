@@ -72,6 +72,11 @@ void procPhyMessages(uint16_t msgType, uint32_t msgSize, void *msg);
 uint16_t fillDlTtiReq(SlotTimingInfo currTimingInfo);
 typedef uint8_t (*lwrMacFsmHdlr)(void *);
 void lwrMacLayerInit(Region region, Pool pool);
+/* ======== small cell integration ======== */
+#ifdef NFAPI
+uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo);
+#endif
+/* ======================================== */
 
 /* ======== small cell integration ======== */
 #ifdef NFAPI

@@ -4110,6 +4110,31 @@ uint16_t fillDlTtiReq(SlotTimingInfo currTimingInfo)
 
 /*******************************************************************
  *
+ * @brief Sends DL TTI Request to PHY
+ *
+ * @details
+ *
+ *    Function : OAI_OSC_fillDlTtiReq
+ *
+ *    Functionality:
+ *         -Sends FAPI DL TTI req to PHY
+ *
+ * @params[in]    timing info
+ * @return ROK     - success
+ *         RFAILED - failure
+ *
+ * ****************************************************************/
+uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
+{
+#ifdef CALL_FLOW_DEBUG_LOG
+   DU_LOG("\nCall Flow: ENTMAC -> ENTLWRMAC : DL_TTI_REQUEST\n");
+#endif
+   return ROK;
+}
+
+
+/*******************************************************************
+ *
  * @brief Sends TX data Request to PHY
  *
  * @details
