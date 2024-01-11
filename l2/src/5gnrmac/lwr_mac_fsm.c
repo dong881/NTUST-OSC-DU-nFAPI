@@ -3459,66 +3459,66 @@ void fillPdschPdu(fapi_dl_tti_req_pdu_t *dlTtiReqPdu, fapi_vendor_dl_tti_req_pdu
 }
 
 /***********************************************************************
-*
+ *
  * @brief calculates the total size to be allocated for DL TTI Req
-*
+ *
  * @details
-*
+ *
  *    Function : calcDlTtiReqPduCount
-*
+ *
  *    Functionality:
-*         -calculates the total pdu count to be allocated for DL TTI Req
-*
+ *         -calculates the total pdu count to be allocated for DL TTI Req
+ *
  * @params[in]   MacDlSlot *dlSlot 
-* @return count
-*
+ * @return count
+ *
  * ********************************************************************/
 uint8_t calcDlTtiReqPduCount(MacDlSlot *dlSlot)
 {
    uint8_t count = 0;
-uint8_t idx = 0, ueIdx=0;
+   uint8_t idx = 0, ueIdx=0;
 
    if(dlSlot->dlInfo.isBroadcastPres)
-{
+   {
       if(dlSlot->dlInfo.brdcstAlloc.ssbTransmissionMode)
-{
+      {
          for(idx = 0; idx < dlSlot->dlInfo.brdcstAlloc.ssbIdxSupported; idx++)
-{
+         {
             /* SSB PDU is filled */
-count++;
+            count++;
          }
       }
       if(dlSlot->dlInfo.brdcstAlloc.sib1TransmissionMode)
-{
+      {
          /* PDCCH and PDSCH PDU is filled */
-count += 2;
-}
+         count += 2;
+      }
    }
 
-if(dlSlot->pageAllocInfo)
-{
+   if(dlSlot->pageAllocInfo)
+   {
       /* PDCCH and PDSCH PDU is filled */
-count += 2;
-}
+      count += 2;
+   }
 
-for(ueIdx=0; ueIdx<MAX_NUM_UE; ueIdx++)
-{
+   for(ueIdx=0; ueIdx<MAX_NUM_UE; ueIdx++)
+   {
       if(dlSlot->dlInfo.rarAlloc[ueIdx] != NULLP)
-{
+      {
          /* PDCCH and PDSCH PDU is filled */
-if(dlSlot->dlInfo.rarAlloc[ueIdx]->rarPdschCfg && dlSlot->dlInfo.rarAlloc[ueIdx]->rarPdcchCfg)
-count += 2;
-else
-count += 1;
-}
+         if(dlSlot->dlInfo.rarAlloc[ueIdx]->rarPdschCfg && dlSlot->dlInfo.rarAlloc[ueIdx]->rarPdcchCfg)
+            count += 2;
+         else
+            count += 1;
+      }
 
-if(dlSlot->dlInfo.dlMsgAlloc[ueIdx] != NULLP)
-{
+      if(dlSlot->dlInfo.dlMsgAlloc[ueIdx] != NULLP)
+      {
          /* PDCCH and PDSCH PDU is filled */
-if(dlSlot->dlInfo.dlMsgAlloc[ueIdx]->dlMsgPdcchCfg)
-count += 1;
-if(dlSlot->dlInfo.dlMsgAlloc[ueIdx]->dlMsgPdschCfg)
-count += 1;
+         if(dlSlot->dlInfo.dlMsgAlloc[ueIdx]->dlMsgPdcchCfg)
+            count += 1;
+         if(dlSlot->dlInfo.dlMsgAlloc[ueIdx]->dlMsgPdschCfg)
+            count += 1;
       }
    }
    return count;
@@ -3808,6 +3808,73 @@ uint8_t fillDlMsgTxDataReq(fapi_tx_pdu_desc_t *pduDesc, uint16_t pduIndex, DlMsg
 }
 
 #endif /* FAPI */
+
+/***********************************************************************
+ *
+ * @brief calculates the total size to be allocated for nFAPI DL TTI Req
+ *
+ * @details
+ *
+ *    Function : OAI_OSC_calcDlTtiReqPduCount
+ *
+ *    Functionality:
+ *         -calculates the total pdu count to be allocated for nFAPI DL TTI Req
+ *
+ * @params[in]   MacDlSlot *dlSlot 
+ * @return count
+ *
+ * ********************************************************************/
+uint8_t OAI_OSC_calcDlTtiReqPduCount(MacDlSlot *dlSlot)
+{
+   uint8_t count = 0;
+   uint8_t idx = 0, ueIdx=0;
+
+   if(dlSlot->dlInfo.isBroadcastPres)
+   {
+      if(dlSlot->dlInfo.brdcstAlloc.ssbTransmissionMode)
+      {
+         for(idx = 0; idx < dlSlot->dlInfo.brdcstAlloc.ssbIdxSupported; idx++)
+         {
+            /* SSB PDU is filled */
+            count++;
+         }
+      }
+      if(dlSlot->dlInfo.brdcstAlloc.sib1TransmissionMode)
+      {
+         /* PDCCH and PDSCH PDU is filled */
+         count += 2;
+      }
+   }
+
+   if(dlSlot->pageAllocInfo)
+   {
+      /* PDCCH and PDSCH PDU is filled */
+      count += 2;
+   }
+
+   for(ueIdx=0; ueIdx<MAX_NUM_UE; ueIdx++)
+   {
+      if(dlSlot->dlInfo.rarAlloc[ueIdx] != NULLP)
+      {
+         /* PDCCH and PDSCH PDU is filled */
+         if(dlSlot->dlInfo.rarAlloc[ueIdx]->rarPdschCfg && dlSlot->dlInfo.rarAlloc[ueIdx]->rarPdcchCfg)
+            count += 2;
+         else
+            count += 1;
+      }
+
+      if(dlSlot->dlInfo.dlMsgAlloc[ueIdx] != NULLP)
+      {
+         /* PDCCH and PDSCH PDU is filled */
+         if(dlSlot->dlInfo.dlMsgAlloc[ueIdx]->dlMsgPdcchCfg)
+            count += 1;
+         if(dlSlot->dlInfo.dlMsgAlloc[ueIdx]->dlMsgPdschCfg)
+            count += 1;
+      }
+   }
+   return count;
+}
+
 /*******************************************************************
  *
  * @brief fills PDSCH PDU required for nFPAI DL TTI info in MAC
@@ -4249,7 +4316,7 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
       dlTtiReq->SFN = dlTtiReqTimingInfo.sfn;
       dlTtiReq->Slot = dlTtiReqTimingInfo.slot;
       //TODO:OAI_OSC_calcDlTtiReqPduCount()
-      //dlTtiReq->dl_tti_request_body.nPDUs = calcDlTtiReqPduCount(currDlSlot); /* get total Pdus */
+      dlTtiReq->dl_tti_request_body.nPDUs = OAI_OSC_calcDlTtiReqPduCount(currDlSlot); /* get total Pdus */
       nPdu = dlTtiReq->dl_tti_request_body.nPDUs;
       dlTtiReq->dl_tti_request_body.nGroup = 0;
       printf("\ndlTtiReq->dl_tti_request_body.nPDUs:%d\n",dlTtiReq->dl_tti_request_body.nPDUs);
