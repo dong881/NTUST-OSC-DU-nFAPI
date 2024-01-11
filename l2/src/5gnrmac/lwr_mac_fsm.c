@@ -3828,63 +3828,62 @@ uint8_t fillDlMsgTxDataReq(fapi_tx_pdu_desc_t *pduDesc, uint16_t pduIndex, DlMsg
  ******************************************************************/
 
 void OAI_OSC_fillPdschPdu(nfapi_nr_dl_tti_request_pdu_t *dlTtiReqPdu, PdschCfg *pdschInfo,
-      BwpCfg bwp, uint16_t pduIndex)
+BwpCfg bwp, uint16_t pduIndex)
 {
    uint8_t idx;
-
    if(dlTtiReqPdu != NULLP)
    {
-      dlTtiReqPdu->PDUType = PDSCH_PDU_TYPE;
-      memset(&dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15, 0, sizeof(nfapi_nr_dl_tti_pdsch_pdu));
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.pduBitMap = pdschInfo->pduBitmap;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.rnti = pdschInfo->rnti;         
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.pduIndex = pduIndex;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.BWPSize = bwp.freqAlloc.numPrb;       
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.BWPStart = bwp.freqAlloc.startPrb;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.SubcarrierSpacing = bwp.subcarrierSpacing;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.CyclicPrefix = bwp.cyclicPrefix;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.NrOfCodewords = pdschInfo->numCodewords;
-      for(idx = 0; idx < MAX_CODEWORDS ; idx++)
-      {
-         dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.targetCodeRate[idx] = pdschInfo->codeword[idx].targetCodeRate;
-         dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.qamModOrder[idx] = pdschInfo->codeword[idx].qamModOrder;
-         dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.mcsIndex[idx] = pdschInfo->codeword[idx].mcsIndex;
-         dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.mcsTable[idx] = pdschInfo->codeword[idx].mcsTable;
-         dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.rvIndex[idx] = pdschInfo->codeword[idx].rvIndex;
-         dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.TBSize[idx] = pdschInfo->codeword[idx].tbSize;
-      }
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dataScramblingId = pdschInfo->dataScramblingId;       
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.nrOfLayers = pdschInfo->numLayers;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.transmissionScheme = pdschInfo->transmissionScheme;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.refPoint = pdschInfo->refPoint;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dlDmrsSymbPos = pdschInfo->dmrs.dlDmrsSymbPos;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dmrsConfigType = pdschInfo->dmrs.dmrsConfigType;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dlDmrsScramblingId = pdschInfo->dmrs.dlDmrsScramblingId;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.SCID = pdschInfo->dmrs.scid;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.numDmrsCdmGrpsNoData = pdschInfo->dmrs.numDmrsCdmGrpsNoData;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dmrsPorts = pdschInfo->dmrs.dmrsPorts;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.resourceAlloc = pdschInfo->pdschFreqAlloc.resourceAllocType;
-      /* since we are using type-1, hence rbBitmap excluded */
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.rbStart = pdschInfo->pdschFreqAlloc.startPrb;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.rbSize = pdschInfo->pdschFreqAlloc.numPrb;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.VRBtoPRBMapping = pdschInfo->pdschFreqAlloc.vrbPrbMapping;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.StartSymbolIndex = pdschInfo->pdschTimeAlloc.startSymb;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.NrOfSymbols = pdschInfo->pdschTimeAlloc.numSymb;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.precodingAndBeamforming.numPrgs = pdschInfo->beamPdschInfo.numPrgs;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.precodingAndBeamforming.prgSize = pdschInfo->beamPdschInfo.prgSize;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.precodingAndBeamforming.digBfInterfaces = pdschInfo->beamPdschInfo.digBfInterfaces;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.precodingAndBeamforming.prgs_list[0]. \
-         pm_idx = pdschInfo->beamPdschInfo.prg[0].pmIdx;
-      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.precodingAndBeamforming.prgs_list[0]. \
-         dig_bf_interface_list[0].beam_idx = pdschInfo->beamPdschInfo.prg[0].beamIdx[0];
-      /*Not changed yet*/
-      //dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.powerControlOffset = pdschInfo->txPdschPower.powerControlOffset;  
-      //dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.powerControlOffsetSS = pdschInfo->txPdschPower.powerControlOffsetSS;
-      //dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.mappingType =   pdschInfo->dmrs.mappingType;
-      //dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.nrOfDmrsSymbols = pdschInfo->dmrs.nrOfDmrsSymbols;
-      //dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dmrsAddPos = pdschInfo->dmrs.dmrsAddPos;
+         dlTtiReqPdu->PDUType = PDSCH_PDU_TYPE;
+   memset(&dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15, 0, sizeof(nfapi_nr_dl_tti_pdsch_pdu));
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.pduBitmap = pdschInfo->pduBitmap;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.rnti = pdschInfo->rnti;         
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.pduIndex = pduIndex;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.BWPSize = bwp.freqAlloc.numPrb;       
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.BWPStart = bwp.freqAlloc.startPrb;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.SubcarrierSpacing = bwp.subcarrierSpacing;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.CyclicPrefix = bwp.cyclicPrefix;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.NrOfCodewords = pdschInfo->numCodewords;
+   for(idx = 0; idx < MAX_CODEWORDS ; idx++)
+   {
+            dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.targetCodeRate[idx] = pdschInfo->codeword[idx].targetCodeRate;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.qamModOrder[idx] = pdschInfo->codeword[idx].qamModOrder;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.mcsIndex[idx] = pdschInfo->codeword[idx].mcsIndex;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.mcsTable[idx] = pdschInfo->codeword[idx].mcsTable;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.rvIndex[idx] = pdschInfo->codeword[idx].rvIndex;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.TBSize[idx] = pdschInfo->codeword[idx].tbSize;
+   }
+         dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dataScramblingId = pdschInfo->dataScramblingId;       
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.nrOfLayers = pdschInfo->numLayers;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.transmissionScheme = pdschInfo->transmissionScheme;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.refPoint = pdschInfo->refPoint;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dlDmrsSymbPos = pdschInfo->dmrs.dlDmrsSymbPos;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dmrsConfigType = pdschInfo->dmrs.dmrsConfigType;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dlDmrsScramblingId = pdschInfo->dmrs.dlDmrsScramblingId;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.SCID = pdschInfo->dmrs.scid;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.numDmrsCdmGrpsNoData = pdschInfo->dmrs.numDmrsCdmGrpsNoData;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dmrsPorts = pdschInfo->dmrs.dmrsPorts;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.resourceAlloc = pdschInfo->pdschFreqAlloc.resourceAllocType;
+   /* since we are using type-1, hence rbBitmap excluded */
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.rbStart = pdschInfo->pdschFreqAlloc.startPrb;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.rbSize = pdschInfo->pdschFreqAlloc.numPrb;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.VRBtoPRBMapping = pdschInfo->pdschFreqAlloc.vrbPrbMapping;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.StartSymbolIndex = pdschInfo->pdschTimeAlloc.startSymb;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.NrOfSymbols = pdschInfo->pdschTimeAlloc.numSymb;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.precodingAndBeamforming.num_prgs = pdschInfo->beamPdschInfo.numPrgs;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.precodingAndBeamforming.prg_size = pdschInfo->beamPdschInfo.prgSize;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.precodingAndBeamforming.dig_bf_interfaces = pdschInfo->beamPdschInfo.digBfInterfaces;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.precodingAndBeamforming.prgs_list[0]. \
+   pm_idx = pdschInfo->beamPdschInfo.prg[0].pmIdx;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.precodingAndBeamforming.prgs_list[0]. \
+   dig_bf_interface_list[0].beam_idx = pdschInfo->beamPdschInfo.prg[0].beamIdx[0];
+   /*Not changed yet*/
+   //dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.powerControlOffset = pdschInfo->txPdschPower.powerControlOffset;  
+   //dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.powerControlOffsetSS = pdschInfo->txPdschPower.powerControlOffsetSS;
+   //dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.mappingType =   pdschInfo->dmrs.mappingType;
+   //dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.nrOfDmrsSymbols = pdschInfo->dmrs.nrOfDmrsSymbols;
+   //dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dmrsAddPos = pdschInfo->dmrs.dmrsAddPos;
 
-      dlTtiReqPdu->PDUSize = sizeof(nfapi_nr_dl_tti_pdsch_pdu_rel15_t);
+   dlTtiReqPdu->PDUSize = sizeof(nfapi_nr_dl_tti_pdsch_pdu_rel15_t);
    }
 }
 
