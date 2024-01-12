@@ -3995,6 +3995,81 @@ void OAI_OSC_fillPrachPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu,
 
 /*******************************************************************
  *
+ * @brief Filling PUSCH PDU in nFAPI UL TTI Request
+ *
+ * @details
+ *
+ *    Function : OAI_OSC_fillPuschPdu
+ *
+ *    Functionality: Filling PUSCH PDU in nFAPI UL TTI Request
+ *
+ * @params[in] 
+ * @return ROK     - success
+ *         RFAILED - failure
+ *
+ * ****************************************************************/
+void OAI_OSC_fillPuschPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu, MacCellCfg *macCellCfg, MacUlSlot *currUlSlot)
+{
+   if(ulTtiReqPdu != NULLP)
+   {
+      ulTtiReqPdu->pdu_type = PUSCH_PDU_TYPE;
+      memset(&ulTtiReqPdu->pusch_pdu, 0, sizeof(nfapi_nr_pusch_pdu_t));
+      ulTtiReqPdu->pusch_pdu.pdu_bit_map = 1;
+      ulTtiReqPdu->pusch_pdu.rnti = currUlSlot->ulInfo.crnti;
+      /* TODO : Fill handle in raCb when scheduling pusch and access here */
+      ulTtiReqPdu->pusch_pdu.handle = 100;
+      ulTtiReqPdu->pusch_pdu.bwp_size = macCellCfg->cellCfg.initialUlBwp.bwp.numPrb;
+      ulTtiReqPdu->pusch_pdu.bwp_start = macCellCfg->cellCfg.initialUlBwp.bwp.firstPrb;
+      ulTtiReqPdu->pusch_pdu.subcarrier_spacing = \
+         macCellCfg->cellCfg.initialUlBwp.bwp.scs;
+      ulTtiReqPdu->pusch_pdu.cyclic_prefix = \
+         macCellCfg->cellCfg.initialUlBwp.bwp.cyclicPrefix;
+      ulTtiReqPdu->pusch_pdu.target_code_rate = 308;
+      ulTtiReqPdu->pusch_pdu.qam_mod_order = currUlSlot->ulInfo.schPuschInfo.tbInfo.qamOrder;
+      ulTtiReqPdu->pusch_pdu.mcs_index = currUlSlot->ulInfo.schPuschInfo.tbInfo.mcs;
+      ulTtiReqPdu->pusch_pdu.mcs_table = currUlSlot->ulInfo.schPuschInfo.tbInfo.mcsTable;
+      ulTtiReqPdu->pusch_pdu.transform_precoding = 1;
+      ulTtiReqPdu->pusch_pdu.data_scrambling_id = currUlSlot->ulInfo.cellId;
+      ulTtiReqPdu->pusch_pdu.nrOfLayers = 1;
+      ulTtiReqPdu->pusch_pdu.ul_dmrs_symb_pos = 4;
+      ulTtiReqPdu->pusch_pdu.dmrs_config_type = 0;
+      ulTtiReqPdu->pusch_pdu.ul_dmrs_scrambling_id = currUlSlot->ulInfo.cellId;
+      ulTtiReqPdu->pusch_pdu.scid = 0;
+      ulTtiReqPdu->pusch_pdu.num_dmrs_cdm_grps_no_data = 1;
+      ulTtiReqPdu->pusch_pdu.dmrs_ports = 0;
+      ulTtiReqPdu->pusch_pdu.resource_alloc = \
+	 currUlSlot->ulInfo.schPuschInfo.fdAlloc.resAllocType;
+      ulTtiReqPdu->pusch_pdu.rb_start = \
+         currUlSlot->ulInfo.schPuschInfo.fdAlloc.resAlloc.type1.startPrb;
+      ulTtiReqPdu->pusch_pdu.rb_size = \
+	 currUlSlot->ulInfo.schPuschInfo.fdAlloc.resAlloc.type1.numPrb;
+      ulTtiReqPdu->pusch_pdu.vrb_to_prb_mapping = 0;
+      ulTtiReqPdu->pusch_pdu.frequency_hopping = 0;
+      ulTtiReqPdu->pusch_pdu.tx_direct_current_location = 0;
+      ulTtiReqPdu->pusch_pdu.uplink_frequency_shift_7p5khz = 0;
+      ulTtiReqPdu->pusch_pdu.start_symbol_index = \
+         currUlSlot->ulInfo.schPuschInfo.tdAlloc.startSymb;
+      ulTtiReqPdu->pusch_pdu.nr_of_symbols = \
+         currUlSlot->ulInfo.schPuschInfo.tdAlloc.numSymb;
+
+      ulTtiReqPdu->pusch_pdu.pusch_data.rv_index = \
+         currUlSlot->ulInfo.schPuschInfo.tbInfo.rv;
+      ulTtiReqPdu->pusch_pdu.pusch_data.harq_process_id = \
+         currUlSlot->ulInfo.schPuschInfo.harqProcId;
+      ulTtiReqPdu->pusch_pdu.pusch_data.new_data_indicator = \
+         currUlSlot->ulInfo.schPuschInfo.tbInfo.ndi;
+      ulTtiReqPdu->pusch_pdu.pusch_data.tb_size = \
+         currUlSlot->ulInfo.schPuschInfo.tbInfo.tbSize;
+      /* numCb is 0 for new transmission */
+      ulTtiReqPdu->pusch_pdu.pusch_data.num_cb = 0;
+
+      ulTtiReqPdu->pdu_size = sizeof(nfapi_nr_pusch_pdu_t);
+   }
+}
+
+
+/*******************************************************************
+ *
  * @brief Sends DL TTI Request to PHY
  *
  * @details
@@ -5096,7 +5171,7 @@ uint16_t OAI_OSC_fillUlTtiReq(SlotTimingInfo currTimingInfo)
 		   if(currUlSlot->ulInfo.dataType & SCH_DATATYPE_PUSCH)
 		   {
             pduIdx++;
-            //TODO:OAI_OSC_fillPuschPdu
+            //TODO:OAI_OSC_fillPuschPdu done
             //fillPuschPdu(&ulTtiReq->pdus_list[pduIdx], &macCellCfg, currUlSlot);
 		   }
 		   /* Fill PUCCH PDU */
