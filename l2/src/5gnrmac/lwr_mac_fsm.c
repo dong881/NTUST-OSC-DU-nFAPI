@@ -3523,7 +3523,7 @@ uint8_t calcDlTtiReqPduCount(MacDlSlot *dlSlot)
    }
    return count;
 }
-
+#endif
 /***********************************************************************
  *
  * @brief calculates the total size to be allocated for DL TTI Req
@@ -3566,6 +3566,7 @@ uint8_t calcTxDataReqPduCount(MacDlSlot *dlSlot)
    return count;
 }
 
+#ifdef INTEL_FAPI
 /***********************************************************************
  *
  * @brief fills the SIB1 TX-DATA request message
@@ -3951,6 +3952,44 @@ BwpCfg bwp, uint16_t pduIndex)
    //dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dmrsAddPos = pdschInfo->dmrs.dmrsAddPos;
 
    dlTtiReqPdu->PDUSize = sizeof(nfapi_nr_dl_tti_pdsch_pdu_rel15_t);
+   }
+}
+
+/***********************************************************************
+ *
+ * @brief Fills the PRACH PDU in nFAPI UL TTI Request
+ *
+ * @details
+ *
+ *    Function : fillPrachPdu
+ *
+ *    Functionality:
+ *         -Fills the PRACH PDU in nFAPI UL TTI Request
+ *
+ * @params[in] Pointer to Prach Pdu
+ *             Pointer to CurrUlSlot
+ *             Pointer to macCellCfg
+ *             Pointer to msgLen
+ * ********************************************************************/
+void OAI_OSC_fillPrachPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu, MacCellCfg *macCellCfg, MacUlSlot *currUlSlot)
+{
+   if(ulTtiReqPdu != NULLP)
+   {
+      ulTtiReqPdu->pdu_type = PRACH_PDU_TYPE; 
+      ulTtiReqPdu->prach_pdu.phys_cell_id = macCellCfg->cellCfg.phyCellId;
+      ulTtiReqPdu->prach_pdu.num_prach_ocas = \
+         currUlSlot->ulInfo.prachSchInfo.numPrachOcas;
+      ulTtiReqPdu->prach_pdu.prach_format = \
+	 currUlSlot->ulInfo.prachSchInfo.prachFormat;
+      ulTtiReqPdu->prach_pdu.num_ra = currUlSlot->ulInfo.prachSchInfo.numRa;
+      ulTtiReqPdu->prach_pdu.prach_start_symbol = \
+	 currUlSlot->ulInfo.prachSchInfo.prachStartSymb;
+      setNumCs(&ulTtiReqPdu->prach_pdu.num_cs, macCellCfg);
+      ulTtiReqPdu->prach_pdu.beamforming.num_prgs = 0;
+      ulTtiReqPdu->prach_pdu.beamforming.prg_size = 0;
+      ulTtiReqPdu->prach_pdu.beamforming.dig_bf_interface = 0;
+      ulTtiReqPdu->prach_pdu.beamforming.prgs_list->dig_bf_interface_list->beam_idx = 0;
+      ulTtiReqPdu->pdu_size = sizeof(nfapi_nr_prach_pdu_t); 
    }
 }
 
@@ -4467,7 +4506,7 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
 
          /* send Tx-DATA req message */
          //TODO: OAI_OSC_sendTxDataReq
-         //OAI_OSC_sendTxDataReq(dlTtiReqTimingInfo, &currDlSlot->dlInfo);
+         //OAI_OSC_sendTxDataReq(dlTtiReqTimingInfo, &currDlSlot);
 
          int retval = nfapi_vnf_p7_nr_dl_config_req(p7_config, dlTtiReq);
       }
@@ -5049,7 +5088,7 @@ uint16_t OAI_OSC_fillUlTtiReq(SlotTimingInfo currTimingInfo)
 		   if(currUlSlot->ulInfo.dataType & SCH_DATATYPE_PRACH)
 		   {
             pduIdx++;
-            //TODO:OAI_OSC_fillPrachPdu
+            //TODO:OAI_OSC_fillPrachPdu done
             //fillPrachPdu(&ulTtiReq->pdus_list[pduIdx], &macCellCfg, currUlSlot);
 		   }
 
@@ -5192,7 +5231,7 @@ uint16_t OAI_OSC_sendTxDataReq(SlotTimingInfo currTimingInfo, MacDlSlot *dlSlot)
    GET_CELL_IDX(currTimingInfo.cellId, cellIdx);
 
    /* send TX_Data request message */
-   //TODO:OAI_OSC_calcTxDataReqPduCount
+   //TODO:calcTxDataReqPduCount relocate from #ifdef INTEL_FAPI
    nPdu = calcTxDataReqPduCount(dlSlot);
    if(nPdu > 0)
    {
@@ -5203,7 +5242,7 @@ uint16_t OAI_OSC_sendTxDataReq(SlotTimingInfo currTimingInfo, MacDlSlot *dlSlot)
          return RFAILED;
       }
       memset(txDataReq, 0, sizeof(nfapi_nr_tx_data_request_t));
-      
+
       /* Fill message header */
       txDataReq->header.message_id = NFAPI_NR_PHY_MSG_TYPE_TX_DATA_REQUEST;
       txDataReq->header.phy_id = 1;
