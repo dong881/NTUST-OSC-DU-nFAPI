@@ -4459,7 +4459,7 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
 #endif
          /* OAI L1 expects UL_TTI.request following DL_TTI.request */
          //TODO: OAI_OSC_fillUlTtiReq()
-         //OAI_OSC_fillUlTtiReq(currTimingInfo);
+         OAI_OSC_fillUlTtiReq(currTimingInfo);
 
          /* OAI L1 expects UL_DCI.request following DL_TTI.request */
          //TODO: OAI_OSC_fillUlDciReq
@@ -5064,7 +5064,7 @@ uint16_t OAI_OSC_fillUlTtiReq(SlotTimingInfo currTimingInfo)
 		   if(currUlSlot->ulInfo.dataType & SCH_DATATYPE_UCI)
 		   {
             pduIdx++;
-            ////TODO:OAI_OSC_fillPucchPdu
+            //TODO:OAI_OSC_fillPucchPdu
             //fillPucchPdu(&ulTtiReq->pdus_list[pduIdx], &macCellCfg, currUlSlot);
 		   }
 
@@ -5089,6 +5089,72 @@ uint16_t OAI_OSC_fillUlTtiReq(SlotTimingInfo currTimingInfo)
    else
    {
 	   lwr_mac_procInvalidEvt(&currTimingInfo);
+   }
+   return ROK;
+}
+
+/*******************************************************************
+ *
+ * @brief Sends UL DCI Request to OAI PHY
+ *
+ * @details
+ *
+ *    Function : OAI_OSC_fillUlDciReq
+ *
+ *    Functionality:
+ *         -Sends nFAPI Ul Dci req to OAI PHY
+ *
+ * @params[in]  Pointer to CmLteTimingInfo
+ * @return ROK     - success
+ *         RFAILED - failure
+ *
+ ******************************************************************/
+uint16_t OAI_OSC_fillUlDciReq(SlotTimingInfo currTimingInfo)
+{
+   printf("INFO  -->  %s()\n", __FUNCTION__);
+   uint8_t      cellIdx =0;
+   uint8_t      numPduEncoded = 0;
+   SlotTimingInfo  ulDciReqTimingInfo ={0};
+   MacDlSlot    *currDlSlot = NULLP;
+   nfapi_nr_ul_dci_request_t *ulDciReq = NULLP;
+
+   if(lwrMacCb.phyState == PHY_STATE_RUNNING)
+   { 
+      nfapi_vnf_p7_config_t *p7_config = glb_vnf->p7_vnfs[0].config;
+      GET_CELL_IDX(currTimingInfo.cellId, cellIdx);
+      memcpy(&ulDciReqTimingInfo, &currTimingInfo, sizeof(SlotTimingInfo));
+      currDlSlot = &macCb.macCell[cellIdx]->dlSlot[ulDciReqTimingInfo.slot % macCb.macCell[cellIdx]->numOfSlots];
+      
+      ulDciReq = (nfapi_nr_ul_dci_request_t *)malloc(sizeof(nfapi_nr_ul_dci_request_t));
+      memset(ulDciReq, 0, sizeof(nfapi_nr_ul_dci_request_t));
+
+      ulDciReq->header.message_id = NFAPI_NR_PHY_MSG_TYPE_UL_DCI_REQUEST;
+      ulDciReq->header.phy_id = 1;
+
+      ulDciReq->SFN = ulDciReqTimingInfo.sfn;
+      ulDciReq->Slot = ulDciReqTimingInfo.slot;
+
+      if(currDlSlot->dlInfo.ulGrant != NULLP)
+      {
+         ulDciReq->numPdus = 1;  // No. of PDCCH PDUs
+         if(ulDciReq->numPdus > 0)
+         {
+            /* Fill PDCCH configuration Pdu */
+            //TODO:OAI_OSC_fillUlDciPdcchPdu
+            //fillUlDciPdcchPdu(&ulDciReq->pdus[numPduEncoded], &vendorUlDciReq->pdus[numPduEncoded], &currDlSlot->dlInfo, CORESET_TYPE1);
+            numPduEncoded++;
+	         /* free UL GRANT at SCH */
+	         MAC_FREE(currDlSlot->dlInfo.ulGrant, sizeof(DciInfo));
+            int retval = nfapi_vnf_p7_ul_dci_req(p7_config, ulDciReq);
+         }
+#ifdef ODU_SLOT_IND_DEBUG_LOG
+	       DU_LOG("\nDEBUG  -->  LWR_MAC: Sending UL DCI Request");
+#endif
+	  }
+   }
+   else
+   {
+       lwr_mac_procInvalidEvt(&currTimingInfo);
    }
    return ROK;
 }
