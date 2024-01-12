@@ -3824,10 +3824,10 @@ uint8_t fillDlMsgTxDataReq(fapi_tx_pdu_desc_t *pduDesc, uint16_t pduIndex, DlMsg
  * @return count
  *
  * ********************************************************************/
-uint8_t OAI_OSC_calcDlTtiReqPduCount(MacDlSlot *dlSlot)
+uint32_t OAI_OSC_calcDlTtiReqPduCount(MacDlSlot *dlSlot)
 {
-   uint8_t count = 0;
-   uint8_t idx = 0, ueIdx=0;
+   uint32_t count = 0;
+   uint32_t idx = 0, ueIdx=0;
 
    if(dlSlot->dlInfo.isBroadcastPres)
    {
@@ -4316,7 +4316,7 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
       dlTtiReq->SFN = dlTtiReqTimingInfo.sfn;
       dlTtiReq->Slot = dlTtiReqTimingInfo.slot;
       //TODO:OAI_OSC_calcDlTtiReqPduCount()
-      dlTtiReq->dl_tti_request_body.nPDUs = OAI_OSC_calcDlTtiReqPduCount(currDlSlot); /* get total Pdus */
+      //dlTtiReq->dl_tti_request_body.nPDUs = OAI_OSC_calcDlTtiReqPduCount(currDlSlot); /* get total Pdus */
       nPdu = dlTtiReq->dl_tti_request_body.nPDUs;
       dlTtiReq->dl_tti_request_body.nGroup = 0;
       printf("\ndlTtiReq->dl_tti_request_body.nPDUs:%d\n",dlTtiReq->dl_tti_request_body.nPDUs);
@@ -4993,6 +4993,103 @@ uint16_t fillUlTtiReq(SlotTimingInfo currTimingInfo, p_fapi_api_queue_elem_t pre
 	   lwr_mac_procInvalidEvt(&currTimingInfo);
    }
 #endif
+   return ROK;
+}
+/*******************************************************************
+ *
+ * @brief Sends UL TTI Request to OAI PHY
+ *
+ * @details
+ *
+ *    Function : OAI_OSC_fillUlTtiReq
+ *
+ *    Functionality:
+ *         -Sends nFAPI Param req to OAI PHY
+ *
+ * @params[in]  Pointer to CmLteTimingInfo
+ * @return ROK     - success
+ *         RFAILED - failure
+ *
+ ******************************************************************/
+uint16_t OAI_OSC_fillUlTtiReq(SlotTimingInfo currTimingInfo)
+{
+   printf("INFO  -->  %s()\n", __FUNCTION__);
+#ifdef CALL_FLOW_DEBUG_LOG
+   DU_LOG("\nCall Flow: ENTMAC -> ENTLWRMAC : UL_TTI_REQUEST\n");
+#endif
+   uint16_t   cellIdx =0;
+   uint8_t    pduIdx = -1;
+   SlotTimingInfo ulTtiReqTimingInfo;
+   MacUlSlot *currUlSlot = NULLP;
+   MacCellCfg macCellCfg;
+   nfapi_nr_ul_tti_request_t *ulTtiReq;
+
+   if(lwrMacCb.phyState == PHY_STATE_RUNNING)
+   {
+      GET_CELL_IDX(currTimingInfo.cellId, cellIdx);
+      macCellCfg = macCb.macCell[cellIdx]->macCellCfg;
+
+      /* add PHY delta */
+      ADD_DELTA_TO_TIME(currTimingInfo,ulTtiReqTimingInfo,PHY_DELTA_UL, macCb.macCell[cellIdx]->numOfSlots);
+      currUlSlot = &macCb.macCell[cellIdx]->ulSlot[ulTtiReqTimingInfo.slot % macCb.macCell[cellIdx]->numOfSlots];
+      ulTtiReq = (nfapi_nr_ul_tti_request_t *)malloc(sizeof(nfapi_nr_ul_tti_request_t));
+
+      memset(ulTtiReq, 0, sizeof(nfapi_nr_ul_tti_request_t));
+      ulTtiReq->header.phy_id = 1; // DJP HACK TODO FIXME - need to pass this around!!!!
+      ulTtiReq->header.message_id = NFAPI_NR_PHY_MSG_TYPE_UL_TTI_REQUEST;
+      ulTtiReq->header.message_length = sizeof(nfapi_nr_ul_tti_request_t);
+      ulTtiReq->SFN = ulTtiReqTimingInfo.sfn;
+      ulTtiReq->Slot = ulTtiReqTimingInfo.slot;
+      ulTtiReq->n_pdus = getnPdus(ulTtiReq, currUlSlot);
+      ulTtiReq->n_group = 0;
+
+	   if(ulTtiReq->n_pdus > 0)
+	   {
+		   /* Fill Prach Pdu */
+		   if(currUlSlot->ulInfo.dataType & SCH_DATATYPE_PRACH)
+		   {
+            pduIdx++;
+            //TODO:OAI_OSC_fillPrachPdu
+            //fillPrachPdu(&ulTtiReq->pdus_list[pduIdx], &macCellCfg, currUlSlot);
+		   }
+
+		   /* Fill PUSCH PDU */
+		   if(currUlSlot->ulInfo.dataType & SCH_DATATYPE_PUSCH)
+		   {
+            pduIdx++;
+            //TODO:OAI_OSC_fillPuschPdu
+            //fillPuschPdu(&ulTtiReq->pdus_list[pduIdx], &macCellCfg, currUlSlot);
+		   }
+		   /* Fill PUCCH PDU */
+		   if(currUlSlot->ulInfo.dataType & SCH_DATATYPE_UCI)
+		   {
+            pduIdx++;
+            ////TODO:OAI_OSC_fillPucchPdu
+            //fillPucchPdu(&ulTtiReq->pdus_list[pduIdx], &macCellCfg, currUlSlot);
+		   }
+
+         nfapi_vnf_p7_config_t *p7_config = glb_vnf->p7_vnfs[0].config; // vnf need to be global variable
+
+         int retval = nfapi_vnf_p7_ul_tti_req(p7_config, ulTtiReq);
+         printf("INFO  -->  retval %d %s %d\n", retval, __FUNCTION__, __LINE__);
+         if (retval != 0)
+         {
+            DU_LOG("\nERROR  -->  LWR_MAC: Failed to Send UL TTI Request");
+            memset(currUlSlot, 0, sizeof(MacUlSlot));
+            return RFAILED;
+         }
+	   } 
+      else
+      {
+	      DU_LOG("\nERROR  -->  LWR_MAC: Failed to allocate memory for UL TTI Request");
+	      memset(currUlSlot, 0, sizeof(MacUlSlot));
+	      return RFAILED;
+      }
+   }
+   else
+   {
+	   lwr_mac_procInvalidEvt(&currTimingInfo);
+   }
    return ROK;
 }
 
