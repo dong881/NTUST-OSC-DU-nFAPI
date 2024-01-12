@@ -84,7 +84,7 @@ uint8_t lwr_mac_procStopReqEvt(SlotTimingInfo slotInfo, p_fapi_api_queue_elem_t 
 
 /* ======== small cell integration ======== */
 #ifdef NFAPI
-uint16_t OAI_OSC_sendTxDataReq(SlotTimingInfo currTimingInfo, DlSchedInfo *dlInfo);
+uint16_t OAI_OSC_sendTxDataReq(SlotTimingInfo currTimingInfo, MacDlSlot *dlSlot);
 uint16_t OAI_OSC_fillUlTtiReq(SlotTimingInfo currTimingInfo);
 uint16_t OAI_OSC_fillUlDciReq(SlotTimingInfo currTimingInfo);
 #endif
@@ -5155,6 +5155,116 @@ uint16_t OAI_OSC_fillUlDciReq(SlotTimingInfo currTimingInfo)
    else
    {
        lwr_mac_procInvalidEvt(&currTimingInfo);
+   }
+   return ROK;
+}
+
+/*******************************************************************
+ *
+ * @brief Sends TX data Request to OAI PHY
+ *
+ * @details
+ *
+ *    Function : OAI_OSC_sendTxDataReq
+ *
+ *    Functionality:
+ *         -Sends nFAPI TX data req to OAI PHY
+ *
+ * @params[in]    timing info
+ * @return ROK     - success
+ *         RFAILED - failure
+ *
+ * ****************************************************************/
+uint16_t OAI_OSC_sendTxDataReq(SlotTimingInfo currTimingInfo, MacDlSlot *dlSlot)
+{
+
+#ifdef CALL_FLOW_DEBUG_LOG
+   DU_LOG("\nCall Flow: ENTMAC -> ENTLWRMAC : TX_DATA_REQ\n");
+#endif
+   printf("INFO  -->  %s()\n", __FUNCTION__);
+   nfapi_vnf_p7_config_t *p7_config = glb_vnf->p7_vnfs[0].config;
+   uint8_t  nPdu = 0;
+   uint8_t  ueIdx=0;
+   uint16_t cellIdx=0;
+   uint16_t pduIndex = 0;
+   nfapi_nr_tx_data_request_t *txDataReq = NULLP;
+
+   GET_CELL_IDX(currTimingInfo.cellId, cellIdx);
+
+   /* send TX_Data request message */
+   //TODO:OAI_OSC_calcTxDataReqPduCount
+   nPdu = calcTxDataReqPduCount(dlSlot);
+   if(nPdu > 0)
+   {
+      txDataReq = (nfapi_nr_tx_data_request_t *)malloc(sizeof(nfapi_nr_tx_data_request_t));
+      if(txDataReq == NULLP)
+      {
+         DU_LOG("\nERROR  -->  LWR_MAC: Failed to allocate memory for TX data Request");
+         return RFAILED;
+      }
+      memset(txDataReq, 0, sizeof(nfapi_nr_tx_data_request_t));
+      
+      /* Fill message header */
+      txDataReq->header.message_id = NFAPI_NR_PHY_MSG_TYPE_TX_DATA_REQUEST;
+      txDataReq->header.phy_id = 1;
+      txDataReq->SFN = currTimingInfo.sfn;
+      txDataReq->Slot = currTimingInfo.slot;
+
+      if(dlSlot->dlInfo.brdcstAlloc.sib1TransmissionMode)
+      {
+         //TODO:OAI_OSC_fillSib1TxDataReq
+         //fillSib1TxDataReq(txDataReq->pdu_list, pduIndex, &macCb.macCell[cellIdx]->macCellCfg, \
+               &dlSlot->dlInfo.brdcstAlloc.sib1Alloc.sib1PdcchCfg->dci.pdschCfg);
+         pduIndex++;
+         MAC_FREE(dlSlot->dlInfo.brdcstAlloc.sib1Alloc.sib1PdcchCfg,sizeof(PdcchCfg));
+         txDataReq->Number_of_PDUs++;
+      }
+      if(dlSlot->pageAllocInfo != NULLP)
+      {
+         //TODO:OAI_OSC_fillPageTxDataReq
+         //fillPageTxDataReq(txDataReq->pdu_list, pduIndex, dlSlot->pageAllocInfo);
+         pduIndex++;
+         txDataReq->Number_of_PDUs++;
+         MAC_FREE(dlSlot->pageAllocInfo->pageDlSch.dlPagePdu, sizeof(dlSlot->pageAllocInfo->pageDlSch.dlPagePduLen));
+         MAC_FREE(dlSlot->pageAllocInfo,sizeof(DlPageAlloc));
+      }
+
+      for(ueIdx=0; ueIdx<MAX_NUM_UE; ueIdx++)
+      {
+         if(dlSlot->dlInfo.rarAlloc[ueIdx] != NULLP)
+         {
+            if((dlSlot->dlInfo.rarAlloc[ueIdx]->rarPdschCfg))
+            {
+               //TODO:OAI_OSC_fillRarTxDataReq
+               //fillRarTxDataReq(txDataReq->pdu_list, pduIndex, &dlSlot->dlInfo.rarAlloc[ueIdx]->rarInfo,\
+                     dlSlot->dlInfo.rarAlloc[ueIdx]->rarPdschCfg);
+               pduIndex++;
+               txDataReq->Number_of_PDUs++;
+               MAC_FREE(dlSlot->dlInfo.rarAlloc[ueIdx]->rarPdschCfg, sizeof(PdschCfg));
+            }
+            MAC_FREE(dlSlot->dlInfo.rarAlloc[ueIdx],sizeof(RarAlloc));
+         }
+
+         if(dlSlot->dlInfo.dlMsgAlloc[ueIdx] != NULLP)
+         {
+            if(dlSlot->dlInfo.dlMsgAlloc[ueIdx]->dlMsgPdschCfg) 
+            {
+               //TODO:OAI_OSC_fillDlMsgTxDataReq
+               //fillDlMsgTxDataReq(txDataReq->pdu_list, pduIndex, \
+                     dlSlot->dlInfo.dlMsgAlloc[ueIdx], \
+                     dlSlot->dlInfo.dlMsgAlloc[ueIdx]->dlMsgPdschCfg);
+               pduIndex++;
+               txDataReq->Number_of_PDUs++;
+               MAC_FREE(dlSlot->dlInfo.dlMsgAlloc[ueIdx]->dlMsgPdschCfg,sizeof(PdschCfg));
+            }
+            MAC_FREE(dlSlot->dlInfo.dlMsgAlloc[ueIdx]->dlMsgPdu, \
+                  dlSlot->dlInfo.dlMsgAlloc[ueIdx]->dlMsgPduLen);
+            dlSlot->dlInfo.dlMsgAlloc[ueIdx]->dlMsgPdu = NULLP;
+            MAC_FREE(dlSlot->dlInfo.dlMsgAlloc[ueIdx], sizeof(DlMsgSchInfo));
+         }
+      }
+      int retval = nfapi_vnf_p7_tx_data_req(p7_config, txDataReq);
+      DU_LOG("\nDEBUG  -->  LWR_MAC: Sending TX DATA Request");
    }
    return ROK;
 }
