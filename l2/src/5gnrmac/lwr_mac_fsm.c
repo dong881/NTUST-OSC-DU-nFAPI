@@ -4286,6 +4286,52 @@ uint8_t OAI_OSC_fillUlDciPdcchPdu(nfapi_nr_ul_dci_request_pdus_t *ulDciReqPdu, D
    return ROK;
 }
 
+/***********************************************************************
+ *
+ * @brief fills the SIB1 nFAPI TX-DATA request message
+ *
+ * @details
+ *
+ *    Function : OAI_OSC_fillSib1TxDataReq
+ *
+ *    Functionality:
+ *         - fills the SIB1 nFAPI TX-DATA request message
+ *
+ * @params[in]    nfapi_nr_pdu_t *pduDesc
+ * @params[in]    macCellCfg consist of SIB1 pdu
+ * @params[in]    uint32_t *msgLen
+ * @params[in]    uint16_t pduIndex
+ * @return ROK
+ *
+ * ********************************************************************/
+uint8_t OAI_OSC_fillSib1TxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, MacCellCfg *macCellCfg,
+      PdschCfg *pdschCfg)
+{
+   uint32_t payloadSize = 0;
+   uint8_t *sib1Payload = NULLP;
+
+   pduDesc[pduIndex].PDU_index = pduIndex;
+   pduDesc[pduIndex].num_TLV = 1;
+
+   /* fill the TLV */
+   payloadSize = pdschCfg->codeword[0].tbSize;
+   pduDesc[pduIndex].TLVs[0].tag = ((payloadSize & 0xff0000) >> 8) | FAPI_TX_DATA_PTR_TO_PAYLOAD_64;
+   pduDesc[pduIndex].TLVs[0].length = (payloadSize & 0x0000ffff);
+   LWR_MAC_ALLOC(sib1Payload, payloadSize);
+   if(sib1Payload == NULLP)
+   {
+      return RFAILED;
+   }
+   memcpy(sib1Payload + TX_PAYLOAD_HDR_LEN, macCellCfg->cellCfg.sib1Cfg.sib1Pdu, macCellCfg->cellCfg.sib1Cfg.sib1PduLen);
+   
+   pduDesc[pduIndex].TLVs[0].value.ptr = sib1Payload;
+
+   pduDesc[pduIndex].PDU_length = payloadSize; 
+
+   LWR_MAC_FREE(sib1Payload, payloadSize);
+   return ROK;
+}
+
 /*******************************************************************
  *
  * @brief Sends DL TTI Request to PHY
@@ -5544,7 +5590,7 @@ uint16_t OAI_OSC_sendTxDataReq(SlotTimingInfo currTimingInfo, MacDlSlot *dlSlot)
 
       if(dlSlot->dlInfo.brdcstAlloc.sib1TransmissionMode)
       {
-         //TODO:OAI_OSC_fillSib1TxDataReq
+         //TODO:OAI_OSC_fillSib1TxDataReq done
          //fillSib1TxDataReq(txDataReq->pdu_list, pduIndex, &macCb.macCell[cellIdx]->macCellCfg, \
                &dlSlot->dlInfo.brdcstAlloc.sib1Alloc.sib1PdcchCfg->dci.pdschCfg);
          pduIndex++;
