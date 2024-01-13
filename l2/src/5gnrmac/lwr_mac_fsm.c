@@ -4377,6 +4377,51 @@ uint8_t OAI_OSC_fillPageTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, Dl
    return ROK;
 }
 
+/***********************************************************************
+ *
+ * @brief fills the nFAPI RAR TX-DATA request message
+ *
+ * @details
+ *
+ *    Function : OAI_OSC_fillRarTxDataReq
+ *
+ *    Functionality:
+ *         - fills the RAR nFAPI TX-DATA request message
+ *
+ * @params[in]    nfapi_nr_pdu_t *pduDesc
+ * @params[in]    RarInfo *rarInfo
+ * @params[in]    uint32_t *msgLen
+ * @params[in]    uint16_t pduIndex
+ * @return ROK
+ *
+ * ********************************************************************/
+uint8_t OAI_OSC_fillRarTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, RarInfo *rarInfo, PdschCfg *pdschCfg)
+{
+   uint16_t payloadSize;
+   uint8_t  *rarPayload = NULLP;
+
+   pduDesc[pduIndex].PDU_index = pduIndex;
+   pduDesc[pduIndex].num_TLV = 1;
+
+   /* fill the TLV */
+   payloadSize = pdschCfg->codeword[0].tbSize;
+   pduDesc[pduIndex].TLVs[0].tag = FAPI_TX_DATA_PTR_TO_PAYLOAD_64;
+   pduDesc[pduIndex].TLVs[0].length = payloadSize;
+   LWR_MAC_ALLOC(rarPayload, payloadSize);
+   if(rarPayload == NULLP)
+   {
+      return RFAILED;
+   }
+   
+   memcpy(rarPayload + TX_PAYLOAD_HDR_LEN, rarInfo->rarPdu, rarInfo->rarPduLen);
+
+   pduDesc[pduIndex].TLVs[0].value.ptr = rarPayload;
+   pduDesc[pduIndex].PDU_length = payloadSize;
+
+   LWR_MAC_FREE(rarPayload, payloadSize);
+   return ROK;
+}
+
 /*******************************************************************
  *
  * @brief Sends DL TTI Request to PHY
@@ -5658,7 +5703,7 @@ uint16_t OAI_OSC_sendTxDataReq(SlotTimingInfo currTimingInfo, MacDlSlot *dlSlot)
          {
             if((dlSlot->dlInfo.rarAlloc[ueIdx]->rarPdschCfg))
             {
-               //TODO:OAI_OSC_fillRarTxDataReq
+               //TODO:OAI_OSC_fillRarTxDataReq done
                //fillRarTxDataReq(txDataReq->pdu_list, pduIndex, &dlSlot->dlInfo.rarAlloc[ueIdx]->rarInfo,\
                      dlSlot->dlInfo.rarAlloc[ueIdx]->rarPdschCfg);
                pduIndex++;
