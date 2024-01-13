@@ -3905,21 +3905,21 @@ uint8_t OAI_OSC_fillPdcchPdu(nfapi_nr_dl_tti_request_pdu_t *dlTtiReqPdu, MacDlSl
       {
          pdcchInfo = dlSlot->dlInfo.brdcstAlloc.sib1Alloc.sib1PdcchCfg;
          bwp = &dlSlot->dlInfo.brdcstAlloc.sib1Alloc.bwp;
-         //TODO:OAI_OSC_fillSib1DlDciPdu
+         //TODO:OAI_OSC_fillSib1DlDciPdu done
          //fillSib1DlDciPdu(dlTtiReqPdu->pdcch_pdu.pdcch_pdu_rel15.dci_pdu, pdcchInfo);
       }
       else if(rntiType == RA_RNTI_TYPE)
       {
          pdcchInfo = dlSlot->dlInfo.rarAlloc[ueIdx]->rarPdcchCfg;
          bwp = &dlSlot->dlInfo.rarAlloc[ueIdx]->bwp;
-         //TODO:OAI_OSC_fillRarDlDciPdu
+         //TODO:OAI_OSC_fillRarDlDciPdu done
          //fillRarDlDciPdu(dlTtiReqPdu->pdcch_pdu.pdcch_pdu_rel15.dci_pdu, pdcchInfo);
       }
       else if(rntiType == TC_RNTI_TYPE || rntiType == C_RNTI_TYPE)
       {
          pdcchInfo = dlSlot->dlInfo.dlMsgAlloc[ueIdx]->dlMsgPdcchCfg;
          bwp = &dlSlot->dlInfo.dlMsgAlloc[ueIdx]->bwp;
-         //TODO:OAI_OSC_fillDlMsgDlDciPdu
+         //TODO:OAI_OSC_fillDlMsgDlDciPdu done
          //fillDlMsgDlDciPdu(dlTtiReqPdu->pdcch_pdu.pdcch_pdu_rel15.dci_pdu, pdcchInfo,\
                dlSlot->dlInfo.dlMsgAlloc[ueIdx]);
       }
@@ -4262,8 +4262,8 @@ uint8_t OAI_OSC_fillUlDciPdcchPdu(nfapi_nr_ul_dci_request_pdus_t *ulDciReqPdu, D
    if(ulDciReqPdu != NULLP)
    {
       memset(&ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15, 0, sizeof(nfapi_nr_dl_tti_pdcch_pdu_rel15_t));
-      //TODO:OAI_OSC_fillUlDciPdu
-      fillUlDciPdu(ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.dci_pdu, dlInfo->ulGrant);
+      //TODO:OAI_OSC_fillUlDciPdu done
+      //fillUlDciPdu(ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.dci_pdu, dlInfo->ulGrant);
       ulDciReqPdu->PDUType                          = PDCCH_PDU_TYPE;
       ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.BWPSize           = dlInfo->ulGrant->bwpCfg.freqAlloc.numPrb;
       ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.BWPStart          = dlInfo->ulGrant->bwpCfg.freqAlloc.startPrb;
@@ -4586,23 +4586,21 @@ void OAI_OSC_fillSib1DlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *sib1Pdc
       bitPos = 0;
 
       /* Packing DCI format fields */
-      //TODO:OAI_OSC_fillDlDciPayload
-      /*
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
 	    freqDomResAssign, freqDomResAssignSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
 	    timeDomResAssign, timeDomResAssignSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
 	    VRB2PRBMap, VRB2PRBMapSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
 	    modNCodScheme, modNCodSchemeSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
 	    redundancyVer, redundancyVerSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
 	    sysInfoInd, sysInfoIndSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
 	    reserved, reservedSize);
-       */
+       
    }
 } /* OAI_OSC_fillSib1DlDciPdu */
 
@@ -4721,21 +4719,18 @@ void OAI_OSC_fillRarDlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *rarPdcch
       bitPos = 0;
 
       /* Packing DCI format fields */
-      //TODO:OAI_OSC_fillDlDciPayload
-      /*
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
 	    freqDomResAssign, freqDomResAssignSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
 	    timeDomResAssign, timeDomResAssignSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
 	    VRB2PRBMap, VRB2PRBMapSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
 	    modNCodScheme, modNCodSchemeSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
 	    tbScaling, tbScalingSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
 	    reserved, reservedSize);
-      */
    }
 } /* OAI_OSC_fillRarDlDciPdu */
 
@@ -4880,35 +4875,32 @@ void OAI_OSC_fillDlMsgDlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *pdcchI
       bitPos = 0;
 
       /* Packing DCI format fields */
-      //TODO:OAI_OSC_fillDlDciPayload
-      /*
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
             dciFormatId, dciFormatIdSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
             freqDomResAssign, freqDomResAssignSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
             timeDomResAssign, timeDomResAssignSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
             VRB2PRBMap, VRB2PRBMapSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
             modNCodScheme, modNCodSchemeSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
             ndi, ndiSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
             redundancyVer, redundancyVerSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
             redundancyVer, redundancyVerSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
             harqProcessNum, harqProcessNumSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
             dlAssignmentIdx, dlAssignmentIdxSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
             pucchTpc, pucchTpcSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
             pucchResoInd, pucchResoIndSize);
-      fillDlDciPayload(dlDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
             harqFeedbackInd, harqFeedbackIndSize);
-      */
    }
 }
 
@@ -5044,29 +5036,26 @@ void OAI_OSC_fillUlDciPdu(nfapi_nr_dl_dci_pdu_t *ulDciPtr, DciInfo *schDciInfo)
       bitPos = 0;
 
       /* Packing DCI format fields */
-      //TODO:OAI_OSC_fillDlDciPayload
-      /*
-      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(ulDciPtr->Payload, &bytePos, &bitPos,\
             dciFormatId, dciFormatIdSize);
-      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(ulDciPtr->Payload, &bytePos, &bitPos,\
             freqDomResAssign, freqDomResAssignSize);
-      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(ulDciPtr->Payload, &bytePos, &bitPos,\
             timeDomResAssign, timeDomResAssignSize);
-      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(ulDciPtr->Payload, &bytePos, &bitPos,\
             freqHopFlag, freqHopFlagSize);
-      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(ulDciPtr->Payload, &bytePos, &bitPos,\
             modNCodScheme, modNCodSchemeSize);
-      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(ulDciPtr->Payload, &bytePos, &bitPos,\
             ndi, ndiSize);
-      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(ulDciPtr->Payload, &bytePos, &bitPos,\
             redundancyVer, redundancyVerSize);
-      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(ulDciPtr->Payload, &bytePos, &bitPos,\
             harqProcessNum, harqProcessNumSize);
-      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(ulDciPtr->Payload, &bytePos, &bitPos,\
             puschTpc, puschTpcSize);
-      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+      fillDlDciPayload(ulDciPtr->Payload, &bytePos, &bitPos,\
             ul_SlInd, ul_SlIndSize);
-      */
    }
 } /* OAI_OSC_fillUlDciPdu */
 
@@ -6256,7 +6245,7 @@ uint16_t OAI_OSC_fillUlDciReq(SlotTimingInfo currTimingInfo)
          if(ulDciReq->numPdus > 0)
          {
             /* Fill PDCCH configuration Pdu */
-            //TODO:OAI_OSC_fillUlDciPdcchPdu
+            //TODO:OAI_OSC_fillUlDciPdcchPdu done
             //fillUlDciPdcchPdu(&ulDciReq->ul_dci_pdu_list[numPduEncoded], &vendorUlDciReq->pdus[numPduEncoded], &currDlSlot->dlInfo, CORESET_TYPE1);
             numPduEncoded++;
 	         /* free UL GRANT at SCH */
