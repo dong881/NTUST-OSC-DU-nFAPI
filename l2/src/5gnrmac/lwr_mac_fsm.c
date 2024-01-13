@@ -4332,6 +4332,51 @@ uint8_t OAI_OSC_fillSib1TxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, Ma
    return ROK;
 }
 
+/***********************************************************************
+ *
+ * @brief fills the PAGE nFAPI TX-DATA request message
+ *
+ * @details
+ *
+ *    Function : OAI_OSC_fillPageTxDataReq
+ *
+ *    Functionality:
+ *         - fills the Page nFAPI TX-DATA request message
+ *
+ * @params[in]    nfapi_nr_pdu_t *pduDesc
+ * @params[in]    macCellCfg consist of SIB1 pdu
+ * @params[in]    uint32_t *msgLen
+ * @params[in]    uint16_t pduIndex
+ * @return ROK
+ *
+ * ********************************************************************/
+uint8_t OAI_OSC_fillPageTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, DlPageAlloc *pageAllocInfo)
+{
+   uint32_t payloadSize = 0;
+   uint8_t *pagePayload = NULLP;
+
+   pduDesc[pduIndex].PDU_index = pduIndex;
+   pduDesc[pduIndex].num_TLV = 1;
+
+   /* fill the TLV */
+   payloadSize = pageAllocInfo->pageDlSch.tbInfo.tbSize;
+   pduDesc[pduIndex].TLVs[0].tag = ((payloadSize & 0xff0000) >> 8) | FAPI_TX_DATA_PTR_TO_PAYLOAD_64;
+   pduDesc[pduIndex].TLVs[0].length = (payloadSize & 0x0000ffff);
+   LWR_MAC_ALLOC(pagePayload, payloadSize);
+   if(pagePayload == NULLP)
+   {
+      return RFAILED;
+   }
+   memcpy(pagePayload + TX_PAYLOAD_HDR_LEN, pageAllocInfo->pageDlSch.dlPagePdu, pageAllocInfo->pageDlSch.dlPagePduLen);
+
+   pduDesc[pduIndex].TLVs[0].value.ptr = pagePayload;
+   pduDesc[pduIndex].PDU_length = payloadSize; 
+
+   LWR_MAC_FREE(pagePayload, payloadSize);
+
+   return ROK;
+}
+
 /*******************************************************************
  *
  * @brief Sends DL TTI Request to PHY
@@ -5599,7 +5644,7 @@ uint16_t OAI_OSC_sendTxDataReq(SlotTimingInfo currTimingInfo, MacDlSlot *dlSlot)
       }
       if(dlSlot->pageAllocInfo != NULLP)
       {
-         //TODO:OAI_OSC_fillPageTxDataReq
+         //TODO:OAI_OSC_fillPageTxDataReq done
          //fillPageTxDataReq(txDataReq->pdu_list, pduIndex, dlSlot->pageAllocInfo);
          pduIndex++;
          txDataReq->Number_of_PDUs++;
