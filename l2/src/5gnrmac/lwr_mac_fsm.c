@@ -3900,7 +3900,7 @@ uint8_t OAI_OSC_fillPdcchPdu(nfapi_nr_dl_tti_request_pdu_t *dlTtiReqPdu, MacDlSl
       PdcchCfg *pdcchInfo = NULLP;
       BwpCfg *bwp = NULLP;
 
-      memset(&dlTtiReqPdu->pdcch_pdu, 0, sizeof(nfapi_nr_dl_tti_pdcch_pdu_rel15_t));
+      memset(&dlTtiReqPdu->pdcch_pdu.pdcch_pdu_rel15, 0, sizeof(nfapi_nr_dl_tti_pdcch_pdu_rel15_t));
       if(rntiType == SI_RNTI_TYPE)
       {
          pdcchInfo = dlSlot->dlInfo.brdcstAlloc.sib1Alloc.sib1PdcchCfg;
@@ -4239,6 +4239,51 @@ void OAI_OSC_fillPucchPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu,
       ulTtiVendorPdu->pdu.pucch_pdu.rx_ru_idx[i] = 0;
     }*/
   }
+}
+
+/*******************************************************************
+ *
+ * @brief fills PDCCH PDU required for nFAPI UL DCI REQ to OAI PHY
+ *
+ * @details
+ *
+ *    Function : OAI_OSC_fillUlDciPdcchPdu
+ *
+ *    Functionality:
+ *         -Fills the Pdcch PDU info
+ *
+ * @params[in] Pointer to nFAPI DL TTI Req
+ *             Pointer to PdcchCfg
+ * @return ROK
+ *
+ ******************************************************************/
+uint8_t OAI_OSC_fillUlDciPdcchPdu(nfapi_nr_ul_dci_request_pdus_t *ulDciReqPdu, DlSchedInfo *dlInfo, uint8_t coreSetType)
+{
+   if(ulDciReqPdu != NULLP)
+   {
+      memset(&ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15, 0, sizeof(nfapi_nr_dl_tti_pdcch_pdu_rel15_t));
+      //TODO:OAI_OSC_fillUlDciPdu
+      //fillUlDciPdu(ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.dlDci, dlInfo->ulGrant);
+      ulDciReqPdu->PDUType                          = PDCCH_PDU_TYPE;
+      ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.BWPSize           = dlInfo->ulGrant->bwpCfg.freqAlloc.numPrb;
+      ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.BWPStart          = dlInfo->ulGrant->bwpCfg.freqAlloc.startPrb;
+      ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.SubcarrierSpacing = dlInfo->ulGrant->bwpCfg.subcarrierSpacing; 
+      ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.CyclicPrefix      = dlInfo->ulGrant->bwpCfg.cyclicPrefix; 
+      ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.StartSymbolIndex  = dlInfo->ulGrant->coresetCfg.startSymbolIndex;
+      ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.DurationSymbols   = dlInfo->ulGrant->coresetCfg.durationSymbols;
+      memcpy(ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.FreqDomainResource, dlInfo->ulGrant->coresetCfg.freqDomainResource, 6);
+      ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.CceRegMappingType = dlInfo->ulGrant->coresetCfg.cceRegMappingType;
+      ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.RegBundleSize     = dlInfo->ulGrant->coresetCfg.regBundleSize;
+      ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.InterleaverSize   = dlInfo->ulGrant->coresetCfg.interleaverSize;
+      ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.ShiftIndex        = dlInfo->ulGrant->coresetCfg.shiftIndex;
+      ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.precoderGranularity = dlInfo->ulGrant->coresetCfg.precoderGranularity;
+      ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.numDlDci          = 1;
+      ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.CoreSetType       = coreSetType;
+
+      /* Calculating PDU length. Considering only one Ul dci pdu for now */
+      ulDciReqPdu->PDUSize = sizeof(nfapi_nr_dl_tti_pdcch_pdu_rel15_t);
+   }
+   return ROK;
 }
 
 /*******************************************************************
@@ -5428,7 +5473,7 @@ uint16_t OAI_OSC_fillUlDciReq(SlotTimingInfo currTimingInfo)
          {
             /* Fill PDCCH configuration Pdu */
             //TODO:OAI_OSC_fillUlDciPdcchPdu
-            //fillUlDciPdcchPdu(&ulDciReq->pdus[numPduEncoded], &vendorUlDciReq->pdus[numPduEncoded], &currDlSlot->dlInfo, CORESET_TYPE1);
+            //fillUlDciPdcchPdu(&ulDciReq->ul_dci_pdu_list[numPduEncoded], &vendorUlDciReq->pdus[numPduEncoded], &currDlSlot->dlInfo, CORESET_TYPE1);
             numPduEncoded++;
 	         /* free UL GRANT at SCH */
 	         MAC_FREE(currDlSlot->dlInfo.ulGrant, sizeof(DciInfo));
