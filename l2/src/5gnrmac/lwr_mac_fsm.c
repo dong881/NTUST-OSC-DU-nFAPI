@@ -4263,7 +4263,7 @@ uint8_t OAI_OSC_fillUlDciPdcchPdu(nfapi_nr_ul_dci_request_pdus_t *ulDciReqPdu, D
    {
       memset(&ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15, 0, sizeof(nfapi_nr_dl_tti_pdcch_pdu_rel15_t));
       //TODO:OAI_OSC_fillUlDciPdu
-      //fillUlDciPdu(ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.dlDci, dlInfo->ulGrant);
+      fillUlDciPdu(ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.dci_pdu, dlInfo->ulGrant);
       ulDciReqPdu->PDUType                          = PDCCH_PDU_TYPE;
       ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.BWPSize           = dlInfo->ulGrant->bwpCfg.freqAlloc.numPrb;
       ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15.BWPStart          = dlInfo->ulGrant->bwpCfg.freqAlloc.startPrb;
@@ -4911,6 +4911,164 @@ void OAI_OSC_fillDlMsgDlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *pdcchI
       */
    }
 }
+
+/*******************************************************************
+ *
+ * @brief fills bsr Ul DCI PDU required for nFAPI UL DCI Request to OAI PHY
+ *
+ * @details
+ *
+ *    Function : OAI_OSC_fillUlDciPdu
+ *
+ *    Functionality:
+ *         -Fills the Ul DCI PDU, spec Ref:38.212, Table 7.3.1-1
+ *
+ * @params[in] Pointer to nfapi_nr_dl_dci_pdu_t
+ *             Pointer to DciInfo
+ * @return ROK
+ *
+ ******************************************************************/
+void OAI_OSC_fillUlDciPdu(nfapi_nr_dl_dci_pdu_t *ulDciPtr, DciInfo *schDciInfo)
+{
+#ifdef CALL_FLOW_DEBUG_LOG
+   DU_LOG("\nCall Flow: ENTMAC -> ENTLWRMAC : UL_DCI_REQUEST\n");
+#endif
+   if(ulDciPtr != NULLP)
+   {
+      uint8_t numBytes =0;
+      uint8_t bytePos =0;
+      uint8_t bitPos =0;
+
+      uint8_t  coreset1Size = 0;
+      uint16_t rbStart = 0;
+      uint16_t rbLen = 0;
+      uint8_t  dciFormatId = 0;
+      uint32_t freqDomResAssign =0;
+      uint8_t  timeDomResAssign =0;
+      uint8_t  freqHopFlag =0;
+      uint8_t  modNCodScheme =0;
+      uint8_t  ndi =0;
+      uint8_t  redundancyVer = 0;
+      uint8_t  harqProcessNum = 0;
+      uint8_t  puschTpc = 0;
+      uint8_t  ul_SlInd = 0;
+
+      /* Size(in bits) of each field in DCI format 0_0 */
+      uint8_t dciFormatIdSize      = 1;
+      uint8_t freqDomResAssignSize = 0;
+      uint8_t timeDomResAssignSize = 4;
+      uint8_t freqHopFlagSize      = 1;
+      uint8_t modNCodSchemeSize    = 5;
+      uint8_t ndiSize              = 1;
+      uint8_t redundancyVerSize    = 2;
+      uint8_t harqProcessNumSize   = 4;
+      uint8_t puschTpcSize         = 2;
+      uint8_t ul_SlIndSize         = 1;
+
+      ulDciPtr->RNTI                          = schDciInfo->dciInfo.rnti;
+      ulDciPtr->ScramblingId                  = schDciInfo->dciInfo.scramblingId;    
+      ulDciPtr->ScramblingRNTI                = schDciInfo->dciInfo.scramblingRnti;
+      ulDciPtr->CceIndex                      = schDciInfo->dciInfo.cceIndex;
+      ulDciPtr->AggregationLevel              = schDciInfo->dciInfo.aggregLevel;
+      ulDciPtr->precodingAndBeamforming.num_prgs          = schDciInfo->dciInfo.beamPdcchInfo.numPrgs;
+      ulDciPtr->precodingAndBeamforming.prg_size          = schDciInfo->dciInfo.beamPdcchInfo.prgSize;
+      ulDciPtr->precodingAndBeamforming.dig_bf_interfaces  = schDciInfo->dciInfo.beamPdcchInfo.digBfInterfaces;
+      ulDciPtr->precodingAndBeamforming.prgs_list[0].pm_idx = schDciInfo->dciInfo.beamPdcchInfo.prg[0].pmIdx;
+      ulDciPtr->precodingAndBeamforming.prgs_list[0].dig_bf_interface_list[0].beam_idx = schDciInfo->dciInfo.beamPdcchInfo.prg[0].beamIdx[0];
+      ulDciPtr->beta_PDCCH_1_0                = schDciInfo->dciInfo.txPdcchPower.beta_pdcch_1_0;           
+      ulDciPtr->powerControlOffsetSS          = schDciInfo->dciInfo.txPdcchPower.powerControlOffsetSS;
+
+      /* Calculating freq domain resource allocation field value and size
+       * coreset1Size = Size of coreset 1
+       * RBStart = Starting Virtual Rsource block
+       * RBLen = length of contiguously allocted RBs
+       * Spec 38.214 Sec 5.1.2.2.2
+       */
+      if(schDciInfo->dciFormatInfo.formatType == FORMAT0_0)
+      {
+         coreset1Size = schDciInfo->coresetCfg.coreSetSize;
+         rbLen = schDciInfo->dciFormatInfo.format.format0_0.freqAlloc.resAlloc.type1.numPrb;
+         rbStart = schDciInfo->dciFormatInfo.format.format0_0.freqAlloc.resAlloc.type1.startPrb;
+
+         if((rbLen >=1) && (rbLen <= coreset1Size - rbStart))
+         {
+            if((rbLen - 1) <= floor(coreset1Size / 2))
+               freqDomResAssign = (coreset1Size * (rbLen-1)) + rbStart;
+            else
+               freqDomResAssign = (coreset1Size * (coreset1Size - rbLen + 1)) \
+                                  + (coreset1Size - 1 - rbStart);
+
+            freqDomResAssignSize = ceil(log2(coreset1Size * (coreset1Size + 1) / 2));
+         }
+         /* Fetching DCI field values */
+         dciFormatId      = schDciInfo->dciFormatInfo.formatType; /* DCI indentifier for UL DCI */
+         timeDomResAssign = schDciInfo->dciFormatInfo.format.format0_0.rowIndex;
+         freqHopFlag      = schDciInfo->dciFormatInfo.format.format0_0.freqHopFlag; 
+         modNCodScheme    = schDciInfo->dciFormatInfo.format.format0_0.mcs;
+         ndi              = schDciInfo->dciFormatInfo.format.format0_0.ndi; 
+         redundancyVer    = schDciInfo->dciFormatInfo.format.format0_0.rvIndex;
+         harqProcessNum   = schDciInfo->dciFormatInfo.format.format0_0.harqProcId; 
+         puschTpc         = schDciInfo->dciFormatInfo.format.format0_0.tpcCmd;
+         ul_SlInd         = schDciInfo->dciFormatInfo.format.format0_0.sulIndicator;
+     
+         /* Reversing bits in each DCI field */
+         dciFormatId      = reverseBits(dciFormatId, dciFormatIdSize);
+         freqDomResAssign = reverseBits(freqDomResAssign, freqDomResAssignSize);
+         timeDomResAssign = reverseBits(timeDomResAssign, timeDomResAssignSize);
+         modNCodScheme    = reverseBits(modNCodScheme, modNCodSchemeSize);
+         redundancyVer    = reverseBits(redundancyVer, redundancyVerSize);
+         harqProcessNum   = reverseBits(harqProcessNum, harqProcessNumSize);
+         puschTpc         = reverseBits(puschTpc, puschTpcSize);
+         ul_SlInd         = reverseBits(ul_SlInd, ul_SlIndSize);
+      }
+      /* Calulating total number of bytes in buffer */
+      ulDciPtr->PayloadSizeBits = (dciFormatIdSize + freqDomResAssignSize\
+      + timeDomResAssignSize + freqHopFlagSize + modNCodSchemeSize + ndi \
+      + redundancyVerSize + harqProcessNumSize + puschTpcSize + ul_SlIndSize);
+
+      numBytes = ulDciPtr->PayloadSizeBits / 8;
+      if(ulDciPtr->PayloadSizeBits % 8)
+         numBytes += 1;
+
+      if(numBytes > FAPI_DCI_PAYLOAD_BYTE_LEN)
+      {
+         DU_LOG("\nERROR  -->  LWR_MAC : Total bytes for DCI is more than expected");
+         return;
+      }
+
+      /* Initialize buffer */
+      for(bytePos = 0; bytePos < numBytes; bytePos++)
+         ulDciPtr->Payload[bytePos] = 0;
+
+      bytePos = numBytes - 1;
+      bitPos = 0;
+
+      /* Packing DCI format fields */
+      //TODO:OAI_OSC_fillDlDciPayload
+      /*
+      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+            dciFormatId, dciFormatIdSize);
+      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+            freqDomResAssign, freqDomResAssignSize);
+      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+            timeDomResAssign, timeDomResAssignSize);
+      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+            freqHopFlag, freqHopFlagSize);
+      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+            modNCodScheme, modNCodSchemeSize);
+      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+            ndi, ndiSize);
+      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+            redundancyVer, redundancyVerSize);
+      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+            harqProcessNum, harqProcessNumSize);
+      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+            puschTpc, puschTpcSize);
+      fillDlDciPayload(ulDciPtr->payload, &bytePos, &bitPos,\
+            ul_SlInd, ul_SlIndSize);
+      */
+   }
+} /* OAI_OSC_fillUlDciPdu */
 
 /*******************************************************************
  *
