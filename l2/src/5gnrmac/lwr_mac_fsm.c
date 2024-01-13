@@ -4422,6 +4422,51 @@ uint8_t OAI_OSC_fillRarTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, Rar
    return ROK;
 }
 
+/***********************************************************************
+ *
+ * @brief fills the DL dedicated Msg nFAPI TX-DATA request message
+ *
+ * @details
+ *
+ *    Function : OAI_OSC_fillDlMsgTxDataReq
+ *
+ *    Functionality:
+ *         - fills the Dl Dedicated Msg nFAPI TX-DATA request message
+ *
+ * @params[in]    nfapi_nr_pdu_t *pduDesc
+ * @params[in]    DlMsgInfo *dlMsgInfo
+ * @params[in]    uint32_t *msgLen
+ * @params[in]    uint16_t pduIndex
+ * @return ROK
+ *
+ * ********************************************************************/
+uint8_t OAI_OSC_fillDlMsgTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, DlMsgSchInfo *dlMsgSchInfo, PdschCfg *pdschCfg)
+{
+   uint16_t payloadSize;
+   uint8_t  *dlMsgPayload = NULLP;
+
+   pduDesc[pduIndex].PDU_index = pduIndex;
+   pduDesc[pduIndex].num_TLV = 1;
+
+   /* fill the TLV */
+   payloadSize = pdschCfg->codeword[0].tbSize;
+   pduDesc[pduIndex].TLVs[0].tag = FAPI_TX_DATA_PTR_TO_PAYLOAD_64;
+   pduDesc[pduIndex].TLVs[0].length = payloadSize;
+   LWR_MAC_ALLOC(dlMsgPayload, payloadSize);
+   if(dlMsgPayload == NULLP)
+   {
+      return RFAILED;
+   }
+   memcpy(dlMsgPayload + TX_PAYLOAD_HDR_LEN, dlMsgSchInfo->dlMsgPdu, dlMsgSchInfo->dlMsgPduLen);
+
+   pduDesc[pduIndex].TLVs[0].value.ptr = dlMsgPayload;
+   pduDesc[pduIndex].PDU_length = payloadSize;
+
+   LWR_MAC_FREE(dlMsgPayload, payloadSize);
+
+   return ROK;
+}
+
 /*******************************************************************
  *
  * @brief Sends DL TTI Request to PHY
@@ -5717,7 +5762,7 @@ uint16_t OAI_OSC_sendTxDataReq(SlotTimingInfo currTimingInfo, MacDlSlot *dlSlot)
          {
             if(dlSlot->dlInfo.dlMsgAlloc[ueIdx]->dlMsgPdschCfg) 
             {
-               //TODO:OAI_OSC_fillDlMsgTxDataReq
+               //TODO:OAI_OSC_fillDlMsgTxDataReq done
                //fillDlMsgTxDataReq(txDataReq->pdu_list, pduIndex, \
                      dlSlot->dlInfo.dlMsgAlloc[ueIdx], \
                      dlSlot->dlInfo.dlMsgAlloc[ueIdx]->dlMsgPdschCfg);
