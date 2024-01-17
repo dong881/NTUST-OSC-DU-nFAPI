@@ -3985,6 +3985,7 @@ BwpCfg bwp, uint16_t pduIndex)
  * ********************************************************************/
 void OAI_OSC_fillPrachPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu, MacCellCfg *macCellCfg, MacUlSlot *currUlSlot)
 {
+   printf("\nDEBUG  --> OAI_OSC_fillPrachPdu()\n");
    if(ulTtiReqPdu != NULLP)
    {
       ulTtiReqPdu->pdu_type = PRACH_PDU_TYPE; 
@@ -3997,6 +3998,7 @@ void OAI_OSC_fillPrachPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu,
       ulTtiReqPdu->prach_pdu.prach_start_symbol = \
 	 currUlSlot->ulInfo.prachSchInfo.prachStartSymb;
       setNumCs(&ulTtiReqPdu->prach_pdu.num_cs, macCellCfg);
+      printf("\nDEBUG  -->  ulTtiReqPdu->prach_pdu.num_cs:%d\n", ulTtiReqPdu->prach_pdu.num_cs);
       ulTtiReqPdu->prach_pdu.beamforming.num_prgs = 0;
       ulTtiReqPdu->prach_pdu.beamforming.prg_size = 0;
       ulTtiReqPdu->prach_pdu.beamforming.dig_bf_interface = 0;
@@ -6512,11 +6514,12 @@ uint16_t OAI_OSC_fillUlTtiReq(SlotTimingInfo currTimingInfo)
             OAI_OSC_fillPrachPdu(&ulTtiReq->pdus_list[pduIdx], &macCellCfg, currUlSlot);
             ulTtiReq->rach_present++;
 		   }
-
+         printf("\nDEBUG  --> Finished OAI_OSC_fillPrachPdu\n");
 		   /* Fill PUSCH PDU */
 		   if(currUlSlot->ulInfo.dataType & SCH_DATATYPE_PUSCH)
 		   {
             pduIdx++;
+            printf("\nDEBUG  --> Pusch true pduIdx:%d\n",pduIdx);
             //TODO:OAI_OSC_fillPuschPdu done
             OAI_OSC_fillPuschPdu(&ulTtiReq->pdus_list[pduIdx], &macCellCfg, currUlSlot);
             ulTtiReq->n_ulsch++;
@@ -6525,6 +6528,7 @@ uint16_t OAI_OSC_fillUlTtiReq(SlotTimingInfo currTimingInfo)
 		   if(currUlSlot->ulInfo.dataType & SCH_DATATYPE_UCI)
 		   {
             pduIdx++;
+            printf("\nDEBUG  --> Pucch true pduIdx:%d\n",pduIdx);
             //TODO:OAI_OSC_fillPucchPdu done
             OAI_OSC_fillPucchPdu(&ulTtiReq->pdus_list[pduIdx], &macCellCfg, currUlSlot);
             ulTtiReq->n_ulcch++;

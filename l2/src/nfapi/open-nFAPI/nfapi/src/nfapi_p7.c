@@ -4767,10 +4767,10 @@ static uint8_t unpack_ul_tti_request_prach_pdu(void *tlv, uint8_t **ppReadPacked
     return 0;
   }
   if (prach_pdu->beamforming.num_prgs > 0) {
-    prach_pdu->beamforming.prgs_list = calloc(prach_pdu->beamforming.num_prgs, sizeof(*prach_pdu->beamforming.prgs_list));
+    //prach_pdu->beamforming.prgs_list = calloc(prach_pdu->beamforming.num_prgs, sizeof(*prach_pdu->beamforming.prgs_list));
     if (prach_pdu->beamforming.dig_bf_interface > 0) {
       for(int prg_idx = 0; prg_idx < prach_pdu->beamforming.num_prgs;prg_idx++){
-        prach_pdu->beamforming.prgs_list[prg_idx].dig_bf_interface_list =
+        //prach_pdu->beamforming.prgs_list[prg_idx].dig_bf_interface_list =\
             calloc(prach_pdu->beamforming.dig_bf_interface, sizeof(*prach_pdu->beamforming.prgs_list[0].dig_bf_interface_list));
       }
     }
