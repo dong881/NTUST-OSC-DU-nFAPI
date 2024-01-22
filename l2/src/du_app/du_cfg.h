@@ -31,7 +31,7 @@
 
 #ifndef O1_ENABLE
 #define DU_IP_V4_ADDR "192.168.130.81"
-#define CU_IP_V4_ADDR "192.168.130.82"
+#define CU_IP_V4_ADDR "192.168.130.83" //CU_stub:192.168.130.82
 #define RIC_IP_V4_ADDR "192.168.130.80"
 
 #define F1_SCTP_PORT 38472  /* As per the spec 38.472, the registered port number for F1AP is 38472 */
@@ -78,11 +78,11 @@
 
 #define TRANS_ID 1
 #define DU_TAC 1
-#define PLMN_MCC0 3
-#define PLMN_MCC1 1
-#define PLMN_MCC2 1
-#define PLMN_MNC0 4
-#define PLMN_MNC1 8
+#define PLMN_MCC0 4
+#define PLMN_MCC1 6
+#define PLMN_MCC2 6
+#define PLMN_MNC0 9
+#define PLMN_MNC1 2
 #define PLMN_MNC2 0
 #define PLMN_SIZE 3
 
