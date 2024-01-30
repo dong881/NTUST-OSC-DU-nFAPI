@@ -539,7 +539,7 @@ uint8_t MacProcSchCellCfgCfm(Pst *pst, SchCellCfgCfm *schCellCfgCfm)
 void fapiMacConfigRsp(uint16_t cellId)
 {
    /* TODO : Processing of config response from PHY */
-
+   printf("\nINFO  -->  %s()\n", __FUNCTION__);
    /* Send cell config cfm to DU APP */
    MacSendCellCfgCfm(cellId, RSP_OK);
 }

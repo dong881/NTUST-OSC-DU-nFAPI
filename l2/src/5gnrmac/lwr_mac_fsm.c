@@ -2337,7 +2337,7 @@ uint8_t lwr_mac_procConfigRspEvt(void *msg)
           * Store config response into an intermediate struture and send to MAC
           * Support LC and LWLC for sending config rsp to MAC
           */
-         // fapiMacConfigRsp(lwrMacCb.cellCb[0].cellId);
+          fapiMacConfigRsp(lwrMacCb.cellCb[0].cellId);
       }
       else
       {
@@ -4197,6 +4197,7 @@ void OAI_OSC_fillPucchPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu,
  ******************************************************************/
 uint8_t OAI_OSC_fillUlDciPdcchPdu(nfapi_nr_ul_dci_request_pdus_t *ulDciReqPdu, DlSchedInfo *dlInfo, uint8_t coreSetType)
 {
+   printf("\nDEBUG  -->  %s()\n", __FUNCTION__);
    if(ulDciReqPdu != NULLP)
    {
       memset(&ulDciReqPdu->pdcch_pdu.pdcch_pdu_rel15, 0, sizeof(nfapi_nr_dl_tti_pdcch_pdu_rel15_t));
@@ -6598,12 +6599,15 @@ uint16_t OAI_OSC_fillUlDciReq(SlotTimingInfo currTimingInfo)
 
       ulDciReq->SFN = ulDciReqTimingInfo.sfn;
       ulDciReq->Slot = ulDciReqTimingInfo.slot;
+   
+      printf("\nDEBUG  -> Info : sfn : %d, slot : %d\n", ulDciReq->SFN, ulDciReq->Slot);
 
       if(currDlSlot->dlInfo.ulGrant != NULLP)
       {
          ulDciReq->numPdus = 1;  // No. of PDCCH PDUs
          if(ulDciReq->numPdus > 0)
          {
+            printf("\nDEBUG  ->  currDlSlot->dlInfo.ulGrant != NULLP \n");
             /* Fill PDCCH configuration Pdu */
             //TODO:OAI_OSC_fillUlDciPdcchPdu done
             OAI_OSC_fillUlDciPdcchPdu(&ulDciReq->ul_dci_pdu_list[numPduEncoded], &currDlSlot->dlInfo, CORESET_TYPE1);
