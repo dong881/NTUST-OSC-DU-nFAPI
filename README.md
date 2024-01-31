@@ -16,23 +16,21 @@ The main design of our work focuses on the VNF and scheduler embedded in MAC lay
 cd l2/build/odu
 #clean
 make clean_odu MACHINE=BIT64 MODE=FDD NFAPI=YES
-make clean_cu MACHINE=BIT64 MODE=FDD NFAPI=YES
 make clean_ric MACHINE=BIT64 MODE=FDD NFAPI=YES
 
 #compile
 make odu MACHINE=BIT64 MODE=FDD NFAPI=YES
-make cu_stub NODE=TEST_STUB MACHINE=BIT64 MODE=FDD NFAPI=YES
 make ric_stub NODE=TEST_STUB MACHINE=BIT64 MODE=FDD NFAPI=YES
 ```
 
 ## Execution
-The du, cu_stub, ric_stub need to be run.
+The du, OAI CU, ric_stub need to be run.
 
 The OAI gNB in PNF mode also needs to be run. 
 
-* **`du, cu_stub, ric_stub` --> Follow the OCS-DU High guidence**
+* **`du, ric_stub` --> Follow the OCS-DU High guidence**
 
-* **`OAI gNB PNF mode` --> Follow the following guidence**
+* **`OAI gNB PNF mode, OAI CU` --> Follow the following guidence**
 ```sh
 # Follow the OAI guide to compile OAI gNB
 
