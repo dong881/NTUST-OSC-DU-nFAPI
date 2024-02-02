@@ -338,6 +338,7 @@ static uint8_t pack_dl_tti_pdsch_pdu_rel15_value(void *tlv, uint8_t **ppWritePac
 
 static uint8_t pack_dl_tti_ssb_pdu_rel15_value(void *tlv, uint8_t **ppWritePackedMsg, uint8_t *end)
 {
+  printf("\nDEBUG  -->  %s() Packing ssb.\n",__FUNCTION__);
   NFAPI_TRACE(NFAPI_TRACE_DEBUG, "Packing ssb. \n");
   nfapi_nr_dl_tti_ssb_pdu_rel15_t *value = (nfapi_nr_dl_tti_ssb_pdu_rel15_t *)tlv;
 
@@ -852,7 +853,7 @@ static uint8_t pack_dl_tti_request(void *msg, uint8_t **ppWritePackedMsg, uint8_
         return 0;
       }
     }
-    return 0;
+    printf("\nDEBUG  -->  %s() Successful push8 and push32 ...\n",__FUNCTION__);
   }
 
   return 1;

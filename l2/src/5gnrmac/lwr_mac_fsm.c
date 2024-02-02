@@ -5915,6 +5915,8 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
 
          dlTtiReq->dl_tti_request_body.nUe[dlTtiReq->dl_tti_request_body.nGroup] = MAX_NUM_UE_PER_TTI;
          dlTtiReq->dl_tti_request_body.nGroup++;
+         
+         int retval = nfapi_vnf_p7_nr_dl_config_req(p7_config, dlTtiReq);
 
 #ifdef ODU_SLOT_IND_DEBUG_LOG
          DU_LOG("\nDEBUG  -->  LWR_MAC: Sending DL TTI Request");
