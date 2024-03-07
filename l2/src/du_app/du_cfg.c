@@ -1112,7 +1112,7 @@ uint8_t readVnfCfg()
    nfapi_vnf_cfg->vnf->p7_vnfs[0].timing_window = 30;
    nfapi_vnf_cfg->vnf->p7_vnfs[0].periodic_timing_enabled = 0;
    nfapi_vnf_cfg->vnf->p7_vnfs[0].aperiodic_timing_enabled = 0;
-   nfapi_vnf_cfg->vnf->p7_vnfs[0].periodic_timing_period = 10;
+   nfapi_vnf_cfg->vnf->p7_vnfs[0].periodic_timing_period = 1; /*NTUST/nfapi-fixes/openairinterface5g/nfapi/oai_integration/nfapi_vnf.c*/
    nfapi_vnf_cfg->vnf->p7_vnfs[0].config = nfapi_vnf_p7_config_create();
    strcpy(nfapi_vnf_cfg->vnf->p7_vnfs[0].local_addr, vnf_addr);
    nfapi_vnf_cfg->vnf->p7_vnfs[0].local_port = vnf_p7_port;
