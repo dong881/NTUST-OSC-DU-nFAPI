@@ -676,6 +676,7 @@ static uint8_t pack_dl_tti_request_body_value(void *tlv, uint8_t **ppWritePacked
     } break;
 
     case NFAPI_NR_DL_TTI_SSB_PDU_TYPE: {
+      printf("\nDEBUG  -->  PDU TAG: NFAPI_NR_DL_TTI_SSB_PDU_TYPE\n");
       if (!(pack_dl_tti_ssb_pdu_rel15_value(&value->ssb_pdu.ssb_pdu_rel15, ppWritePackedMsg, end)))
         return 0;
     } break;
@@ -853,7 +854,7 @@ static uint8_t pack_dl_tti_request(void *msg, uint8_t **ppWritePackedMsg, uint8_
         return 0;
       }
     }
-    printf("\nDEBUG  -->  %s() Successful push8 and push32 ...\n",__FUNCTION__);
+    return 0;
   }
 
   return 1;
@@ -3674,6 +3675,7 @@ int nfapi_nr_p7_message_pack(void *pMessageBuf, void *pPackedBuf, uint32_t packe
       break;
 
     case NFAPI_NR_PHY_MSG_TYPE_UL_TTI_REQUEST:
+    printf("\nDEBUG  -->  I am here pack_ul_tti_request\n");
       result = pack_ul_tti_request(pMessageHeader, &pWritePackedMessage, end, config);
       break;
 
