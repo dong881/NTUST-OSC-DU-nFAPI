@@ -677,6 +677,7 @@ int phy_nr_rach_indication(nfapi_nr_rach_indication_t *ind)
         rach_ind->pdu_list[i].preamble_list[j].timing_advance = ind->pdu_list[i].preamble_list[j].timing_advance;
       }
     }
+    printf("\n[NTUST]	put_queue gnb_rach_ind_queue");
     if (!put_queue(&gnb_rach_ind_queue, rach_ind))
     {
       DU_LOG("\nINFO   --> [VNF] Put_queue failed for rach_ind\n");
@@ -1231,6 +1232,7 @@ int phy_nr_slot_indication(nfapi_nr_slot_indication_scf_t *ind) {
   nr_slot_ind->header = ind->header;
   nr_slot_ind->sfn = vnf_sfn;
   nr_slot_ind->slot = vnf_slot;
+  printf("\n[NTUST] put_queue phy_nr_slot_indication\n");
   if (!put_queue(&gnb_slot_ind_queue, nr_slot_ind))
   {
     DU_LOG("\nINFO   --> [VNF] Put_queue failed for slot_ind\n");
@@ -1597,6 +1599,7 @@ int nr_param_resp_cb(nfapi_vnf_config_t *config, int p5_idx, nfapi_nr_param_resp
   // for now just 1
   printf("\nINFO   --> [VNF] %d.%d pnf p7 %s:%d timing %u %u %u %u\n", p5_idx, phy->id, phy->remote_addr, phy->remote_port, p7_vnf->timing_window, p7_vnf->periodic_timing_period, p7_vnf->aperiodic_timing_enabled,
          p7_vnf->periodic_timing_period);
+  nfapi_vnf_p7_add_pnf((p7_vnf->config), phy->remote_addr, phy->remote_port, phy->id);
   nfapi_nr_config_request_scf_t *req = (nfapi_nr_config_request_scf_t*) calloc(1, sizeof(nfapi_nr_config_request_scf_t));   
   req->header.message_id = NFAPI_NR_PHY_MSG_TYPE_CONFIG_REQUEST;
   req->header.phy_id = phy->id;
@@ -1745,6 +1748,7 @@ int nr_start_resp_cb(nfapi_vnf_config_t *config, int p5_idx, nfapi_nr_start_resp
   vnf_p7_info *p7_vnf = vnf->p7_vnfs;
 
  nfapi_vnf_p7_add_pnf((p7_vnf->config), phy->remote_addr, phy->remote_port, phy->id);
+  printf("\nINFO  -->  Received NFAPI_START_RESP  DONE!!!\n");
   return 0;
 }
 
@@ -1815,7 +1819,7 @@ void configure_nr_nfapi_vnf(char *vnf_addr, int vnf_p5_port, char *pnf_ip_addr, 
   vnf.p7_vnfs[0].timing_window = 30;
   vnf.p7_vnfs[0].periodic_timing_enabled = 0;
   vnf.p7_vnfs[0].aperiodic_timing_enabled = 0;
-  vnf.p7_vnfs[0].periodic_timing_period = 10;
+  vnf.p7_vnfs[0].periodic_timing_period = 1;
   vnf.p7_vnfs[0].config = nfapi_vnf_p7_config_create();
   DU_LOG("\nINFO   --> [VNF] %s() vnf.p7_vnfs[0].config:%p VNF ADDRESS:%s:%d\n", __FUNCTION__, vnf.p7_vnfs[0].config, vnf_addr, vnf_p5_port);
   strcpy(vnf.p7_vnfs[0].local_addr, vnf_addr);

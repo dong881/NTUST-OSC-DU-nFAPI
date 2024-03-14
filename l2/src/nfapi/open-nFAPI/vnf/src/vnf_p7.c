@@ -86,16 +86,14 @@ void vnf_p7_connection_info_list_add(vnf_p7_t* vnf_p7, nfapi_vnf_p7_connection_i
 nfapi_vnf_p7_connection_info_t* vnf_p7_connection_info_list_find(vnf_p7_t* vnf_p7, uint16_t phy_id)
 {
 	nfapi_vnf_p7_connection_info_t* curr = vnf_p7->p7_connections;
-	while(curr != 0)
-	{
-		if(curr->phy_id == phy_id)
-		{
-			return curr;
-		}
-		curr = curr->next;
-	}
+  while (curr != 0) {
+    if (curr->phy_id == phy_id)
+      return curr;
+    curr = curr->next;
+  }
+  NFAPI_TRACE(NFAPI_TRACE_ERROR, "%s(): could not find P7 connection for phy_id %d\n", __func__, phy_id);
 
-	return 0;
+  return 0;
 }
 
 nfapi_vnf_p7_connection_info_t* vnf_p7_connection_info_list_delete(vnf_p7_t* vnf_p7, uint16_t phy_id)
@@ -1465,7 +1463,7 @@ void vnf_handle_nr_slot_indication(void *pRecvMsg, int recvMsgLen, vnf_p7_t* vnf
 	}
 	else
 	{
-		nfapi_nr_slot_indication_scf_t ind;
+		nfapi_nr_slot_indication_scf_t ind = {0};
 	
 		if(nfapi_nr_p7_message_unpack(pRecvMsg, recvMsgLen, &ind, sizeof(ind), &vnf_p7->_public.codec_config) < 0)
 		{
@@ -2054,7 +2052,7 @@ void vnf_nr_handle_timing_info(void *pRecvMsg, int recvMsgLen, vnf_p7_t* vnf_p7)
           // Panos: Careful here!!! Modification of the original nfapi-code
           //if (vnf_pnf_sfnsf_delta>1 || vnf_pnf_sfnsf_delta < -1)
 		  //printf("VNF-PNF delta - %d", vnf_pnf_sfnslot_delta);
-          if (vnf_pnf_sfnslot_delta != 0)
+          if (vnf_pnf_sfnslot_delta > 1) // we need to have a small delta, otherwise it would mean we don't advance
           {
             NFAPI_TRACE(NFAPI_TRACE_INFO, "%s() LARGE SFN/SLOT DELTA between PNF and VNF. Delta %d. PNF:%d.%d VNF:%d.%d\n\n\n\n\n\n\n\n\n",
                         __FUNCTION__, vnf_pnf_sfnslot_delta,
@@ -2186,6 +2184,7 @@ void vnf_nr_dispatch_p7_message(void *pRecvMsg, int recvMsgLen, vnf_p7_t* vnf_p7
 		NFAPI_TRACE(NFAPI_TRACE_WARN, "Invalid message size: %d, ignoring\n", recvMsgLen);
 		return;
 	}
+	printf("\n[NTUST] header.message_id:%d",header.message_id);
 
 	switch (header.message_id)
 	{
@@ -2390,11 +2389,13 @@ void vnf_nr_handle_p7_message(void *pRecvMsg, int recvMsgLen, vnf_p7_t* vnf_p7)
 	uint8_t m = NFAPI_P7_GET_MORE(messageHeader.m_segment_sequence);
 	uint8_t segment_num = NFAPI_P7_GET_SEGMENT(messageHeader.m_segment_sequence);
 	uint8_t sequence_num = NFAPI_P7_GET_SEQUENCE(messageHeader.m_segment_sequence);
-
+	printf("\n[NTUST] segment_num: %d",segment_num);
+	printf("\n[NTUST] sequence_num: %d",sequence_num);
 
 	if(m == 0 && segment_num == 0)
 	{
 		// we have a complete message
+		printf("\n[NTUST] we have a complete message");
 		// ensure the message is sensible
 		if (recvMsgLen < 8 || pRecvMsg == NULL)
 		{

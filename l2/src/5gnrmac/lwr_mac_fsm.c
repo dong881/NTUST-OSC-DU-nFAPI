@@ -5914,7 +5914,7 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
          }
 
          dlTtiReq->dl_tti_request_body.nUe[dlTtiReq->dl_tti_request_body.nGroup] = MAX_NUM_UE_PER_TTI;
-         dlTtiReq->dl_tti_request_body.nGroup++;
+         dlTtiReq->dl_tti_request_body.nGroup=0; //testing
          
          int retval = nfapi_vnf_p7_nr_dl_config_req(p7_config, dlTtiReq);
 
@@ -6734,7 +6734,7 @@ uint16_t OAI_OSC_sendTxDataReq(SlotTimingInfo currTimingInfo, MacDlSlot *dlSlot)
             }
          }
          int retval = nfapi_vnf_p7_tx_data_req(p7_config, txDataReq);
-         DU_LOG("\nDEBUG  -->  LWR_MAC: Sending TX DATA Request");
+         printf("\nDEBUG  -->  LWR_MAC: Sending TX DATA Request");
       }
    }
    return ROK;

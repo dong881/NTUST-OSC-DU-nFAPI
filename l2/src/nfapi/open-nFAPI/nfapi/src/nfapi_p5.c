@@ -30,6 +30,7 @@
 #include <errno.h>
 #include <pthread.h>
 #include <stdint.h>
+#include <assert.h>
 
 #include <nfapi_interface.h>
 #include <nfapi.h>
@@ -1569,6 +1570,19 @@ static uint8_t pack_config_request(void *msg, uint8_t **ppWritePackedMsg, uint8_
   retval &=
       pack_nr_tlv(NFAPI_NR_CONFIG_TDD_PERIOD_TAG, &(pNfapiMsg->tdd_table.tdd_period), ppWritePackedMsg, end, &pack_uint8_tlv_value);
   numTLVs++;
+  
+  assert(6 == pNfapiMsg->tdd_table.tdd_period.value);
+  for (int i = 0; i < 20; i++) {
+    for (int k = 0; k < 14; k++) {
+      pack_nr_tlv(NFAPI_NR_CONFIG_SLOT_CONFIG_TAG,
+                  &pNfapiMsg->tdd_table.max_tdd_periodicity_list[i].max_num_of_symbol_per_slot_list[k].slot_config,
+                  ppWritePackedMsg,
+                  end,
+                  &pack_uint8_tlv_value);
+      numTLVs++;
+    }
+  }
+  // probably near here
   // END TDD Table
 
   // START Measurement Config
@@ -2559,14 +2573,7 @@ static uint8_t unpack_nr_param_response(uint8_t **ppReadPackedMsg, uint8_t *end,
   };
   // print ppReadPackedMsg
   uint8_t *ptr = *ppReadPackedMsg;
-  printf("\n Read message unpack_param_response: ");
 
-  while (ptr < end) {
-    printf(" %02x ", *ptr);
-    ptr++;
-  }
-
-  printf("\n");
   return (pull8(ppReadPackedMsg, &pNfapiMsg->error_code, end) && pull8(ppReadPackedMsg, &pNfapiMsg->num_tlv, end)
           && unpack_nr_tlv_list(unpack_fns,
                                 sizeof(unpack_fns) / sizeof(unpack_tlv_t),
@@ -2795,6 +2802,9 @@ static uint8_t unpack_config_request(uint8_t **ppReadPackedMsg, uint8_t *end, vo
 
 static uint8_t unpack_nr_config_request(uint8_t **ppReadPackedMsg, uint8_t *end, void *msg, nfapi_p4_p5_codec_config_t *config)
 {
+  for (uint8_t *p = *ppReadPackedMsg; p < end; ++p)
+    printf("%02x ", *p);
+  printf("\n");
   // Helper vars for indexed TLVs
   int prach_root_seq_idx = 0;
   int unused_root_seq_idx = 0;
@@ -2812,7 +2822,7 @@ static uint8_t unpack_nr_config_request(uint8_t **ppReadPackedMsg, uint8_t *end,
         (nfapi_nr_max_num_of_symbol_per_slot_t *)malloc(14 * sizeof(nfapi_nr_max_num_of_symbol_per_slot_t));
   }
   pNfapiMsg->prach_config.num_prach_fd_occasions_list =
-      (nfapi_nr_num_prach_fd_occasions_t *)malloc(sizeof(nfapi_nr_num_prach_fd_occasions_t));
+      (nfapi_nr_num_prach_fd_occasions_t *)calloc(10, sizeof(nfapi_nr_num_prach_fd_occasions_t));
   // unpack TLVs
 
   unpack_tlv_t unpack_fns[] = {
@@ -2914,7 +2924,7 @@ static uint8_t unpack_nr_config_request(uint8_t **ppReadPackedMsg, uint8_t *end,
                 &pNfapiMsg->prach_config.num_prach_fd_occasions_list[prach_root_seq_idx].prach_root_sequence_index,
                 ppReadPackedMsg,
                 end);
-            prach_root_seq_idx++;
+            // prach_root_seq_idx++;
             break;
           case NFAPI_NR_CONFIG_K1_TAG:
             pNfapiMsg->prach_config.num_prach_fd_occasions_list[prach_root_seq_idx].k1.tl.tag = generic_tl.tag;
@@ -3448,14 +3458,7 @@ int nfapi_nr_p5_message_unpack(void *pMessageBuf,
   }
 
   uint8_t *ptr = pReadPackedMessage;
-  printf("\n Read NR message unpack: ");
 
-  while (ptr < end) {
-    printf(" %02x ", *ptr);
-    ptr++;
-  }
-
-  printf("\n");
   // clean the supplied buffer for - tag value blanking
   (void)memset(pUnpackedBuf, 0, unpackedBufLen);
 
