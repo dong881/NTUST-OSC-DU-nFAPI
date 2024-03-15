@@ -3937,6 +3937,11 @@ BwpCfg bwp, uint16_t pduIndex)
    dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.transmissionScheme = pdschInfo->transmissionScheme;
    dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.refPoint = pdschInfo->refPoint;
    dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dlDmrsSymbPos = pdschInfo->dmrs.dlDmrsSymbPos;
+
+/* ======== small cell integration ======== */
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.maintenance_parms_v3.ldpcBaseGraph = 2;
+/* ======================================== */
+
    dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dmrsConfigType = pdschInfo->dmrs.dmrsConfigType;
    dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dlDmrsScramblingId = pdschInfo->dmrs.dlDmrsScramblingId;
    dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.SCID = pdschInfo->dmrs.scid;
