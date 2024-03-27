@@ -172,7 +172,7 @@ int nfapi_nr_vnf_p7_start(nfapi_vnf_p7_config_t* config)
     struct timespec ref_time;
 	clock_gettime(CLOCK_MONOTONIC, &ref_time);
 	
-	uint8_t setup_time;
+	uint8_t setup_done = 1;
 	while(vnf_p7->terminate == 0)
 	{	
 		fd_set rfds;
@@ -187,18 +187,36 @@ int nfapi_nr_vnf_p7_start(nfapi_vnf_p7_config_t* config)
 		
 		struct timespec curr_time;
 		clock_gettime(CLOCK_MONOTONIC, &curr_time);
-		setup_time = curr_time.tv_sec - ref_time.tv_sec;
+		uint8_t setup_time = curr_time.tv_sec - ref_time.tv_sec;
 		
 
 		/* ======== small cell integration ======== */
 		
 		nfapi_nr_slot_indication_scf_t *slot_ind = get_queue(&gnb_slot_ind_queue);
-		printf("[DEBUG]	Slot indication: %d\n", slot_ind);
-		NFAPI_TRACE(NFAPI_TRACE_DEBUG, "This is the slot_ind queue size %ld in %s():%d\n", gnb_slot_ind_queue.num_items, __FUNCTION__, __LINE__);
+		// printf("\n[DEBUG]	Slot indication: %d\n", slot_ind);
+		// nfapi_nr_slot_indication_scf_t *rach_ind = get_queue(&gnb_rach_ind_queue);
+		// printf("[NTUST]	rach indication: %d\n", rach_ind);
+		// printf("[NTUST] This queue size: %ld:\n", gnb_rach_ind_queue.num_items);
+		// nfapi_nr_slot_indication_scf_t *rx_ind = get_queue(&gnb_rx_ind_queue);
+		// printf("[NTUST]	rx indication: %d\n", rx_ind);
+		// printf("[NTUST] This queue size: %ld:\n", gnb_rx_ind_queue.num_items);
+		// nfapi_nr_slot_indication_scf_t *crc_ind = get_queue(&gnb_crc_ind_queue);
+		// printf("[NTUST]	crc indication: %d\n", crc_ind);
+		// printf("[NTUST] This queue size: %ld:\n", gnb_crc_ind_queue.num_items);
+		// nfapi_nr_slot_indication_scf_t *uci_ind = get_queue(&gnb_uci_ind_queue);
+		// printf("[NTUST]	uci indication: %d\n", uci_ind);
+		// printf("[NTUST] This queue size: %ld:\n", gnb_uci_ind_queue.num_items);
+		// NFAPI_TRACE(NFAPI_TRACE_DEBUG, "This is the slot_ind queue size %ld in %s():%d\n", gnb_slot_ind_queue.num_items, __FUNCTION__, __LINE__);
 		if (slot_ind) {
 			pthread_mutex_lock(&UL_INFO_mutex);
 			UL_INFO.frame     = slot_ind->sfn;
 			UL_INFO.slot      = slot_ind->slot;
+			// TODO: Fill UL_INFO.indication value
+			// printf("\n [NTUST] UL_INOF->rx_ind number_of_pdus:%d",&UL_INFO->rx_ind.number_of_pdus);
+			// printf("\n [NTUST] UL_INOF->crc_ind number_of_pdus:%d",&UL_INFO->crc_ind.number_of_pdus);
+			// printf("\n [NTUST] UL_INOF->uci_ind number_of_pdus:%d",&UL_INFO->uci_ind.number_of_pdus);
+			// printf("\n [NTUST] UL_INOF->rach_ind number_of_pdus:%d",&UL_INFO->rach_ind.number_of_pdus);
+
 
 			printf("[NFAPI_TRACE_DEBUG]  UL_INFO.frame = %d and slot %d, prev_slot = %d, setup_time = %d\n",
 				    UL_INFO.frame, UL_INFO.slot, prev_slot, setup_time);
@@ -211,17 +229,26 @@ int nfapi_nr_vnf_p7_start(nfapi_vnf_p7_config_t* config)
 				// NFAPI_TRACE(NFAPI_TRACE_DEBUG, "Calling NR_UL_indication for gNB->UL_INFO.frame = %d and slot %d\n",
 				// 	    UL_INFO.frame, UL_INFO.slot);
 				SCF_procSlotInd(&UL_INFO);
+				printf("\n[NTUST] Finish SCF_procSlotInd(&UL_INFO);");
+
+				//TODO: Add switch case CRC、RACH、UCI、RX
+				// SCF_procRxDataInd(&UL_INFO->rx_ind);
+				// SCF_procCrcInd(&UL_INFO->crc_ind);
+				// SCF_procUciInd(&UL_INFO->uci_ind);
+				// SCF_procRachInd(&UL_INFO->rach_ind);
 				// gNB->if_inst->NR_UL_indication(&gNB->UL_INFO);
+				
 				prev_slot = UL_INFO.slot;
 			}
 			pthread_mutex_unlock(&UL_INFO_mutex);
 			free(slot_ind);
 			slot_ind = NULL;
 		}
-		
+		printf("\n[NTUST] Ready to pselect(%d,%d,NULL,NULL,%d:%d,NULL);",maxSock+1,rfds,pselect_timeout.tv_sec,pselect_timeout.tv_nsec);
 
 		selectRetval = pselect(maxSock+1, &rfds, NULL, NULL, &pselect_timeout, NULL);
 
+		printf("\n[NTUST] pselect value (selectRetval): %d",selectRetval);
 		if(selectRetval == 0)
 		{
 			// pselect timed out, continue
@@ -231,6 +258,7 @@ int nfapi_nr_vnf_p7_start(nfapi_vnf_p7_config_t* config)
 			// have a p7 message
 			if(FD_ISSET(vnf_p7->socket, &rfds))
 			{	
+				printf("\n[NTUST] have a p7 message.");
 				vnf_nr_p7_read_dispatch_message(vnf_p7); 				
 			}
 		}
@@ -655,7 +683,7 @@ int nfapi_vnf_p7_dl_config_req(nfapi_vnf_p7_config_t* config, nfapi_dl_config_re
 
 int nfapi_vnf_p7_nr_dl_config_req(nfapi_vnf_p7_config_t* config, nfapi_nr_dl_tti_request_t* req)
 {
-	//NFAPI_TRACE(NFAPI_TRACE_INFO, "%s(config:%p req:%p)\n", __FUNCTION__, config, req);
+	printf("\n%s(config:%p req:%p)\n", __FUNCTION__, config, req);
 
 	if(config == 0 || req == 0)
 		return -1;
