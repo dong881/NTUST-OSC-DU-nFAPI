@@ -5747,7 +5747,7 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
       printf("\nINFO  ->  The current Timing Info : sfn : %d, slot : %d\n", currTimingInfo.sfn, currTimingInfo.slot);
       printf("\nINFO  ->  The DL TTI Timing Info : sfn : %d, slot : %d\n", dlTtiReqTimingInfo.sfn, dlTtiReqTimingInfo.slot);
       dlTtiReqTimingInfo.cellId = currTimingInfo.cellId;
-      
+
       macCellCfg = macCb.macCell[cellIdx]->macCellCfg;
 
       currDlSlot = &macCb.macCell[cellIdx]->dlSlot[dlTtiReqTimingInfo.slot];
@@ -5765,7 +5765,8 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
       dlTtiReq->dl_tti_request_body.nPDUs = calcDlTtiReqPduCount(currDlSlot); /* get total Pdus */
       nPdu = dlTtiReq->dl_tti_request_body.nPDUs;
       dlTtiReq->dl_tti_request_body.nGroup = 0;
-      printf("\ndlTtiReq->dl_tti_request_body.nPDUs:%d\n",dlTtiReq->dl_tti_request_body.nPDUs);
+
+      printf("\n[DEBUG] -->  dlTtiReq->dl_tti_request_body.nPDUs:%d\n",dlTtiReq->dl_tti_request_body.nPDUs);
 
       if (dlTtiReq->dl_tti_request_body.nPDUs > 0) // dlTtiReq->dl_tti_request_body.nPDUs > 0
       {
@@ -5817,11 +5818,11 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
                DU_LOG("\033[0m");
             }
          }
-
+/*
          //TODO: ADD Paging done
          if(currDlSlot->pageAllocInfo != NULLP)
          {
-            /* Filling DL Paging Alloc param */
+            // Filling DL Paging Alloc param
             if(numPduEncoded != nPdu)
             {
                rntiType = P_RNTI_TYPE;
@@ -5839,7 +5840,7 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
             DU_LOG("\033[1;34m");
             DU_LOG("\nDEBUG  -->  LWR_MAC: PAGE sent...");
             DU_LOG("\033[0m");
-         }
+         }*/
 
          for (ueIdx = 0; ueIdx < MAX_NUM_UE; ueIdx++)
          {
@@ -6680,10 +6681,7 @@ uint16_t OAI_OSC_sendTxDataReq(SlotTimingInfo currTimingInfo, MacDlSlot *dlSlot)
       txDataReq->Slot = currTimingInfo.slot;
       /* send TX_Data request message */
       //TODO:calcTxDataReqPduCount relocate from #ifdef INTEL_FAPI
-      txDataReq->Number_of_PDUs = calcTxDataReqPduCount(dlSlot);
-      nPdu = txDataReq->Number_of_PDUs;
-      printf("TxDataReq PDU = %d\n",nPdu);
-
+      nPdu = calcTxDataReqPduCount(dlSlot);
       if(nPdu > 0)
       {
          if(dlSlot->dlInfo.brdcstAlloc.sib1TransmissionMode)
