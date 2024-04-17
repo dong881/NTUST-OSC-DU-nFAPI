@@ -94,7 +94,7 @@
 #define MEAS_TIMING_ARFCN 630432
 #define CARRIER_IDX 1
 /* ======== small cell integration ======== */
-#define NUM_TX_ANT 2 //  2 -> 1 -> 2
+#define NUM_TX_ANT 1 //  2 -> 1 -> 2 -> 1
 #define NUM_RX_ANT 1 //  2 -> 1 -> 2 -> 1
 /* ======================================== */
 #define FREQ_SHIFT_7P5KHZ FALSE
