@@ -4258,7 +4258,7 @@ uint8_t OAI_OSC_fillSib1TxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, Ma
    pduDesc[pduIndex].num_TLV = 1;
 
    /* fill the TLV */
-   payloadSize = pdschCfg->codeword[0].tbSize - TX_PAYLOAD_HDR_LEN;
+   payloadSize = pdschCfg->codeword[0].tbSize;
    // pduDesc[pduIndex].TLVs[0].tag = ((payloadSize & 0xff0000) >> 8) | FAPI_TX_DATA_PTR_TO_PAYLOAD_32; //pack ptr
    // pduDesc[pduIndex].TLVs[0].tag = FAPI_TX_DATA_PTR_TO_PAYLOAD_32;FAPI_TX_DATA_PAYLOAD
    pduDesc[pduIndex].TLVs[0].tag = FAPI_TX_DATA_PAYLOAD;
@@ -4305,7 +4305,7 @@ uint8_t OAI_OSC_fillPageTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, Dl
    pduDesc[pduIndex].num_TLV = 1;
 
    /* fill the TLV */
-   payloadSize = pageAllocInfo->pageDlSch.tbInfo.tbSize - TX_PAYLOAD_HDR_LEN;
+   payloadSize = pageAllocInfo->pageDlSch.tbInfo.tbSize;
    pduDesc[pduIndex].TLVs[0].tag = ((payloadSize & 0xff0000) >> 8) | FAPI_TX_DATA_PTR_TO_PAYLOAD_32; //pack ptr
    //pduDesc[pduIndex].TLVs[0].tag = 0;
    pduDesc[pduIndex].TLVs[0].length = payloadSize;
@@ -4351,7 +4351,7 @@ uint8_t OAI_OSC_fillRarTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, Rar
    pduDesc[pduIndex].num_TLV = 1;
 
    /* fill the TLV */
-   payloadSize = pdschCfg->codeword[0].tbSize - TX_PAYLOAD_HDR_LEN;
+   payloadSize = pdschCfg->codeword[0].tbSize;
    pduDesc[pduIndex].TLVs[0].tag = FAPI_TX_DATA_PTR_TO_PAYLOAD_32; //pack ptr
    pduDesc[pduIndex].TLVs[0].length = payloadSize;
    LWR_MAC_ALLOC(rarPayload, payloadSize);
@@ -4396,7 +4396,7 @@ uint8_t OAI_OSC_fillDlMsgTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, D
    pduDesc[pduIndex].num_TLV = 1;
 
    /* fill the TLV */
-   payloadSize = pdschCfg->codeword[0].tbSize - TX_PAYLOAD_HDR_LEN;
+   payloadSize = pdschCfg->codeword[0].tbSize;
    pduDesc[pduIndex].TLVs[0].tag = FAPI_TX_DATA_PTR_TO_PAYLOAD_32; //pack ptr
    pduDesc[pduIndex].TLVs[0].length = payloadSize;
    LWR_MAC_ALLOC(dlMsgPayload, payloadSize);
