@@ -3995,8 +3995,9 @@ void OAI_OSC_fillPrachPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu,
    {
       ulTtiReqPdu->pdu_type = PRACH_PDU_TYPE; 
       ulTtiReqPdu->prach_pdu.phys_cell_id = macCellCfg->cellCfg.phyCellId;
-      ulTtiReqPdu->prach_pdu.num_prach_ocas = \
+      //ulTtiReqPdu->prach_pdu.num_prach_ocas = \
          currUlSlot->ulInfo.prachSchInfo.numPrachOcas;
+      ulTtiReqPdu->prach_pdu.num_prach_ocas = 3;
       ulTtiReqPdu->prach_pdu.prach_format = \
 	 currUlSlot->ulInfo.prachSchInfo.prachFormat;
       ulTtiReqPdu->prach_pdu.num_ra = currUlSlot->ulInfo.prachSchInfo.numRa;

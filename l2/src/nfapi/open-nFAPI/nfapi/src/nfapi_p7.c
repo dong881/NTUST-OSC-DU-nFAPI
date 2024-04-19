@@ -936,6 +936,7 @@ static uint8_t pack_ul_config_request_ulsch_rel13_value(void *tlv, uint8_t **ppW
 
 static uint8_t pack_ul_tti_request_prach_pdu(nfapi_nr_prach_pdu_t *prach_pdu, uint8_t **ppWritePackedMsg, uint8_t *end)
 {
+  printf("DEBUG  ->  num_prach_ocas:%d\n",prach_pdu->num_prach_ocas);
   if (!(push16(prach_pdu->phys_cell_id, ppWritePackedMsg, end) && push8(prach_pdu->num_prach_ocas, ppWritePackedMsg, end)
         && push8(prach_pdu->prach_format, ppWritePackedMsg, end) && push8(prach_pdu->num_ra, ppWritePackedMsg, end)
         && push8(prach_pdu->prach_start_symbol, ppWritePackedMsg, end) && push16(prach_pdu->num_cs, ppWritePackedMsg, end))) {
