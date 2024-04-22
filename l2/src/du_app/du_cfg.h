@@ -46,14 +46,14 @@
 #define CELL_TYPE SMALL
 
 //TODO: while testing for TDD, Mu1 and 100 MHz, this flag must be enabled
-#ifdef NR_TDD
-#define DUPLEX_MODE DUP_MODE_TDD
-#define NR_DL_ARFCN 623400
-#define NR_UL_ARFCN 623400
-#define NR_FREQ_BAND 78
-#define NR_SCS SCS_30KHZ
-#define NR_BANDWIDTH BANDWIDTH_100MHZ
-#endif //FDD
+// #ifdef NR_TDD
+// #define DUPLEX_MODE DUP_MODE_TDD
+// #define NR_DL_ARFCN 623400 //OAI 640008
+// #define NR_UL_ARFCN 623400 //OAI 640008
+// #define NR_FREQ_BAND 78
+// #define NR_SCS SCS_30KHZ
+// #define NR_BANDWIDTH BANDWIDTH_100MHZ
+// #endif //FDD
 // #define DUPLEX_MODE DUP_MODE_FDD
 // #define NR_DL_ARFCN 428000
 // #define NR_UL_ARFCN 390000
@@ -63,16 +63,28 @@
 
 /* ======== small cell integration ======== */
 #ifdef NFAPI
-// For band 66 FDD
-#define DUPLEX_MODE DUP_MODE_FDD
-#define NR_NUMEROLOGY 1
-#define NR_DL_ARFCN 432000 //2160000kHz
-#define NR_UL_ARFCN 352000 //1760000kHz
-#define NR_FREQ_BAND 66
-#define NR_SCS SCS_30KHZ
-#define NR_BANDWIDTH BANDWIDTH_20MHZ
-#define NR_DL_FREQ 2160000 //kHz
-#define NR_UL_FREQ 1760000 //kHz
+   #ifdef NR_TDD
+      // For band 78 FDD
+      #define DUPLEX_MODE DUP_MODE_TDD
+      #define NR_DL_ARFCN 640008 //OAI 640008
+      #define NR_UL_ARFCN 640008 //OAI 640008
+      #define NR_FREQ_BAND 78
+      #define NR_SCS SCS_30KHZ
+      #define NR_BANDWIDTH BANDWIDTH_100MHZ
+      #define NR_DL_FREQ 3600120 //kHz
+      #define NR_UL_FREQ 3600120 //kHz
+   #else
+      // For band 66 FDD
+      #define DUPLEX_MODE DUP_MODE_FDD
+      #define NR_NUMEROLOGY 1
+      #define NR_DL_ARFCN 432000 //2160000kHz
+      #define NR_UL_ARFCN 352000 //1760000kHz
+      #define NR_FREQ_BAND 66 
+      #define NR_SCS SCS_30KHZ
+      #define NR_BANDWIDTH BANDWIDTH_20MHZ
+      #define NR_DL_FREQ 2160000 //kHz
+      #define NR_UL_FREQ 1760000 //kHz
+   #endif
 #endif
 /* ======================================== */
 
