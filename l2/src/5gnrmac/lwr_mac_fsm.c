@@ -2162,7 +2162,7 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
          sizeof(uint8_t), macCfgParams.ssbCfg.scsCmn, &msgLen);
 
    /* fill PRACH configuration */
-   //fillTlvs(&configReq->tlvs[index++], FAPI_PRACH_SEQUENCE_LENGTH_TAG,     \
+   fillTlvs(&configReq->tlvs[index++], FAPI_PRACH_SEQUENCE_LENGTH_TAG,     \
    sizeof(uint8_t), macCfgParams.prachCfg.prachSeqLen, &msgLen);
    fillTlvs(&configReq->tlvs[index++], FAPI_PRACH_SUBC_SPACING_TAG,        \
          sizeof(uint8_t), convertScsValToScsEnum(macCfgParams.prachCfg.prachSubcSpacing), &msgLen);
@@ -2227,20 +2227,20 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
    //fillTlvs(&configReq->tlvs[index++], FAPI_MULTIPLE_CELLS_SS_PBCH_IN_A_CARRIER_TAG, \
    sizeof(uint8_t), macCfgParams.ssbCfg.multCellCarr, &msgLen);
 
-#ifdef NR_TDD
-   /* fill TDD table */
-   fillTlvs(&configReq->tlvs[index++], FAPI_TDD_PERIOD_TAG,
-            sizeof(uint8_t), macCfgParams.tddCfg.tddPeriod, &msgLen);
-   for (slotIdx = 0; slotIdx < MAX_TDD_PERIODICITY_SLOTS; slotIdx++)
-   {
-      for (symbolIdx = 0; symbolIdx < MAX_SYMB_PER_SLOT; symbolIdx++)
-      {
-         fillTlvs(&configReq->tlvs[index++], FAPI_SLOT_CONFIG_TAG,
-                  sizeof(uint8_t), macCfgParams.tddCfg.slotCfg[slotIdx][symbolIdx], &msgLen);
-         DU_LOG("\n[LWR_MAC] ->  tag : 0x%4x value : %d", FAPI_SLOT_CONFIG_TAG, macCfgParams.tddCfg.slotCfg[slotIdx][symbolIdx]);
-      }
-   }
-#endif
+// #ifdef NR_TDD
+//    /* fill TDD table */
+//    fillTlvs(&configReq->tlvs[index++], FAPI_TDD_PERIOD_TAG,
+//             sizeof(uint8_t), macCfgParams.tddCfg.tddPeriod, &msgLen);
+//    for (slotIdx = 0; slotIdx < MAX_TDD_PERIODICITY_SLOTS; slotIdx++)
+//    {
+//       for (symbolIdx = 0; symbolIdx < MAX_SYMB_PER_SLOT; symbolIdx++)
+//       {
+//          fillTlvs(&configReq->tlvs[index++], FAPI_SLOT_CONFIG_TAG,
+//                   sizeof(uint8_t), macCfgParams.tddCfg.slotCfg[slotIdx][symbolIdx], &msgLen);
+//          DU_LOG("\n[LWR_MAC] ->  tag : 0x%4x value : %d", FAPI_SLOT_CONFIG_TAG, macCfgParams.tddCfg.slotCfg[slotIdx][symbolIdx]);
+//       }
+//    }
+// #endif
 
 printf("\n123\n");
 #ifndef NFAPI
@@ -3995,9 +3995,8 @@ void OAI_OSC_fillPrachPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu,
    {
       ulTtiReqPdu->pdu_type = PRACH_PDU_TYPE; 
       ulTtiReqPdu->prach_pdu.phys_cell_id = macCellCfg->cellCfg.phyCellId;
-      //ulTtiReqPdu->prach_pdu.num_prach_ocas = \
+      ulTtiReqPdu->prach_pdu.num_prach_ocas = \
          currUlSlot->ulInfo.prachSchInfo.numPrachOcas;
-      ulTtiReqPdu->prach_pdu.num_prach_ocas = 3;
       ulTtiReqPdu->prach_pdu.prach_format = \
 	 currUlSlot->ulInfo.prachSchInfo.prachFormat;
       ulTtiReqPdu->prach_pdu.num_ra = currUlSlot->ulInfo.prachSchInfo.numRa;
