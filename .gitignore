@@ -2,3 +2,6 @@ openairinterface/
 l2/libs/*
 l2/build/odu/lib/*
 l2/build/*
+# documentation
+.tox
+docs/_build/
