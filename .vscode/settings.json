@@ -1,18 +1,15 @@
 {
     "files.associations": {
-        "queue_t.h": "c",
-        "*.x": "c",
-        "sn-fieldlengtham.h": "c",
-        "rlc-bearerconfig.h": "c",
-        "t-pollretransmit.h": "c",
+        "vendor_ext.h": "c",
+        "vnf_intgr_mwnl.h": "c",
         "nfapi_vnf_interface.h": "c",
-        "lwr_mac_fsm.h": "c",
-        "vnf_p7.h": "c",
-        "*.tcc": "c",
-        "array": "c",
-        "string": "c",
-        "string_view": "c",
+        "*.x": "c",
         "stdint.h": "c",
-        "nfapi_vnf.h": "c"
+        "assertions.h": "c",
+        "nfapi_vnf.h": "c",
+        "gnb_ind_vars.h": "c",
+        "type_def.h": "c",
+        "*.tcc": "c",
+        "cassert": "c"
     }
 }
