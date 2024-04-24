@@ -52,7 +52,7 @@ The OAI gNB in PNF mode also needs to be run.
 | Ray-Guang Cheng    | crg@mail.ntust.edu.tw        |
 | Shiann-Tsong Sheu  | stsheu@cc.ncu.edu.tw         |
 | Maintainer         |                              |
-| Yi-Quan Chen       | b10902109@mail.ntust.edu.tw  |
+| Yi-Quan Chen       | a2311496a@gmail.com          |
 | Ming-Hong Hsu      | joe888joejoe@gmail.com       |
 | Yu-Hsin Chuang     | brandonyuhsin@gmail.com      |
 
