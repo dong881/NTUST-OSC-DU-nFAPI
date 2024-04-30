@@ -2119,7 +2119,7 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
 /* ======== small cell integration ======== */
 #ifdef NFAPI
    #ifdef NR_TDD
-      configReq->number_of_tlvs = 28;
+      configReq->number_of_tlvs = 28 + 140;
    #else
       configReq->number_of_tlvs = 26;
    #endif

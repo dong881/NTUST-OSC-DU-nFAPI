@@ -1174,73 +1174,79 @@ static uint8_t pack_nr_config_request(void *msg, uint8_t **ppWritePackedMsg, uin
        number of subframe per frame for nr is 10
        2 * 2 * 10 = 40 slots per frame
 */
-#define TDD_CONFIG_NB_FRAMES 2
-#define NR_NUMBER_OF_SUBFRAMES_PER_FRAME 10
-#define NR_NUMBER_OF_SYMBOLS_PER_SLOT 14
+// #define TDD_CONFIG_NB_FRAMES 2
+// #define NR_NUMBER_OF_SUBFRAMES_PER_FRAME 10
+// #define NR_NUMBER_OF_SYMBOLS_PER_SLOT 14
 
-  int nrofDownlinkSlots = 7;
-  int nrofDownlinkSymbols = 6;
-  int nrofUplinkSlots = 2;
-  int nrofUplinkSymbols = 4;
+//   int nrofDownlinkSlots = 7;
+//   int nrofDownlinkSymbols = 6;
+//   int nrofUplinkSlots = 2;
+//   int nrofUplinkSymbols = 4;
 
-  int mu = 1;
-  int nb_slot_to_set = TDD_CONFIG_NB_FRAMES * (1 << mu) * NR_NUMBER_OF_SUBFRAMES_PER_FRAME;
-  int nb_periods_per_frame = 2; // TDD period case 6
-  int nb_slots_per_periods = ((1 << mu) * NR_NUMBER_OF_SUBFRAMES_PER_FRAME) / nb_periods_per_frame;
-  int slot_number = 0;
+//   int mu = 1;
+//   int nb_slot_to_set = TDD_CONFIG_NB_FRAMES * (1 << mu) * NR_NUMBER_OF_SUBFRAMES_PER_FRAME;
+//   int nb_periods_per_frame = 2; // TDD period case 6
+//   int nb_slots_per_periods = ((1 << mu) * NR_NUMBER_OF_SUBFRAMES_PER_FRAME) / nb_periods_per_frame;
+//   int slot_number = 0;
 
-  while (slot_number != nb_slot_to_set)
-  {
-    for (int number_of_symbol = 0;
-         number_of_symbol < nrofDownlinkSlots * NR_NUMBER_OF_SYMBOLS_PER_SLOT;
-         number_of_symbol++)
-    {
-      pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].max_num_of_symbol_per_slot_list[number_of_symbol % NR_NUMBER_OF_SYMBOLS_PER_SLOT].slot_config.value = 0;
+//   while (slot_number != nb_slot_to_set)
+//   {
+//     for (int number_of_symbol = 0;
+//          number_of_symbol < nrofDownlinkSlots * NR_NUMBER_OF_SYMBOLS_PER_SLOT;
+//          number_of_symbol++)
+//     {
+//       pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].max_num_of_symbol_per_slot_list[number_of_symbol % NR_NUMBER_OF_SYMBOLS_PER_SLOT].slot_config.value = 0;
 
-      if ((number_of_symbol + 1) % NR_NUMBER_OF_SYMBOLS_PER_SLOT == 0)
-        slot_number++;
-    }
+//       if ((number_of_symbol + 1) % NR_NUMBER_OF_SYMBOLS_PER_SLOT == 0)
+//         slot_number++;
+//     }
 
-    for (int number_of_symbol = 0; number_of_symbol < nrofDownlinkSymbols; number_of_symbol++)
-    {
-      pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].max_num_of_symbol_per_slot_list[number_of_symbol].slot_config.value = 0;
-    }
+//     for (int number_of_symbol = 0; number_of_symbol < nrofDownlinkSymbols; number_of_symbol++)
+//     {
+//       pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].max_num_of_symbol_per_slot_list[number_of_symbol].slot_config.value = 0;
+//     }
 
-    for (int number_of_symbol = nrofDownlinkSlots;
-         number_of_symbol < NR_NUMBER_OF_SYMBOLS_PER_SLOT - nrofUplinkSymbols;
-         number_of_symbol++)
-    {
-      pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].max_num_of_symbol_per_slot_list[number_of_symbol].slot_config.value = 2;
-    }
+//     for (int number_of_symbol = nrofDownlinkSlots;
+//          number_of_symbol < NR_NUMBER_OF_SYMBOLS_PER_SLOT - nrofUplinkSymbols;
+//          number_of_symbol++)
+//     {
+//       pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].max_num_of_symbol_per_slot_list[number_of_symbol].slot_config.value = 2;
+//     }
 
-    for (int number_of_symbol = NR_NUMBER_OF_SYMBOLS_PER_SLOT - nrofUplinkSymbols;
-         number_of_symbol < NR_NUMBER_OF_SYMBOLS_PER_SLOT;
-         number_of_symbol++)
-    {
-      pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].max_num_of_symbol_per_slot_list[number_of_symbol].slot_config.value = 1;
-    }
+//     for (int number_of_symbol = NR_NUMBER_OF_SYMBOLS_PER_SLOT - nrofUplinkSymbols;
+//          number_of_symbol < NR_NUMBER_OF_SYMBOLS_PER_SLOT;
+//          number_of_symbol++)
+//     {
+//       pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].max_num_of_symbol_per_slot_list[number_of_symbol].slot_config.value = 1;
+//     }
 
-    slot_number++;
+//     slot_number++;
 
-    for (int number_of_symbol = 0;
-         number_of_symbol < nrofUplinkSlots * NR_NUMBER_OF_SYMBOLS_PER_SLOT;
-         number_of_symbol++)
-    {
-      pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].max_num_of_symbol_per_slot_list[number_of_symbol % NR_NUMBER_OF_SYMBOLS_PER_SLOT].slot_config.value = 1;
+//     for (int number_of_symbol = 0;
+//          number_of_symbol < nrofUplinkSlots * NR_NUMBER_OF_SYMBOLS_PER_SLOT;
+//          number_of_symbol++)
+//     {
+//       pNfapiMsg->tdd_table.max_tdd_periodicity_list[slot_number].max_num_of_symbol_per_slot_list[number_of_symbol % NR_NUMBER_OF_SYMBOLS_PER_SLOT].slot_config.value = 1;
 
-      if ((number_of_symbol + 1) % NR_NUMBER_OF_SYMBOLS_PER_SLOT == 0)
-        slot_number++;
-    }
-  }
+//       if ((number_of_symbol + 1) % NR_NUMBER_OF_SYMBOLS_PER_SLOT == 0)
+//         slot_number++;
+//     }
+//   }
+  // printf(":\n");
+  // for (int row = 0; row < 40; row++) {
+  //   for (int symbol_count = 0; symbol_count < 14; symbol_count++) {
+  //       printf("%d ", pNfapiMsg->tdd_table.max_tdd_periodicity_list[row].max_num_of_symbol_per_slot_list[symbol_count].slot_config.value);
+  //   }
+  //   printf("\n"); // Print newline after each row
+  // }
 
-  // packing tdd slot config
-  // for (int i = 0; i < 40; i++)
-  // {
-  //   for (int symbol = 0; symbol < 14; symbol++)
-  //   {
-  //     push8((uint8_t)pNfapiMsg->tdd_table.max_tdd_periodicity_list[i].max_num_of_symbol_per_slot_list[symbol].slot_config.value,
-  //           ppWritePackedMsg,
-  //           end);
+  // int num_slot_config = 0;
+  // //packing tdd slot config
+  // for (int i = 0; i < 40; i++) {
+  //   for (int k = 0; k < 14; k++) {
+  //     printf("\n[NFAPI P5]  ->  TAG 0x%x with value %lu and length %ld", NFAPI_NR_CONFIG_SLOT_CONFIG_TAG, pNfapiMsg->tdd_table.max_tdd_periodicity_list[i].max_num_of_symbol_per_slot_list[k].slot_config.value, pNfapiMsg->tdd_table.max_tdd_periodicity_list[i].max_num_of_symbol_per_slot_list[k].slot_config.tl.length);      
+  //     pack_nr_tlv(NFAPI_NR_CONFIG_SLOT_CONFIG_TAG, &(pNfapiMsg->tdd_table.max_tdd_periodicity_list[i].max_num_of_symbol_per_slot_list[k].slot_config), ppWritePackedMsg, end, &pack_uint8_tlv_value);  
+  //     num_slot_config++;    
   //   }
   // }
 
@@ -2907,7 +2913,7 @@ static uint8_t unpack_nr_config_request(uint8_t **ppReadPackedMsg, uint8_t *end,
     uint8_t tagMatch = 0;
     uint8_t *pStartOfValue = 0;
     for (idx = 0; idx < sizeof(unpack_fns) / sizeof(unpack_tlv_t); ++idx) {
-      if (unpack_fns[idx].tag == generic_tl.tag) { // match the extracted tag value with all the tags in unpack_fn list
+            if (unpack_fns[idx].tag == generic_tl.tag) { // match the extracted tag value with all the tags in unpack_fn list
         pStartOfValue = *ppReadPackedMsg;
         tagMatch = 1;
         nfapi_tl_t *tl = (nfapi_tl_t *)(unpack_fns[idx].tlv);
