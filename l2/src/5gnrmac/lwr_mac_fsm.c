@@ -4300,7 +4300,8 @@ uint8_t OAI_OSC_fillSib1TxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, Ma
    }
    memcpy(sib1Payload, macCellCfg->cellCfg.sib1Cfg.sib1Pdu, macCellCfg->cellCfg.sib1Cfg.sib1PduLen);
    
-   pduDesc[pduIndex].TLVs[0].value.ptr = sib1Payload;
+   memcpy(pduDesc[pduIndex].TLVs[0].value.direct, sib1Payload, payloadSize);
+   // pduDesc[pduIndex].TLVs[0].value.direct = sib1Payload;
 
    pduDesc[pduIndex].PDU_length = payloadSize; 
 
@@ -4346,7 +4347,8 @@ uint8_t OAI_OSC_fillPageTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, Dl
    }
    memcpy(pagePayload, pageAllocInfo->pageDlSch.dlPagePdu, pageAllocInfo->pageDlSch.dlPagePduLen);
 
-   pduDesc[pduIndex].TLVs[0].value.ptr = pagePayload;
+   memcpy(pduDesc[pduIndex].TLVs[0].value.direct, pagePayload, payloadSize);
+   // pduDesc[pduIndex].TLVs[0].value.direct = pagePayload;
    pduDesc[pduIndex].PDU_length = payloadSize; 
 
    LWR_MAC_FREE(pagePayload, payloadSize);
@@ -4392,7 +4394,8 @@ uint8_t OAI_OSC_fillRarTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, Rar
    
    memcpy(rarPayload, rarInfo->rarPdu, rarInfo->rarPduLen);
 
-   pduDesc[pduIndex].TLVs[0].value.ptr = rarPayload;
+   memcpy(pduDesc[pduIndex].TLVs[0].value.direct, rarPayload, payloadSize);
+   // pduDesc[pduIndex].TLVs[0].value.direct = rarPayload;
    pduDesc[pduIndex].PDU_length = payloadSize;
 
    LWR_MAC_FREE(rarPayload, payloadSize);
@@ -4436,7 +4439,8 @@ uint8_t OAI_OSC_fillDlMsgTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, D
    }
    memcpy(dlMsgPayload, dlMsgSchInfo->dlMsgPdu, dlMsgSchInfo->dlMsgPduLen);
 
-   pduDesc[pduIndex].TLVs[0].value.ptr = dlMsgPayload;
+   memcpy(pduDesc[pduIndex].TLVs[0].value.direct, dlMsgPayload, payloadSize);
+   // pduDesc[pduIndex].TLVs[0].value.ptr = dlMsgPayload;
    pduDesc[pduIndex].PDU_length = payloadSize;
 
    LWR_MAC_FREE(dlMsgPayload, payloadSize);
