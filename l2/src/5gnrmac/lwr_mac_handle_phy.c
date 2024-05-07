@@ -55,11 +55,11 @@ RachIndFunc sendRachIndOpts[] =
 {
    packRachInd,
 /* ======== small cell integration ======== */
-//#ifdef NFAPI
-//   OAI_OSC_nfapiMacRachInd, //TODO: Develop OAI_OSC_nfapiMacRachInd()
-//#else
+#ifdef NFAPI
+   OAI_OSC_nfapiMacRachInd,
+#else
    fapiMacRachInd,
-//#endif
+#endif
 /* ======================================== */
    packRachInd
 };
