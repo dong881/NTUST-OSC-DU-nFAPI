@@ -1351,7 +1351,7 @@ void setMibPdu(uint8_t *mibPdu, uint32_t *val, uint16_t sfn)
 {
    DU_LOG("\nDEBUG  -->  sfn %x", sfn);
    DU_LOG("\nDEBUG  -->  *mibPdu %x", *mibPdu);
-   *mibPdu |= ((uint8_t)((sfn >> 4) & 0x1f) << 1); // 0xFC 1111 1100
+   *mibPdu |= ((uint8_t)((sfn >> 4) & 0x3f) << 1);
    DU_LOG("\nDEBUG  -->  LWR_MAC: mibPdu %x", (uint8_t)((sfn >> 4) & 0x3f) << 2);
    *val = (mibPdu[2] << 24 | mibPdu[1] << 16 | mibPdu[0] << 8);
    DU_LOG("\nDEBUG  -->  LWR_MAC: MIB PDU %x", *val);
@@ -2122,7 +2122,7 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
 /* ======== small cell integration ======== */
 #ifdef NFAPI
    #ifdef NR_TDD
-      configReq->number_of_tlvs = 28 + 140;
+      configReq->number_of_tlvs = 30 + 140;
    #else
       configReq->number_of_tlvs = 26;
    #endif
@@ -2134,7 +2134,7 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
    msgLen = sizeof(configReq->number_of_tlvs);
 
    fillTlvs(&configReq->tlvs[index++], FAPI_DL_BANDWIDTH_TAG,           \
-         sizeof(uint32_t), macCfgParams.carrCfg.dlBw, &msgLen);
+         sizeof(uint16_t), macCfgParams.carrCfg.dlBw, &msgLen);
    fillTlvs(&configReq->tlvs[index++], FAPI_DL_FREQUENCY_TAG,           \
          sizeof(uint32_t), macCfgParams.carrCfg.dlFreq, &msgLen);
    /* Due to bug in Intel FT code, commenting TLVs that are are not 
@@ -2148,7 +2148,7 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
    fillTlvs(&configReq->tlvs[index++], FAPI_NUM_TX_ANT_TAG,             \
          sizeof(uint16_t), macCfgParams.carrCfg.numTxAnt, &msgLen);
    fillTlvs(&configReq->tlvs[index++], FAPI_UPLINK_BANDWIDTH_TAG,       \
-         sizeof(uint32_t), macCfgParams.carrCfg.ulBw, &msgLen);
+         sizeof(uint16_t), macCfgParams.carrCfg.ulBw, &msgLen);
    fillTlvs(&configReq->tlvs[index++], FAPI_UPLINK_FREQUENCY_TAG,       \
          sizeof(uint32_t), macCfgParams.carrCfg.ulFreq, &msgLen);
    //fillTlvs(&configReq->tlvs[index++], FAPI_UL_K0_TAG,                  \
@@ -2162,14 +2162,14 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
 
    /* fill cell config */
    fillTlvs(&configReq->tlvs[index++], FAPI_PHY_CELL_ID_TAG,               \
-         sizeof(uint8_t), macCfgParams.cellCfg.phyCellId, &msgLen);
+         sizeof(uint16_t), macCfgParams.cellCfg.phyCellId, &msgLen);
    fillTlvs(&configReq->tlvs[index++], FAPI_FRAME_DUPLEX_TYPE_TAG,         \
          sizeof(uint8_t), macCfgParams.cellCfg.dupType, &msgLen);
 
    /* fill SSB configuration */
    fillTlvs(&configReq->tlvs[index++], FAPI_SS_PBCH_POWER_TAG,             \
          sizeof(uint32_t), macCfgParams.ssbCfg.ssbPbchPwr, &msgLen);
-   //fillTlvs(&configReq->tlvs[index++], FAPI_BCH_PAYLOAD_TAG,               \
+   fillTlvs(&configReq->tlvs[index++], FAPI_BCH_PAYLOAD_TAG,               \
    sizeof(uint8_t), macCfgParams.ssbCfg.bchPayloadFlag, &msgLen);
    fillTlvs(&configReq->tlvs[index++], FAPI_SCS_COMMON_TAG,                \
          sizeof(uint8_t), macCfgParams.ssbCfg.scsCmn, &msgLen);
@@ -2187,7 +2187,7 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
          sizeof(uint8_t), macCfgParams.prachCfg.prachCfgIdx, &msgLen);
    fillTlvs(&configReq->tlvs[index++], FAPI_PRACH_ROOT_SEQUENCE_INDEX_TAG, \
          sizeof(uint16_t), macCfgParams.prachCfg.fdm[0].rootSeqIdx, &msgLen);
-   //fillTlvs(&configReq->tlvs[index++], FAPI_NUM_ROOT_SEQUENCES_TAG,        \
+   fillTlvs(&configReq->tlvs[index++], FAPI_NUM_ROOT_SEQUENCES_TAG,        \
    sizeof(uint8_t), macCfgParams.prachCfg.fdm[0].numRootSeq, &msgLen);
    fillTlvs(&configReq->tlvs[index++], FAPI_K1_TAG,                        \
          sizeof(uint16_t), macCfgParams.prachCfg.fdm[0].k1, &msgLen);
@@ -4519,6 +4519,9 @@ void OAI_OSC_fillSib1DlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *sib1Pdc
       coreset0Size= sib1PdcchInfo->coresetCfg.coreSetSize;
       rbStart = sib1PdcchInfo->dci.pdschCfg.pdschFreqAlloc.startPrb;
       rbLen = sib1PdcchInfo->dci.pdschCfg.pdschFreqAlloc.numPrb;
+      printf("\ncoreset0Size = %d\n", coreset0Size);
+      printf("rbStart = %d\n", rbStart);
+      printf("rbLen = %d\n", rbLen);
 
       if((rbLen >=1) && (rbLen <= coreset0Size - rbStart))
       {
@@ -4530,6 +4533,8 @@ void OAI_OSC_fillSib1DlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *sib1Pdc
 
 	 freqDomResAssignSize = ceil(log2(coreset0Size * (coreset0Size + 1) / 2));
       }
+      printf("freqDomResAssign = %d\n", freqDomResAssign);
+      printf("freqDomResAssignSize = %d\n", freqDomResAssignSize);
 
       /* Fetching DCI field values */
       timeDomResAssign = sib1PdcchInfo->dci.pdschCfg.pdschTimeAlloc.rowIndex -1;
