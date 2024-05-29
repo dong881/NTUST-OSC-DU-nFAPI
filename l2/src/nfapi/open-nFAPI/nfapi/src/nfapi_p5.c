@@ -1123,28 +1123,51 @@ static uint8_t pack_nr_config_request(void *msg, uint8_t **ppWritePackedMsg, uin
   for (int i = 0; i < intgr_fapi_config->number_of_tlvs; i++)
   {
     ORAN_OAI_fapi_uint32_tlv_t tlv = intgr_fapi_config->tlvs[i];
-    switch (tlv.tl.length)
-    {
-    case 1: // 8 bits format
-      printf("\n[NFAPI P5]  ->  TAG 0x%x with value %lu and length %ld", tlv.tl.tag, tlv.value, tlv.tl.length);
-      // pack_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint8_tlv_value);
-      pack_nr_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint8_tlv_value);
-      break;
-    case 2: // 16 bits format
-      printf("\n[NFAPI P5]  ->  TAG 0x%x with value %lu and length %ld", tlv.tl.tag, tlv.value, tlv.tl.length);
-      // pack_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint16_tlv_value);
-      pack_nr_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint16_tlv_value);
-      break;
-    case 4: // 32 bits format
-      printf("\n[NFAPI P5]  ->  TAG 0x%x with value %lu and length %ld", tlv.tl.tag, tlv.value, tlv.tl.length);
-      // pack_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint32_tlv_value);
-      pack_nr_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint32_tlv_value);
-      break;
-    default:
-      printf("\n[NFAPI P5]  ->==============================================", __FUNCTION__);
-      printf("\n[NFAPI P5]  ->  Func : %s length failed", __FUNCTION__);
-      printf("\n[NFAPI P5]  ->  TAG 0x%x with value %d and length 0x%1x", tlv.tl.tag, tlv.value, tlv.tl.length);
-      break;
+/* ======== small cell integration ======== */
+    //TODO:need to improve this part of the code
+    if (tlv.tl.tag == NFAPI_NR_CONFIG_DL_GRID_SIZE_TAG){
+      push16(NFAPI_NR_CONFIG_DL_GRID_SIZE_TAG, ppWritePackedMsg, end) && push16(5 * sizeof(uint16_t), ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(106, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end); // Padding
+    }
+    else if (tlv.tl.tag == NFAPI_NR_CONFIG_UL_GRID_SIZE_TAG){
+      push16(NFAPI_NR_CONFIG_UL_GRID_SIZE_TAG, ppWritePackedMsg, end) && push16(5 * sizeof(uint16_t), ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(106, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end); // Padding
+    }
+/* ======================================== */
+    else{
+      switch (tlv.tl.length)
+      {
+      case 1: // 8 bits format
+        printf("\n[NFAPI P5]  ->  TAG 0x%x with value %lu and length %ld", tlv.tl.tag, tlv.value, tlv.tl.length);
+        // pack_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint8_tlv_value);
+        pack_nr_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint8_tlv_value);
+        break;
+      case 2: // 16 bits format
+        printf("\n[NFAPI P5]  ->  TAG 0x%x with value %lu and length %ld", tlv.tl.tag, tlv.value, tlv.tl.length);
+        // pack_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint16_tlv_value);
+        pack_nr_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint16_tlv_value);
+        break;
+      case 4: // 32 bits format
+        printf("\n[NFAPI P5]  ->  TAG 0x%x with value %lu and length %ld", tlv.tl.tag, tlv.value, tlv.tl.length);
+        // pack_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint32_tlv_value);
+        pack_nr_tlv(tlv.tl.tag, &(tlv), ppWritePackedMsg, end, &pack_uint32_tlv_value);
+        break;
+      default:
+        printf("\n[NFAPI P5]  ->==============================================", __FUNCTION__);
+        printf("\n[NFAPI P5]  ->  Func : %s length failed", __FUNCTION__);
+        printf("\n[NFAPI P5]  ->  TAG 0x%x with value %d and length 0x%1x", tlv.tl.tag, tlv.value, tlv.tl.length);
+        break;
+      }
     }
   }
 
