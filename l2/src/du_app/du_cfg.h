@@ -39,7 +39,13 @@
 #endif
 
 #define F1_EGTP_PORT  2152  /* As per the spec 29.281, the registered port number for GTP-U is 2152 */
+/* ======== small cell integration ======== */
+#ifdef NFAPI
+#define NR_PCI 0
+#else
 #define NR_PCI 1
+#endif
+/* ======================================== */
 #define NR_CELL_ID 1
 
 #define DU_NAME "ORAN OAM DU"
@@ -67,11 +73,12 @@
       // For band 78 TDD
       #define DUPLEX_MODE DUP_MODE_TDD
       #define NR_NUMEROLOGY 1
-      #define NR_DL_ARFCN 640008 //OAI 640008
-      #define NR_UL_ARFCN 640008 //OAI 640008
+      #define NR_DL_ARFCN 623400 //OAI 640008
+      #define NR_UL_ARFCN 623400 //OAI 640008
       #define NR_FREQ_BAND 78
       #define NR_SCS SCS_30KHZ
-      #define NR_BANDWIDTH BANDWIDTH_40MHZ //OAI
+      #define NR_SCS_BW 106
+      #define NR_BANDWIDTH BANDWIDTH_100MHZ //Use OSC 100MHz
       #define NR_DL_FREQ 3600120 //kHz
       #define NR_UL_FREQ 3600120 //kHz
    #else
@@ -82,6 +89,7 @@
       #define NR_UL_ARFCN 352000 //1760000kHz
       #define NR_FREQ_BAND 66 
       #define NR_SCS SCS_30KHZ
+      #define NR_SCS_BW 106
       #define NR_BANDWIDTH BANDWIDTH_20MHZ
       #define NR_DL_FREQ 2160000 //kHz
       #define NR_UL_FREQ 1760000 //kHz
@@ -91,11 +99,11 @@
 
 #define TRANS_ID 1
 #define DU_TAC 1
-#define PLMN_MCC0 4
-#define PLMN_MCC1 6
-#define PLMN_MCC2 6
-#define PLMN_MNC0 9
-#define PLMN_MNC1 2
+#define PLMN_MCC0 0
+#define PLMN_MCC1 0
+#define PLMN_MCC2 1
+#define PLMN_MNC0 0
+#define PLMN_MNC1 1
 #define PLMN_MNC2 0
 #define PLMN_SIZE 3
 
@@ -111,7 +119,13 @@
 #define NUM_RX_ANT 1 //  2 -> 1 -> 2 -> 1
 /* ======================================== */
 #define FREQ_SHIFT_7P5KHZ FALSE
+/* ======== small cell integration ======== */
+#ifdef NFAPI
+#define SSB_PBCH_PWR -25
+#else
 #define SSB_PBCH_PWR 0
+#endif
+/* ======================================== */
 #define BCH_PAYLOAD PHY_GEN_TIMING_PBCH_BIT
 #define NORMAL_CYCLIC_PREFIX 0
 /* ======== small cell integration ======== */
@@ -206,8 +220,15 @@
 #define NUM_TIME_DOM_RSRC_ALLOC 2
 #define PDSCH_K0_CFG1  0
 #define PDSCH_K0_CFG2  1
+/* ======== small cell integration ======== */
+#ifdef NFAPI
+#define PDSCH_START_SYMBOL  1
+#define PDSCH_LENGTH_SYMBOL 5
+#else
 #define PDSCH_START_SYMBOL  3
 #define PDSCH_LENGTH_SYMBOL 11
+#endif
+/* ======================================== */
 #define PDSCH_RES_ALLOC_TYPE       1          /* Resource allocation type */
 #define PDSCH_MAX_CODEWORD_SCH_BY_DCI 0       /* Max num of codewords scheduled by DCI */
 #define PDSCH_RBG_SIZE   0                    /* 0: config1 */
