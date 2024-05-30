@@ -122,7 +122,7 @@
 #define TOTAL_PRB_100MHZ_MU1 273
 #ifdef NR_TDD
    #ifdef NFAPI
-      #define MAX_NUM_RB TOTAL_PRB_40MHZ_MU1  /* value for numerology 1, 100 MHz */
+      #define MAX_NUM_RB TOTAL_PRB_100MHZ_MU1  /*//Use OSC 100MHz value for numerology 1, 100 MHz */
    #else
       #define MAX_NUM_RB TOTAL_PRB_100MHZ_MU1  /* value for numerology 1, 100 MHz */
    #endif
