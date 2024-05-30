@@ -61,6 +61,7 @@
 #include "BCCH-DL-SCH-Message.h"
 #include "du_f1ap_conversions.h"
 #include "du_sys_info_hdl.h"
+#include "/home/hpe/mwnl-odu-at-oai-based-on-scf/src/codec_utils/RRC/UE-TimersAndConstants.h"
 
 void FreeSib1Msg(SIB1_t *sib1Msg);
 uint8_t FreqInfoUlret = RFAILED;
@@ -2501,6 +2502,16 @@ uint8_t BuildSib1Msg()
       {
          break;
       }
+
+      /* NR_UE_TimersAndConstants */
+      DU_ALLOC(sib1Msg->ue_TimersAndConstants, sizeof(sib1Msg->ue_TimersAndConstants));
+      sib1Msg->ue_TimersAndConstants->t300 = 3;
+      sib1Msg->ue_TimersAndConstants->t301 = 3;
+      sib1Msg->ue_TimersAndConstants->t310 = 6;
+      sib1Msg->ue_TimersAndConstants->n310 = 6;
+      sib1Msg->ue_TimersAndConstants->t311 = 1;
+      sib1Msg->ue_TimersAndConstants->n311 = 0;
+      sib1Msg->ue_TimersAndConstants->t319 = 3;
 
       xer_fprint(stdout, &asn_DEF_BCCH_DL_SCH_Message, &bcchMsg);
 
