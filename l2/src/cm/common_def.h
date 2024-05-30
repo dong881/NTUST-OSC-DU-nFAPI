@@ -104,7 +104,13 @@
 #define PUCCH_FORMAT_3 3 
 #define PUCCH_FORMAT_4 4
 
+/* ======== small cell integration ======== */
+#ifdef NFAPI
+#define DEFAULT_MCS 5
+#else
 #define DEFAULT_MCS 4
+#endif
+/* ======================================== */
 
 #define BANDWIDTH_20MHZ 20
 #define BANDWIDTH_40MHZ 40 //OAI
