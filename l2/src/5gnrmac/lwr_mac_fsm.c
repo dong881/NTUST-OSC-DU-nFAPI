@@ -4523,15 +4523,14 @@ void OAI_OSC_fillSib1DlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *sib1Pdc
       printf("rbStart = %d\n", rbStart);
       printf("rbLen = %d\n", rbLen);
 
-      if((rbLen >=1) && (rbLen <= coreset0Size - rbStart))
-      {
-	 if((rbLen - 1) <= floor(coreset0Size / 2))
-	    freqDomResAssign = (coreset0Size * (rbLen-1)) + rbStart;
-	 else
-	    freqDomResAssign = (coreset0Size * (coreset0Size - rbLen + 1)) \
-			       + (coreset0Size - 1 - rbStart);
-
-	 freqDomResAssignSize = ceil(log2(coreset0Size * (coreset0Size + 1) / 2));
+      int BWPsize = coreset0Size;
+      if((rbLen >=1) && (rbLen <= BWPsize - rbStart)) {
+         if((rbLen - 1) <= floor(BWPsize / 2))
+            freqDomResAssign = (BWPsize * (rbLen-1)) + rbStart;
+         else
+            freqDomResAssign = (BWPsize * (BWPsize - rbLen + 1)) \
+                     + (BWPsize - 1 - rbStart);
+         freqDomResAssignSize = ceil(log2(BWPsize * (BWPsize + 1) / 2));
       }
       printf("freqDomResAssign = %d\n", freqDomResAssign);
       printf("freqDomResAssignSize = %d\n", freqDomResAssignSize);
