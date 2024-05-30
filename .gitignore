@@ -1,3 +1,11 @@
 openairinterface/
 l2/build/*
 l2/libs/*
+# Ignore built files for l2
+*.a
+l2/build/odu/bin/odu/odu
+l2/build/odu/bin/odu/
+l2/build/odu/bin/ric_stub/
+l2/build/odu/lib/odu/*.a
+l2/build/odu/lib/ric_stub/*.a
+l2/libs/*.a
