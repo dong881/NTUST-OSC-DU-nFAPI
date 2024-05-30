@@ -218,7 +218,13 @@ uint8_t readMacCfg()
    duCfgParam.macCellCfg.ssbCfg.ssbPeriod = SSB_PRDCTY_MS_20;
    duCfgParam.macCellCfg.ssbCfg.ssbScOffset = SSB_SUBCARRIER_OFFSET;
 #endif
+/* ======== small cell integration ======== */
+#ifdef NFAPI
+   duCfgParam.macCellCfg.ssbCfg.ssbMask[0] = -2147483648; /*Use OAI ssb mask only one SSB is transmitted */
+#else
    duCfgParam.macCellCfg.ssbCfg.ssbMask[0] = 1; /* only one SSB is transmitted */
+#endif
+/* ======================================== */
    if(BuildMibPdu() != ROK)
    {
       DU_LOG("\nERROR  -->  Failed to build MIB PDU");
