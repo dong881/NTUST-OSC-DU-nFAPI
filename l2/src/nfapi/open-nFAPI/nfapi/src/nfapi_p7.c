@@ -342,7 +342,6 @@ static uint8_t pack_dl_tti_pdsch_pdu_rel15_value(void *tlv, uint8_t **ppWritePac
 
 static uint8_t pack_dl_tti_ssb_pdu_rel15_value(void *tlv, uint8_t **ppWritePackedMsg, uint8_t *end)
 {
-  printf("\nDEBUG  -->  %s() Packing ssb.\n",__FUNCTION__);
   NFAPI_TRACE(NFAPI_TRACE_DEBUG, "Packing ssb. \n");
   nfapi_nr_dl_tti_ssb_pdu_rel15_t *value = (nfapi_nr_dl_tti_ssb_pdu_rel15_t *)tlv;
   if (!(push16(value->PhysCellId, ppWritePackedMsg, end) && push8(value->BetaPss, ppWritePackedMsg, end)
@@ -680,7 +679,6 @@ static uint8_t pack_dl_tti_request_body_value(void *tlv, uint8_t **ppWritePacked
     } break;
 
     case NFAPI_NR_DL_TTI_SSB_PDU_TYPE: {
-      printf("\nDEBUG  -->  PDU TAG: NFAPI_NR_DL_TTI_SSB_PDU_TYPE\n");
       if (!(pack_dl_tti_ssb_pdu_rel15_value(&value->ssb_pdu.ssb_pdu_rel15, ppWritePackedMsg, end)))
         return 0;
     } break;
@@ -690,7 +688,6 @@ static uint8_t pack_dl_tti_request_body_value(void *tlv, uint8_t **ppWritePacked
     } break;
   }
   // pack proper size
-  printf("\nStill alive!!!!!!\n");
   uintptr_t msgEnd = (uintptr_t)*ppWritePackedMsg;
   uint16_t packedMsgLen = msgEnd - msgHead;
   value->PDUSize = packedMsgLen;
@@ -861,7 +858,6 @@ static uint8_t pack_dl_tti_request(void *msg, uint8_t **ppWritePackedMsg, uint8_
     }
     return 0;
   }
-  printf("\nDEBUG  --> pack_dl_tti_request doen ~~~~~\n");
   return 1;
 }
 
@@ -2035,7 +2031,6 @@ static uint8_t pack_tx_data_pdu_list_value(void *tlv, uint8_t **ppWritePackedMsg
   for (; i < total_number_of_tlvs; ++i) {
     if (!(push16(value->TLVs[i].tag, ppWritePackedMsg, end) && push16(value->TLVs[i].length, ppWritePackedMsg, end)))
       return 0;
-    printf("\nDEBUG  --> value->TLVs[i].tag:%d\n",value->TLVs[i].tag);
     switch (value->TLVs[i].tag) {
       case 0: {
         if (!pusharray32(value->TLVs[i].value.direct, 16384, (value->TLVs[i].length + 3) / 4, ppWritePackedMsg, end)) {
@@ -3695,7 +3690,6 @@ int nfapi_nr_p7_message_pack(void *pMessageBuf, void *pPackedBuf, uint32_t packe
       break;
 
     case NFAPI_NR_PHY_MSG_TYPE_UL_TTI_REQUEST:
-    printf("\nDEBUG  -->  I am here pack_ul_tti_request\n");
       result = pack_ul_tti_request(pMessageHeader, &pWritePackedMessage, end, config);
       break;
 
