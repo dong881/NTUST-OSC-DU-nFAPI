@@ -2227,7 +2227,7 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
 
    setMibPdu(macCfgParams.ssbCfg.mibPdu, &mib, 0);
    fillTlvs(&configReq->tlvs[index++], FAPI_MIB_TAG,
-            sizeof(uint32_t), mib, &msgLen);
+            sizeof(uint32_t), 0, &msgLen);
 
    fillTlvs(&configReq->tlvs[index++], FAPI_SSB_MASK_TAG,
             sizeof(uint32_t), macCfgParams.ssbCfg.ssbMask[0], &msgLen);
