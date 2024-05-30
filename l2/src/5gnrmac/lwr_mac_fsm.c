@@ -4517,8 +4517,15 @@ void OAI_OSC_fillSib1DlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *sib1Pdc
        * Spec 38.214 Sec 5.1.2.2.2
        */
       coreset0Size= sib1PdcchInfo->coresetCfg.coreSetSize;
+/* ======== small cell integration ======== */
+#ifdef NFAPI
+      rbStart = 0;
+      rbLen = 16;
+#else
       rbStart = sib1PdcchInfo->dci.pdschCfg.pdschFreqAlloc.startPrb;
       rbLen = sib1PdcchInfo->dci.pdschCfg.pdschFreqAlloc.numPrb;
+#endif
+/* ======================================== */
       printf("\ncoreset0Size = %d\n", coreset0Size);
       printf("rbStart = %d\n", rbStart);
       printf("rbLen = %d\n", rbLen);
@@ -5304,8 +5311,15 @@ uint8_t OAI_OSC_fillSsbPdu(nfapi_nr_dl_tti_request_pdu_t *dlTtiReqPdu, MacCellCf
       /* Bit manipulation for SFN */
       setMibPdu(macCellCfg->ssbCfg.mibPdu, &mibPayload, sfn);
       dlTtiReqPdu->ssb_pdu.ssb_pdu_rel15.bchPayload = mibPayload;
+/* ======== small cell integration ======== */
+#ifdef NFAPI
+      dlTtiReqPdu->ssb_pdu.ssb_pdu_rel15.precoding_and_beamforming.num_prgs = 1;
+      dlTtiReqPdu->ssb_pdu.ssb_pdu_rel15.precoding_and_beamforming.prg_size = 275;
+#else
       dlTtiReqPdu->ssb_pdu.ssb_pdu_rel15.precoding_and_beamforming.num_prgs = 0;
       dlTtiReqPdu->ssb_pdu.ssb_pdu_rel15.precoding_and_beamforming.prg_size = 0;
+#endif
+/* ======================================== */
       dlTtiReqPdu->ssb_pdu.ssb_pdu_rel15.precoding_and_beamforming.dig_bf_interfaces = 0;
       dlTtiReqPdu->ssb_pdu.ssb_pdu_rel15.precoding_and_beamforming.prgs_list[0].pm_idx = 0;
       dlTtiReqPdu->ssb_pdu.ssb_pdu_rel15.precoding_and_beamforming. \
