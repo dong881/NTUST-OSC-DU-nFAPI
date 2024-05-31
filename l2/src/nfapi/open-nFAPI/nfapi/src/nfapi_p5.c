@@ -1143,6 +1143,24 @@ static uint8_t pack_nr_config_request(void *msg, uint8_t **ppWritePackedMsg, uin
         && push16(0, ppWritePackedMsg, end)
         && push16(0, ppWritePackedMsg, end); // Padding
     }
+    else if (tlv.tl.tag == NFAPI_NR_CONFIG_DL_K0_TAG){
+      push16(NFAPI_NR_CONFIG_DL_K0_TAG, ppWritePackedMsg, end) && push16(5 * sizeof(uint16_t), ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end); // Padding
+    }
+    else if (tlv.tl.tag == NFAPI_NR_CONFIG_UL_K0_TAG){
+      push16(NFAPI_NR_CONFIG_UL_K0_TAG, ppWritePackedMsg, end) && push16(5 * sizeof(uint16_t), ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end)
+        && push16(0, ppWritePackedMsg, end); // Padding
+    }
 /* ======================================== */
     else{
       switch (tlv.tl.length)
