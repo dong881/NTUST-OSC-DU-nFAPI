@@ -83,11 +83,11 @@ RxDataIndFunc sendRxDataIndOpts[] =
 {
    packRxDataInd,
 /* ======== small cell integration ======== */
-//#ifdef NFAPI
-//   OAI_OSC_nfapiMacRxDataInd, //TODO: Develop OAI_OSC_nfapiMacRxDataInd()
-//#else
+#ifdef NFAPI
+  OAI_OSC_nfapiMacRxDataInd,
+#else
    fapiMacRxDataInd,
-//#endif
+#endif
 /* ======================================== */
    packRxDataInd
 };
