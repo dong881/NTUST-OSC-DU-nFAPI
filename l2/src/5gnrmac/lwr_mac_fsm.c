@@ -2122,7 +2122,7 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
 /* ======== small cell integration ======== */
 #ifdef NFAPI
    #ifdef NR_TDD
-      configReq->number_of_tlvs = 30 + 140;
+      configReq->number_of_tlvs = 32 + 140;
    #else
       configReq->number_of_tlvs = 26;
    #endif
@@ -2139,8 +2139,8 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
          sizeof(uint32_t), macCfgParams.carrCfg.dlFreq, &msgLen);
    /* Due to bug in Intel FT code, commenting TLVs that are are not 
     * needed to avoid error. Must be uncommented when FT bug is fixed */
-   //fillTlvs(&configReq->tlvs[index++], FAPI_DL_K0_TAG,                  \
-   sizeof(uint16_t), macCfgParams.dlCarrCfg.k0[0], &msgLen);
+   fillTlvs(&configReq->tlvs[index++], FAPI_DL_K0_TAG,                  \
+   sizeof(uint16_t), macCfgParams.carrCfg.dl_k0[0], &msgLen);
    
    // N_DL_RB
    fillTlvs(&configReq->tlvs[index++], FAPI_DL_GRIDSIZE_TAG,            \
@@ -2151,8 +2151,8 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
          sizeof(uint16_t), macCfgParams.carrCfg.ulBw, &msgLen);
    fillTlvs(&configReq->tlvs[index++], FAPI_UPLINK_FREQUENCY_TAG,       \
          sizeof(uint32_t), macCfgParams.carrCfg.ulFreq, &msgLen);
-   //fillTlvs(&configReq->tlvs[index++], FAPI_UL_K0_TAG,                  \
-   sizeof(uint16_t), macCfgParams.ulCarrCfg.k0[0], &msgLen);
+   fillTlvs(&configReq->tlvs[index++], FAPI_UL_K0_TAG,                  \
+   sizeof(uint16_t), macCfgParams.carrCfg.ul_k0[0], &msgLen);
    fillTlvs(&configReq->tlvs[index++], FAPI_UL_GRID_SIZE_TAG,           \
    sizeof(uint16_t), macCfgParams.carrCfg.ulgridSize[0], &msgLen);
    fillTlvs(&configReq->tlvs[index++], FAPI_NUM_RX_ANT_TAG,             \

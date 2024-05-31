@@ -623,6 +623,8 @@ typedef struct carrierCfg
    uint32_t   ulFreq;                        /* Absolute frequency of UL point A in KHz */
    uint16_t   dlgridSize[NUM_NUMEROLOGY];    /* DL Grid size for each numerologies */
    uint16_t   ulgridSize[NUM_NUMEROLOGY];    /* UL Grid size for each numerologies */   
+   uint16_t   dl_k0[NUM_NUMEROLOGY];         //𝑘_{0}^{𝜇} for each of the numerologies [38.211, sec 5.3.1] Value: 0 ->23699   
+   uint16_t   ul_k0[NUM_NUMEROLOGY];         //𝑘0 𝜇 for each of the numerologies [38.211, sec 5.3.1] Value: : 0 ->23699
    uint32_t   numTxAnt;                      /* Number of Tx antennas */
    uint32_t   numRxAnt;                      /* Number of Rx antennas */
 }CarrierCfg;

@@ -155,6 +155,21 @@ uint8_t readMacCfg()
   #endif
   /* ======================================= */
 
+  /* ======== small cell integration ======= */
+  #ifdef NFAPI
+   duCfgParam.macCellCfg.carrCfg.ul_k0[0] = 0;
+   duCfgParam.macCellCfg.carrCfg.ul_k0[1] = 0;
+   duCfgParam.macCellCfg.carrCfg.ul_k0[2] = 0;
+   duCfgParam.macCellCfg.carrCfg.ul_k0[3] = 0;
+   duCfgParam.macCellCfg.carrCfg.ul_k0[4] = 0;
+   duCfgParam.macCellCfg.carrCfg.dl_k0[0] = 0;
+   duCfgParam.macCellCfg.carrCfg.dl_k0[1] = 0;
+   duCfgParam.macCellCfg.carrCfg.dl_k0[2] = 0;
+   duCfgParam.macCellCfg.carrCfg.dl_k0[3] = 0;
+   duCfgParam.macCellCfg.carrCfg.dl_k0[4] = 0;
+  #endif
+  /* ======================================= */
+
    /* Cell configuration */
 #ifdef O1_ENABLE
    duCfgParam.macCellCfg.cellCfg.opState    = cellParams.operationalState;
