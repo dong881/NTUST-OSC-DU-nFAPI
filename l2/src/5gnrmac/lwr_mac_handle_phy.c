@@ -105,11 +105,11 @@ UciIndFunc sendUciIndOpts[] =
 {
    packUciInd,
 /* ======== small cell integration ======== */
-//#ifdef NFAPI
-//   OAI_OSC_nfapiMacUciInd, //TODO: Develop OAI_OSC_nfapiMacUciInd()
-//#else
+#ifdef NFAPI
+  OAI_OSC_nfapiMacUciInd,
+#else
    FapiMacUciInd,
-//#endif
+#endif
 /* ======================================== */
    packUciInd
 };
