@@ -69,11 +69,11 @@ CrcIndFunc sendCrcIndOpts[] =
 {
    packCrcInd,
 /* ======== small cell integration ======== */
-//#ifdef NFAPI
-//   OAI_OSC_nfapiMacCrcInd, //TODO: Develop OAI_OSC_nfapiMacCrcInd()
-//#else
+#ifdef NFAPI
+   OAI_OSC_nfapiMacCrcInd,
+#else
    fapiMacCrcInd,
-//#endif
+#endif
 /* ======================================== */
    packCrcInd
 };
