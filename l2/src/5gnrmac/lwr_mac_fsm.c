@@ -6581,7 +6581,6 @@ uint16_t OAI_OSC_fillUlTtiReq(SlotTimingInfo currTimingInfo)
             pduIdx++;
             //TODO:OAI_OSC_fillPrachPdu done
             OAI_OSC_fillPrachPdu(&ulTtiReq->pdus_list[pduIdx], &macCellCfg, currUlSlot);
-            ulTtiReq->rach_present++;
 		   }
          printf("\nDEBUG  --> Finished OAI_OSC_fillPrachPdu\n");
 		   /* Fill PUSCH PDU */
