@@ -2122,7 +2122,7 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
 /* ======== small cell integration ======== */
 #ifdef NFAPI
    #ifdef NR_TDD
-      configReq->number_of_tlvs = 32 + 140;
+      configReq->number_of_tlvs = 35 + 140;
    #else
       configReq->number_of_tlvs = 26;
    #endif
@@ -2193,8 +2193,8 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
          sizeof(uint16_t), macCfgParams.prachCfg.fdm[0].k1, &msgLen);
    fillTlvs(&configReq->tlvs[index++], FAPI_PRACH_ZERO_CORR_CONF_TAG ,     \
          sizeof(uint8_t), macCfgParams.prachCfg.fdm[0].zeroCorrZoneCfg, &msgLen);
-   //fillTlvs(&configReq->tlvs[index++], FAPI_NUM_UNUSED_ROOT_SEQUENCES_TAG, \
-   sizeof(uint8_t), macCfgParams.prachCfg.fdm[0].numUnusedRootSeq, &msgLen);
+   fillTlvs(&configReq->tlvs[index++], FAPI_NUM_UNUSED_ROOT_SEQUENCES_TAG, \
+   sizeof(uint16_t), 0, &msgLen);
    /* if(macCfgParams.prachCfg.fdm[0].numUnusedRootSeq)
       {
       for(idx = 0; idx < macCfgParams.prachCfg.fdm[0].numUnusedRootSeq; idx++)
@@ -2210,8 +2210,8 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
    fillTlvs(&configReq->tlvs[index++], FAPI_SSB_PER_RACH_TAG,
             sizeof(uint8_t), macCfgParams.prachCfg.ssbPerRach, &msgLen);
 
-   //fillTlvs(&configReq->tlvs[index++], FAPI_PRACH_MULTIPLE_CARRIERS_IN_A_BAND_TAG,  \
-   sizeof(uint8_t), macCfgParams.prachCfg.prachMultCarrBand, &msgLen);
+   fillTlvs(&configReq->tlvs[index++], FAPI_PRACH_MULTIPLE_CARRIERS_IN_A_BAND_TAG,  \
+   sizeof(uint8_t), 0, &msgLen);
 
    /* fill SSB table */
    fillTlvs(&configReq->tlvs[index++], FAPI_SSB_OFFSET_POINT_A_TAG,
@@ -2244,6 +2244,9 @@ uint8_t lwr_mac_procConfigReqEvt(void *msg)
    /* fill TDD table */
    fillTlvs(&configReq->tlvs[index++], FAPI_TDD_PERIOD_TAG,                \
          sizeof(uint8_t), macCfgParams.tddCfg.tddPeriod, &msgLen);
+
+   fillTlvs(&configReq->tlvs[index++], FAPI_RSSI_MEASUREMENT_TAG,                \
+         sizeof(uint8_t), 1, &msgLen);
 
    for(slotIdx =0 ;slotIdx < MAX_TDD_PERIODICITY_SLOTS; slotIdx++) 
    {
