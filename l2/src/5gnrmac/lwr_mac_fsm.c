@@ -4295,9 +4295,7 @@ uint8_t OAI_OSC_fillSib1TxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, Ma
 
    /* fill the TLV */
    payloadSize = pdschCfg->codeword[0].tbSize;
-   // pduDesc[pduIndex].TLVs[0].tag = ((payloadSize & 0xff0000) >> 8) | FAPI_TX_DATA_PTR_TO_PAYLOAD_32; //pack ptr
-   // pduDesc[pduIndex].TLVs[0].tag = FAPI_TX_DATA_PTR_TO_PAYLOAD_32;FAPI_TX_DATA_PAYLOAD
-   pduDesc[pduIndex].TLVs[0].tag = FAPI_TX_DATA_PAYLOAD;
+   pduDesc[pduIndex].TLVs[0].tag = FAPI_TX_DATA_PAYLOAD; //pack direct
    pduDesc[pduIndex].TLVs[0].length = payloadSize;
    LWR_MAC_ALLOC(sib1Payload, payloadSize);
    if(sib1Payload == NULLP)
@@ -4343,8 +4341,7 @@ uint8_t OAI_OSC_fillPageTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, Dl
 
    /* fill the TLV */
    payloadSize = pageAllocInfo->pageDlSch.tbInfo.tbSize;
-   pduDesc[pduIndex].TLVs[0].tag = ((payloadSize & 0xff0000) >> 8) | FAPI_TX_DATA_PTR_TO_PAYLOAD_32; //pack ptr
-   //pduDesc[pduIndex].TLVs[0].tag = 0;
+   pduDesc[pduIndex].TLVs[0].tag = FAPI_TX_DATA_PAYLOAD; //pack direct
    pduDesc[pduIndex].TLVs[0].length = payloadSize;
    LWR_MAC_ALLOC(pagePayload, payloadSize);
    if(pagePayload == NULLP)
@@ -4390,7 +4387,7 @@ uint8_t OAI_OSC_fillRarTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, Rar
 
    /* fill the TLV */
    payloadSize = pdschCfg->codeword[0].tbSize;
-   pduDesc[pduIndex].TLVs[0].tag = FAPI_TX_DATA_PTR_TO_PAYLOAD_32; //pack ptr
+   pduDesc[pduIndex].TLVs[0].tag = FAPI_TX_DATA_PAYLOAD; //pack direct
    pduDesc[pduIndex].TLVs[0].length = payloadSize;
    LWR_MAC_ALLOC(rarPayload, payloadSize);
    if(rarPayload == NULLP)
@@ -4436,7 +4433,7 @@ uint8_t OAI_OSC_fillDlMsgTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, D
 
    /* fill the TLV */
    payloadSize = pdschCfg->codeword[0].tbSize;
-   pduDesc[pduIndex].TLVs[0].tag = FAPI_TX_DATA_PTR_TO_PAYLOAD_32; //pack ptr
+   pduDesc[pduIndex].TLVs[0].tag = FAPI_TX_DATA_PAYLOAD; //pack direct
    pduDesc[pduIndex].TLVs[0].length = payloadSize;
    LWR_MAC_ALLOC(dlMsgPayload, payloadSize);
    if(dlMsgPayload == NULLP)
