@@ -5911,17 +5911,17 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
                   OAI_OSC_fillPdcchPdu(&dlTtiReq->dl_tti_request_body.dl_tti_pdu_list[numPduEncoded],\
                                currDlSlot, -1, rntiType, CORESET_TYPE0, ueIdx);
                   numPduEncoded++;
-                  MAC_FREE(currDlSlot->dlInfo.rarAlloc[ueIdx]->rarPdcchCfg, sizeof(PdcchCfg));
                }
 				   if(currDlSlot->dlInfo.rarAlloc[ueIdx]->rarPdschCfg)
                {
                   //TODO:OAI_OSC_fillPdschPdu done
                   OAI_OSC_fillPdschPdu(&dlTtiReq->dl_tti_request_body.dl_tti_pdu_list[numPduEncoded],\
-                               &currDlSlot->dlInfo.rarAlloc[ueIdx]->rarPdschCfg,\
+                               &currDlSlot->dlInfo.rarAlloc[ueIdx]->rarPdcchCfg->dci.pdschCfg,\
                                currDlSlot->dlInfo.rarAlloc[ueIdx]->bwp,\
                                pduIndex);
                   numPduEncoded++;
                   pduIndex++;
+                  MAC_FREE(currDlSlot->dlInfo.rarAlloc[ueIdx]->rarPdcchCfg, sizeof(PdcchCfg));
 
                   DU_LOG("\033[1;32m");
                   DU_LOG("\nDEBUG  -->  LWR_MAC: RAR sent...");
