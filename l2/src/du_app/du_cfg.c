@@ -672,7 +672,7 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
    tddCfg.numUlSymbols = NUM_UL_SYMBOLS;
    srvCellCfgComm->tddCfg = tddCfg;
 
-   srvCellCfgComm->ssbPosInBurst = 192;
+   srvCellCfgComm->ssbPosInBurst = 128; //192
    srvCellCfgComm->ssbPrdServingCell = SSB_PERIODICITY;
    srvCellCfgComm->ssPbchBlockPwr = SSB_PBCH_PWR;
 
