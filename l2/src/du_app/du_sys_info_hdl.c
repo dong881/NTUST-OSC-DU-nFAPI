@@ -414,7 +414,7 @@ uint8_t BuildTac(TrackingAreaCode_t **trackAreaCode)
       DU_LOG("\nERROR  -->  DU APP: TAC memory allocation failure");
       return RFAILED;
    }   
-   *(tac->buf) = duCfgParam.sib1Params.tac;
+   tac->buf[2] = duCfgParam.sib1Params.tac;
    tac->bits_unused = ODU_VALUE_ZERO;
    *trackAreaCode = tac;
 
