@@ -2052,14 +2052,8 @@ uint8_t BuildPuschCfgCommon(struct BWP_UplinkCommon__pusch_ConfigCommon *puschCf
                {
                   DU_LOG("\nERROR  -->  DU APP : PUSCH Config memory alloc failed");
                   return RFAILED;
-               }
-/* ======== small cell integration ======== */
-#ifdef NFAPI
-               *timeDomRsrcAllocInfo->k2 = 6;
-#else
+               }   
                *timeDomRsrcAllocInfo->k2 = duPuschCfg.timeDomAllocList[idx].k2;
-#endif
-/* ======================================== */               
                timeDomRsrcAllocInfo->mappingType = duPuschCfg.timeDomAllocList[idx].mapType;
                timeDomRsrcAllocInfo->startSymbolAndLength = duPuschCfg.timeDomAllocList[idx].sliv;
             }

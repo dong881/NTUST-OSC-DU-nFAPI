@@ -647,11 +647,18 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
    puschCfg.puschCfgPresent = BWP_UplinkCommon__pusch_ConfigCommon_PR_setup;
    puschCfg.numTimeDomRsrcAlloc = 2;
    puschCfg.timeDomAllocList[0].k2 = PUSCH_K2_CFG1;
-   puschCfg.timeDomAllocList[0].mapType = PUSCH_TimeDomainResourceAllocation__mappingType_typeA;
-   puschCfg.timeDomAllocList[0].sliv = calcSliv(PUSCH_START_SYMBOL,PUSCH_LENGTH_SYMBOL);
+   puschCfg.timeDomAllocList[0].mapType = PUSCH_TimeDomainResourceAllocation__mappingType_typeB;
+   puschCfg.timeDomAllocList[0].sliv = calcSliv(PUSCH_START_SYMBOL_CFG1,PUSCH_LENGTH_SYMBOL_CFG1);
    puschCfg.timeDomAllocList[1].k2 = PUSCH_K2_CFG2;
-   puschCfg.timeDomAllocList[1].mapType = PUSCH_TimeDomainResourceAllocation__mappingType_typeA;
-   puschCfg.timeDomAllocList[1].sliv = calcSliv(PUSCH_START_SYMBOL,PUSCH_LENGTH_SYMBOL);
+   puschCfg.timeDomAllocList[1].mapType = PUSCH_TimeDomainResourceAllocation__mappingType_typeB;
+   puschCfg.timeDomAllocList[1].sliv = calcSliv(PUSCH_START_SYMBOL_CFG2,PUSCH_LENGTH_SYMBOL_CFG2);
+   /*TODO: Find scheduler*/
+   puschCfg.timeDomAllocList[2].k2 = PUSCH_K2_CFG3;
+   puschCfg.timeDomAllocList[2].mapType = PUSCH_TimeDomainResourceAllocation__mappingType_typeB;
+   puschCfg.timeDomAllocList[2].sliv = calcSliv(PUSCH_START_SYMBOL,PUSCH_LENGTH_SYMBOL);
+   puschCfg.timeDomAllocList[3].k2 = PUSCH_K2_CFG4;
+   puschCfg.timeDomAllocList[3].mapType = PUSCH_TimeDomainResourceAllocation__mappingType_typeB;
+   puschCfg.timeDomAllocList[3].sliv = calcSliv(PUSCH_START_SYMBOL,PUSCH_LENGTH_SYMBOL);
    puschCfg.msg3DeltaPreamble = PUSCH_MSG3_DELTA_PREAMBLE;
    puschCfg.p0NominalWithGrant = PUSCH_P0_NOMINAL_WITH_GRANT;
    srvCellCfgComm->ulCfg.puschCfg = puschCfg;
