@@ -1353,14 +1353,12 @@ static uint8_t pack_nr_config_request(void *msg, uint8_t **ppWritePackedMsg, uin
       // pack_tlv(NFAPI_NR_NFAPI_P7_VNF_PORT_TAG, &(pNfapiMsg->nfapi_config.p7_vnf_port), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
       pack_nr_tlv(NFAPI_NR_NFAPI_P7_VNF_PORT_TAG, &(pNfapiMsg->nfapi_config.p7_vnf_port), ppWritePackedMsg, end, &pack_uint16_tlv_value) &&
       // pack_tlv(NFAPI_NR_NFAPI_RF_BANDS_TAG, &(pNfapiMsg->nfapi_config.rf_bands), ppWritePackedMsg, end, &pack_rf_bands_value) &&
+      // pack_tlv(NFAPI_NR_NFAPI_TIMING_WINDOW_TAG, &(pNfapiMsg->nfapi_config.timing_window), ppWritePackedMsg, end, &pack_uint8_tlv_value) //
+      pack_nr_tlv(NFAPI_NR_NFAPI_TIMING_WINDOW_TAG, &(pNfapiMsg->nfapi_config.timing_window), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
       // pack_tlv(NFAPI_NR_NFAPI_TIMING_INFO_MODE_TAG, &(pNfapiMsg->nfapi_config.timing_info_mode), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
       pack_nr_tlv(NFAPI_NR_NFAPI_TIMING_INFO_MODE_TAG, &(pNfapiMsg->nfapi_config.timing_info_mode), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
       // pack_tlv(NFAPI_NR_NFAPI_TIMING_INFO_PERIOD_TAG, &(pNfapiMsg->nfapi_config.timing_info_period), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
-      pack_nr_tlv(NFAPI_NR_NFAPI_TIMING_INFO_PERIOD_TAG, &(pNfapiMsg->nfapi_config.timing_info_period), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
-      // pack_tlv(NFAPI_NR_NFAPI_TIMING_WINDOW_TAG, &(pNfapiMsg->nfapi_config.timing_window), ppWritePackedMsg, end, &pack_uint8_tlv_value) //&&
-      pack_nr_tlv(NFAPI_NR_NFAPI_TIMING_WINDOW_TAG, &(pNfapiMsg->nfapi_config.timing_window), ppWritePackedMsg, end, &pack_uint8_tlv_value));
-  // pack_tlv(NFAPI_NR_NFAPI_UPLINK_UES_PER_SUBFRAME_TAG, &(pNfapiMsg->nfapi_config.ul_ue_per_sf), ppWritePackedMsg, end, &pack_uint8_tlv_value) &&
-
+      pack_nr_tlv(NFAPI_NR_NFAPI_TIMING_INFO_PERIOD_TAG, &(pNfapiMsg->nfapi_config.timing_info_period), ppWritePackedMsg, end, &pack_uint8_tlv_value));
   // pack_vendor_extension_tlv(pNfapiMsg->vendor_extension, ppWritePackedMsg, end, config)
 }
 
