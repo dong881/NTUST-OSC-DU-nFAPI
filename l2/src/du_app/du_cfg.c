@@ -544,23 +544,22 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
 
    /* Configuring PDSCH Config Common For SIB1 */
    pdschCfg.present = BWP_DownlinkCommon__pdsch_ConfigCommon_PR_setup;
-   pdschCfg.numTimeDomRsrcAlloc = 2;
+
    pdschCfg.timeDomAlloc[0].k0 = PDSCH_K0_CFG1;
    pdschCfg.timeDomAlloc[0].mapType = PDSCH_TimeDomainResourceAllocation__mappingType_typeA;
-/* ======== small cell integration ======== */
-#ifdef NFAPI
-   pdschCfg.timeDomAlloc[0].sliv = 40;
-#else
-   pdschCfg.timeDomAlloc[0].sliv = calcSliv(PDSCH_START_SYMBOL,PDSCH_LENGTH_SYMBOL);
-#endif
-/* ======================================== */
-
    pdschCfg.timeDomAlloc[1].k0 = PDSCH_K0_CFG2;
    pdschCfg.timeDomAlloc[1].mapType = PDSCH_TimeDomainResourceAllocation__mappingType_typeA;
 /* ======== small cell integration ======== */
 #ifdef NFAPI
+   pdschCfg.numTimeDomRsrcAlloc = 2;
+   pdschCfg.timeDomAlloc[0].sliv = 40;
    pdschCfg.timeDomAlloc[1].sliv = 54;
+   pdschCfg.timeDomAlloc[2].k0 = PDSCH_K0_CFG2;
+   pdschCfg.timeDomAlloc[2].mapType = PDSCH_TimeDomainResourceAllocation__mappingType_typeA;
+   pdschCfg.timeDomAlloc[2].sliv = 57;
 #else
+   pdschCfg.numTimeDomRsrcAlloc = 2;
+   pdschCfg.timeDomAlloc[0].sliv = calcSliv(PDSCH_START_SYMBOL,PDSCH_LENGTH_SYMBOL);
    pdschCfg.timeDomAlloc[1].sliv = calcSliv(PDSCH_START_SYMBOL,PDSCH_LENGTH_SYMBOL);
 #endif
 /* ======================================== */
