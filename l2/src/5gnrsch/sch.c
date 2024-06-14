@@ -870,7 +870,7 @@ uint8_t SchProcCellCfgReq(Pst *pst, SchCellCfg *schCellCfg)
    }
    else
    {
-      cellCb->cellCfg.ulCfgCommon.schInitialUlBwp.schRachCfg.rootSeqLen = ROOT_SEQ_LEN_2;
+      cellCb->cellCfg.ulCfgCommon.schInitialUlBwp.schRachCfg.rootSeqLen = ROOT_SEQ_LEN_1;
    }
    /* Initializing global variables */
    cellCb->actvUeBitMap = 0;
