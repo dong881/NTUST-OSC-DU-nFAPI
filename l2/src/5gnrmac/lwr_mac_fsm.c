@@ -4379,6 +4379,7 @@ uint8_t OAI_OSC_fillPageTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, Dl
  * ********************************************************************/
 uint8_t OAI_OSC_fillRarTxDataReq(nfapi_nr_pdu_t *pduDesc, uint16_t pduIndex, RarInfo *rarInfo, PdschCfg *pdschCfg)
 {
+   printf("\nDEBUG  -->  %s()\n", __FUNCTION__);
    uint16_t payloadSize;
    uint8_t  *rarPayload = NULLP;
 
@@ -6004,13 +6005,14 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
 #ifdef ODU_SLOT_IND_DEBUG_LOG
          DU_LOG("\nDEBUG  -->  LWR_MAC: Sending DL TTI Request");
 #endif
+         //For OAI, we don't need to send ULtti and ULdci if DLtti num of PDU <= 0
          /* OAI L1 expects UL_TTI.request following DL_TTI.request */
          //TODO: OAI_OSC_fillUlTtiReq done
-         OAI_OSC_fillUlTtiReq(currTimingInfo);
+         // OAI_OSC_fillUlTtiReq(currTimingInfo);
 
          /* OAI L1 expects UL_DCI.request following DL_TTI.request */
          //TODO: OAI_OSC_fillUlDciReq done
-         OAI_OSC_fillUlDciReq(dlTtiReqTimingInfo);
+         // OAI_OSC_fillUlDciReq(dlTtiReqTimingInfo);
       }
       memset(currDlSlot, 0, sizeof(MacDlSlot));
             return ROK;
