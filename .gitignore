@@ -9,3 +9,9 @@ l2/build/odu/bin/ric_stub/
 l2/build/odu/lib/odu/*.a
 l2/build/odu/lib/ric_stub/*.a
 l2/libs/*.a
+l2/libs/libasn_rrc.a
+l2/libs/libphystub.a
+l2/libs/librg.a
+l2/libs/libduapp.a
+l2/libs/libnfapi.a
+l2/libs/libnfapi_vnf.a
