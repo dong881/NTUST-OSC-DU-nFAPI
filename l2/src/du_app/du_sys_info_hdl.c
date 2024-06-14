@@ -2142,6 +2142,15 @@ uint8_t BuildPucchCfgCommon( struct SetupRelease_PUCCH_ConfigCommon *pucchCfg)
             /* Group hopping */
             setup->pucch_GroupHopping = duPucchCfg.grpHop;
 
+            /* Hopping Id */
+            DU_ALLOC(setup->hoppingId, sizeof(long));
+            if(!setup->hoppingId)
+            {
+               DU_LOG("\nERROR  -->  DU APP : PUCCH Config memory alloc failed");
+               return RFAILED;
+            }
+            *setup->hoppingId = 40;
+
             /* P0 nominal */
             DU_ALLOC(setup->p0_nominal, sizeof(long));
             if(!setup->p0_nominal)
