@@ -350,9 +350,7 @@ static uint8_t pack_dl_tti_ssb_pdu_rel15_value(void *tlv, uint8_t **ppWritePacke
         && push8((value->bchPayload >> 24) & 0xff, ppWritePackedMsg, end)
         && push8((value->bchPayload >> 16) & 0xff, ppWritePackedMsg, end) 
         && push8((value->bchPayload >> 8) & 0xff, ppWritePackedMsg, end)
-        && push8(0, ppWritePackedMsg, end) &&
-        // TODO add Tx Power Info
-        push8(0, ppWritePackedMsg, end) && push8(0, ppWritePackedMsg, end)
+        && push8(0, ppWritePackedMsg, end)
         && push16(value->precoding_and_beamforming.num_prgs, ppWritePackedMsg, end)
         && push16(value->precoding_and_beamforming.prg_size, ppWritePackedMsg, end)
         && push8(value->precoding_and_beamforming.dig_bf_interfaces, ppWritePackedMsg, end))) {
