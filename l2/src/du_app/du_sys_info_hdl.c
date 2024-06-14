@@ -1811,7 +1811,7 @@ uint8_t  BuildRachCfgCommon(struct BWP_UplinkCommon__rach_ConfigCommon *rachCfg)
             setup->rach_ConfigGeneric.msg1_FDM = duRachCfg.msg1Fdm;
 /* ======== small cell integration ======== */
 #ifdef NFAPI
-            setup->rach_ConfigGeneric.msg1_FrequencyStart = 82;
+            setup->rach_ConfigGeneric.msg1_FrequencyStart = 0;
             setup->rach_ConfigGeneric.zeroCorrelationZoneConfig = 13;
             setup->rach_ConfigGeneric.preambleReceivedTargetPower = -96;
 #else 
