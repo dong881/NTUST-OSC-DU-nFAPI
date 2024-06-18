@@ -1194,13 +1194,13 @@ uint8_t BuildPdschCfgCommon(struct BWP_DownlinkCommon__pdsch_ConfigCommon *pdsch
                timeDomRsrcAllocInfo = pdschSetup->pdsch_TimeDomainAllocationList->list.array[idx];
 
                /* K0 */
-               DU_ALLOC(timeDomRsrcAllocInfo->k0, sizeof(long));
-               if(!timeDomRsrcAllocInfo->k0)
-               {
-                  DU_LOG("\nERROR  -->  DU APP : PDCCH Config memory alloc failed");
-                  return RFAILED;
-               }
-               *timeDomRsrcAllocInfo->k0 = duPdschCfg.timeDomAlloc[idx].k0;
+               // DU_ALLOC(timeDomRsrcAllocInfo->k0, sizeof(long));
+               // if(!timeDomRsrcAllocInfo->k0)
+               // {
+               //    DU_LOG("\nERROR  -->  DU APP : PDCCH Config memory alloc failed");
+               //    return RFAILED;
+               // }
+               // *timeDomRsrcAllocInfo->k0 = duPdschCfg.timeDomAlloc[idx].k0;
 
                timeDomRsrcAllocInfo->mappingType = duPdschCfg.timeDomAlloc[idx].mapType;
                timeDomRsrcAllocInfo->startSymbolAndLength = duPdschCfg.timeDomAlloc[idx].sliv;
