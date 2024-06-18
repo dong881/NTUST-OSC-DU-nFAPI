@@ -1825,13 +1825,13 @@ uint8_t  BuildRachCfgCommon(struct BWP_UplinkCommon__rach_ConfigCommon *rachCfg)
             setup->rach_ConfigGeneric.ra_ResponseWindow = duRachCfg.raRspWindow;
 
             /* Total number of RA preambles */
-            DU_ALLOC(setup->totalNumberOfRA_Preambles, sizeof(long));
-            if(!setup->totalNumberOfRA_Preambles)
-            {
-               DU_LOG("\nERROR  -->  DU APP : Rach Config memory alloc failed");
-               return RFAILED;
-            }
-            *setup->totalNumberOfRA_Preambles = duRachCfg.numRaPreamble;
+            // DU_ALLOC(setup->totalNumberOfRA_Preambles, sizeof(long));
+            // if(!setup->totalNumberOfRA_Preambles)
+            // {
+            //    DU_LOG("\nERROR  -->  DU APP : Rach Config memory alloc failed");
+            //    return RFAILED;
+            // }
+            // *setup->totalNumberOfRA_Preambles = duRachCfg.numRaPreamble;
 
             /* SSB per RACH occassion and CB Preambles per SSB */
             DU_ALLOC(setup->ssb_perRACH_OccasionAndCB_PreamblesPerSSB,\
