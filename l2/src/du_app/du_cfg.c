@@ -588,17 +588,10 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
 #endif
 /* ======================================== */
    pcchCfg.ns = convertNsEnumToValue(PCCH_Config__ns_one);
-/* ======== small cell integration ======== */
-#ifdef NFAPI
-   pcchCfg.firstPDCCHMontioringType = PCCH_Config__firstPDCCH_MonitoringOccasionOfPO_PR_sCS120KHZoneT_SCS60KHZhalfT_SCS30KHZquarterT_SCS15KHZoneEighthT;
-   memset(pcchCfg.firstPDCCHMontioringInfo, 0, sizeof(uint16_t));
-   pcchCfg.firstPDCCHMontioringInfo[0] = 0;
-#else
    pcchCfg.firstPDCCHMontioringType = PCCH_Config__firstPDCCH_MonitoringOccasionOfPO_PR_sCS30KHZoneT_SCS15KHZhalfT;
    memset(pcchCfg.firstPDCCHMontioringInfo, 0, sizeof(uint16_t));
    pcchCfg.firstPDCCHMontioringInfo[0] = 44;
-#endif
-/* ======================================== */
+   
    srvCellCfgComm->dlCfg.pcchCfg = pcchCfg;
 
 

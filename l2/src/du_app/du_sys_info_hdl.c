@@ -1421,49 +1421,6 @@ uint8_t fillFirstPdcchMonitoringOcc(struct PCCH_Config__firstPDCCH_MonitoringOcc
             *firstPO->choice.sCS30KHZoneT_SCS15KHZhalfT->list.array[poIdx] = srcPcchCfg->firstPDCCHMontioringInfo[poIdx];
             break;
          }
-      case PCCH_Config__firstPDCCH_MonitoringOccasionOfPO_PR_sCS120KHZoneT_SCS60KHZhalfT_SCS30KHZquarterT_SCS15KHZoneEighthT:
-         {
-            DU_ALLOC(firstPO->choice.sCS120KHZoneT_SCS60KHZhalfT_SCS30KHZquarterT_SCS15KHZoneEighthT, \
-                  sizeof(struct PCCH_Config__firstPDCCH_MonitoringOccasionOfPO__sCS120KHZoneT_SCS60KHZhalfT_SCS30KHZquarterT_SCS15KHZoneEighthT));
-
-            if(firstPO->choice.sCS120KHZoneT_SCS60KHZhalfT_SCS30KHZquarterT_SCS15KHZoneEighthT == NULLP)
-            {
-               DU_LOG("\nERROR  -->  DU APP : FirstPdcchMonitoringPO Memory allocation failure");
-               return RFAILED;
-            }
-            firstPO->choice.sCS120KHZoneT_SCS60KHZhalfT_SCS30KHZquarterT_SCS15KHZoneEighthT->list.count = numPO;
-            firstPO->choice.sCS120KHZoneT_SCS60KHZhalfT_SCS30KHZquarterT_SCS15KHZoneEighthT->list.size = numPO * sizeof(long *);
-
-            DU_ALLOC(firstPO->choice.sCS120KHZoneT_SCS60KHZhalfT_SCS30KHZquarterT_SCS15KHZoneEighthT->list.array, \
-                  firstPO->choice.sCS120KHZoneT_SCS60KHZhalfT_SCS30KHZquarterT_SCS15KHZoneEighthT->list.size);
-
-            if(!firstPO->choice.sCS120KHZoneT_SCS60KHZhalfT_SCS30KHZquarterT_SCS15KHZoneEighthT->list.array)
-            {
-               DU_LOG("\nERROR  -->  DU APP : FirstPdcchMonitoringPO Memory allocation failure");
-               return RFAILED;
-            }
-
-            for(poIdx = 0; poIdx < numPO; poIdx++)
-            {
-               /* Spec 36.331: PCCH-Config:firstPDCCH-MonitoringOccasionOfPO [MAX of sCS30KHZoneT-SCS15KHZhalfT]
-                * Since FirstPDCCHMonitoring_PO is not valid thus no need to continue further*/
-               if(srcPcchCfg->firstPDCCHMontioringInfo[poIdx] > 279)
-               {
-                  DU_LOG("\nERROR  -->  DU APP : Invalid Paging Ocassion value for 30kHz or 15kHz HAlFT");
-                  return RFAILED;
-               }
-               DU_ALLOC(firstPO->choice.sCS120KHZoneT_SCS60KHZhalfT_SCS30KHZquarterT_SCS15KHZoneEighthT->list.array[poIdx], sizeof(long));
-               if(!firstPO->choice.sCS120KHZoneT_SCS60KHZhalfT_SCS30KHZquarterT_SCS15KHZoneEighthT->list.array[poIdx])
-               {
-                  DU_LOG("\nERROR  -->  DU APP : FirstPdcchMonitoringPO Memory allocation failure");
-                  return RFAILED;
-               }
-            }
-
-            poIdx = 0;
-            *firstPO->choice.sCS120KHZoneT_SCS60KHZhalfT_SCS30KHZquarterT_SCS15KHZoneEighthT->list.array[poIdx] = srcPcchCfg->firstPDCCHMontioringInfo[poIdx];
-            break;
-         }
          //TODO for other cases
       default:
          {
