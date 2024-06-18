@@ -189,7 +189,11 @@
 #define CB_PREAMBLE_PER_SSB 8
 #endif
 #define PRACH_MULT_CARRIER_BAND FALSE
+#ifdef NFAPI
+#define PRACH_PREAMBLE_RCVD_TGT_PWR  -96   
+#else 
 #define PRACH_PREAMBLE_RCVD_TGT_PWR  -74   
+#endif
 #define NUM_RA_PREAMBLE  63
 #define RSRP_THRESHOLD_SSB   31
 
