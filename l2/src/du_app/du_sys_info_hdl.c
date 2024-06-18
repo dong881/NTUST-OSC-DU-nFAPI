@@ -2472,21 +2472,21 @@ uint8_t BuildSib1Msg()
 #endif
 /* ======================================== */
 
-      DU_ALLOC(sib1Msg->cellSelectionInfo->q_RxLevMinSUL, sizeof(Q_RxLevMin_t));
-      if(!sib1Msg->cellSelectionInfo->q_RxLevMinSUL)
-      {
-         DU_LOG("\nERROR  -->  DU APP: BuildSib1Msg(): Memory allocation failed for q_RxLevMinSUL");
-         break;
-      }
-      *(sib1Msg->cellSelectionInfo->q_RxLevMinSUL) = -50;
+      // DU_ALLOC(sib1Msg->cellSelectionInfo->q_RxLevMinSUL, sizeof(Q_RxLevMin_t));
+      // if(!sib1Msg->cellSelectionInfo->q_RxLevMinSUL)
+      // {
+      //    DU_LOG("\nERROR  -->  DU APP: BuildSib1Msg(): Memory allocation failed for q_RxLevMinSUL");
+      //    break;
+      // }
+      // *(sib1Msg->cellSelectionInfo->q_RxLevMinSUL) = -50;
 
-      DU_ALLOC(sib1Msg->cellSelectionInfo->q_QualMin, sizeof(Q_QualMin_t));
-      if(!sib1Msg->cellSelectionInfo->q_QualMin)
-      {
-         DU_LOG("\nERROR  -->  DU APP: BuildSib1Msg(): Memory allocation failed for q_QualMin");
-         break;
-      }
-      *(sib1Msg->cellSelectionInfo->q_QualMin) = -30;
+      // DU_ALLOC(sib1Msg->cellSelectionInfo->q_QualMin, sizeof(Q_QualMin_t));
+      // if(!sib1Msg->cellSelectionInfo->q_QualMin)
+      // {
+      //    DU_LOG("\nERROR  -->  DU APP: BuildSib1Msg(): Memory allocation failed for q_QualMin");
+      //    break;
+      // }
+      // *(sib1Msg->cellSelectionInfo->q_QualMin) = -30;
 
       /* PLMN list */
       cellAccessInfo = &sib1Msg->cellAccessRelatedInfo;
