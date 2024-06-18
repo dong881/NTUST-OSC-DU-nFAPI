@@ -581,11 +581,12 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
 /* ======== small cell integration ======== */
 #ifdef NFAPI
    pcchCfg.nAndPagingFrmOffsetType = PCCH_Config__nAndPagingFrameOffset_PR_quarterT;
+   pcchCfg.pageFrameOffset = 1;
 #else
    pcchCfg.nAndPagingFrmOffsetType = PCCH_Config__nAndPagingFrameOffset_PR_oneT;
+   pcchCfg.pageFrameOffset = 0;
 #endif
 /* ======================================== */
-   pcchCfg.pageFrameOffset = 0;
    pcchCfg.ns = convertNsEnumToValue(PCCH_Config__ns_one);
    pcchCfg.firstPDCCHMontioringType = PCCH_Config__firstPDCCH_MonitoringOccasionOfPO_PR_sCS30KHZoneT_SCS15KHZhalfT;
    memset(pcchCfg.firstPDCCHMontioringInfo, 0, sizeof(uint16_t));
