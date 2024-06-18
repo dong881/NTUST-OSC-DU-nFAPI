@@ -282,8 +282,11 @@
 /* Macro define for PUCCH Configuration */
 #define PUCCH_RSRC_COMMON  0
 #define PUCCH_GROUP_HOPPING 0 /* Neither sequence hopping nor group hopping */
+#ifdef NFAPI
+#define PUCCH_P0_NOMINAL   -90
+#else
 #define PUCCH_P0_NOMINAL   -74
-
+#endif
 /* MACRO defines for TDD DL-UL Configuration */
 #define NUM_DL_SLOTS 7
 #define NUM_DL_SYMBOLS 6 
