@@ -1078,15 +1078,6 @@ uint8_t BuildPdcchCfgCommon(struct BWP_DownlinkCommon__pdcch_ConfigCommon *pdcch
             }
             *pdcchSetup->searchSpaceSIB1 = duPdcchCfg.searchSpcSib1;
 
-            /* Search space for searchSpaceOtherSystemInformation */
-            DU_ALLOC(pdcchSetup->searchSpaceOtherSystemInformation, sizeof(SearchSpaceId_t));
-            if(!pdcchSetup->searchSpaceOtherSystemInformation)
-            {
-               DU_LOG("\nERROR  -->  DU APP : PDCCH Config memory alloc failed");
-               return RFAILED;
-            }             
-            *pdcchSetup->searchSpaceOtherSystemInformation = ODU_VALUE_ONE;
-            
             /* Search Space for Paging */
             DU_ALLOC(pdcchSetup->pagingSearchSpace, sizeof(SearchSpaceId_t));
             if(!pdcchSetup->pagingSearchSpace)
