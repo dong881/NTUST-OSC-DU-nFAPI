@@ -183,10 +183,11 @@
 #define UNUSED_ROOT_SEQ 1
 #ifdef NFAPI
 #define SSB_PER_RACH 3
+#define CB_PREAMBLE_PER_SSB 60
 #else 
 #define SSB_PER_RACH 1
-#endif
 #define CB_PREAMBLE_PER_SSB 8
+#endif
 #define PRACH_MULT_CARRIER_BAND FALSE
 #define PRACH_PREAMBLE_RCVD_TGT_PWR  -74   
 #define NUM_RA_PREAMBLE  63
