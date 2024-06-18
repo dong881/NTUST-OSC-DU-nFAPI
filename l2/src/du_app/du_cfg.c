@@ -632,7 +632,13 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
 #endif
 /* ======================================== */
    rachCfg.pwrRampingStep = RACH_ConfigGeneric__powerRampingStep_dB2;
+/* ======== small cell integration ======== */
+#ifdef NFAPI
+   rachCfg.raRspWindow = RACH_ConfigGeneric__ra_ResponseWindow_sl20;
+#else
    rachCfg.raRspWindow = RACH_ConfigGeneric__ra_ResponseWindow_sl10;
+#endif
+/* ======================================== */
    rachCfg.numRaPreamble = NUM_RA_PREAMBLE;
    rachCfg.numSsbPerRachOcc = RACH_ConfigCommon__ssb_perRACH_OccasionAndCB_PreamblesPerSSB_PR_one;
    rachCfg.numCbPreamblePerSsb = CB_PREAMBLE_PER_SSB;
