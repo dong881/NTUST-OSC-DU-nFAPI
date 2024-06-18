@@ -537,9 +537,9 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
    pdcchCfg.numCandAggLvl16 = SearchSpace__nrofCandidates__aggregationLevel16_n0;
    pdcchCfg.searchSpcType = SearchSpace__searchSpaceType_PR_common;
    pdcchCfg.commSrchSpcDciFrmt = PDCCH_SERACH_SPACE_DCI_FORMAT;
-   pdcchCfg.searchSpcSib1 = PDCCH_SEARCH_SPACE_ID_SIB1;
-   pdcchCfg.pagingSearchSpc = PDCCH_SEARCH_SPACE_ID_PAGING;
-   pdcchCfg.raSearchSpc = PDCCH_SEARCH_SPACE_ID_PAGING;
+   pdcchCfg.searchSpcSib1 = 0;//PDCCH_SEARCH_SPACE_ID_SIB1;
+   pdcchCfg.pagingSearchSpc = 1;//PDCCH_SEARCH_SPACE_ID_PAGING;
+   pdcchCfg.raSearchSpc = 1;//PDCCH_SEARCH_SPACE_ID_PAGING;
    srvCellCfgComm->dlCfg.pdcchCfg = pdcchCfg;
 
    /* Configuring PDSCH Config Common For SIB1 */
