@@ -142,7 +142,13 @@
 #define SSB_MULT_CARRIER_BAND FALSE
 #define MULT_CELL_CARRIER FALSE
 #define FREQ_LOC_BW  28875             /* DL frequency location and bandwidth. Spec 38.508 Table 4.3.1.0B-1*/
-#define UL_P_MAX  23
+/* ======== small cell integration ======== */
+#ifdef NFAPI
+#define UL_P_MAX  20                
+#else 
+#define UL_P_MAX  23                   
+#endif
+/* ======================================== */
 #define DMRS_TYPE_A_POS 2
 #define NUM_SYMBOLS_PER_SLOT 14       /* Number of symbols within a slot */
 #define CORESET0_END_PRB   48
