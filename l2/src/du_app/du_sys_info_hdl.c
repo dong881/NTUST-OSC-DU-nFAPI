@@ -2499,22 +2499,22 @@ uint8_t BuildSib1Msg()
          break;
       }
       /* Connection Establish Failure Control */
-      DU_ALLOC(sib1Msg->connEstFailureControl, sizeof(ConnEstFailureControl_t));
-      if(!sib1Msg->connEstFailureControl)
-      {
-         DU_LOG("\nERROR  -->  DU APP: sib1Msg->connEstFailureControl memory allocation failure");
-         break;
-      }
-      sib1Msg->connEstFailureControl->connEstFailCount = duCfgParam.sib1Params.connEstFailCnt;
-      sib1Msg->connEstFailureControl->connEstFailOffsetValidity = duCfgParam.sib1Params.connEstFailOffValidity;
+      // DU_ALLOC(sib1Msg->connEstFailureControl, sizeof(ConnEstFailureControl_t));
+      // if(!sib1Msg->connEstFailureControl)
+      // {
+      //    DU_LOG("\nERROR  -->  DU APP: sib1Msg->connEstFailureControl memory allocation failure");
+      //    break;
+      // }
+      // sib1Msg->connEstFailureControl->connEstFailCount = duCfgParam.sib1Params.connEstFailCnt;
+      // sib1Msg->connEstFailureControl->connEstFailOffsetValidity = duCfgParam.sib1Params.connEstFailOffValidity;
       
-      DU_ALLOC(sib1Msg->connEstFailureControl->connEstFailOffset, sizeof(long));
-      if(!sib1Msg->connEstFailureControl->connEstFailOffset)
-      {
-         DU_LOG("\nERROR  -->  DU APP: BuildSib1Msg(): Memory allocation failed for connEstFailOffset");
-         break;
-      }
-      *(sib1Msg->connEstFailureControl->connEstFailOffset) = duCfgParam.sib1Params.connEstFailOffset;
+      // DU_ALLOC(sib1Msg->connEstFailureControl->connEstFailOffset, sizeof(long));
+      // if(!sib1Msg->connEstFailureControl->connEstFailOffset)
+      // {
+      //    DU_LOG("\nERROR  -->  DU APP: BuildSib1Msg(): Memory allocation failed for connEstFailOffset");
+      //    break;
+      // }
+      // *(sib1Msg->connEstFailureControl->connEstFailOffset) = duCfgParam.sib1Params.connEstFailOffset;
 
       /* SI Scheduling Info */
       DU_ALLOC(sib1Msg->si_SchedulingInfo, sizeof(SI_SchedulingInfo_t));
