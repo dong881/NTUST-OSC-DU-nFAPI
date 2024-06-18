@@ -195,7 +195,11 @@
 #define PRACH_PREAMBLE_RCVD_TGT_PWR  -74   
 #endif
 #define NUM_RA_PREAMBLE  63
+#ifdef NFAPI
+#define RSRP_THRESHOLD_SSB   19
+#else
 #define RSRP_THRESHOLD_SSB   31
+#endif
 
 #ifdef NR_TDD
 #define TDD_PERIODICITY TX_PRDCTY_MS_5 
