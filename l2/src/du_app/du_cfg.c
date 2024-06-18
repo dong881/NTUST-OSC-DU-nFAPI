@@ -527,13 +527,14 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
    pdcchCfg.numCandAggLvl1 = SearchSpace__nrofCandidates__aggregationLevel1_n0;
    pdcchCfg.numCandAggLvl2 = SearchSpace__nrofCandidates__aggregationLevel2_n0;
    pdcchCfg.numCandAggLvl4 = SearchSpace__nrofCandidates__aggregationLevel4_n1;
+   pdcchCfg.numCandAggLvl8 = SearchSpace__nrofCandidates__aggregationLevel8_n0;
 #else
    pdcchCfg.numCandAggLvl1 = SearchSpace__nrofCandidates__aggregationLevel1_n8;
    pdcchCfg.numCandAggLvl2 = SearchSpace__nrofCandidates__aggregationLevel2_n4;
    pdcchCfg.numCandAggLvl4 = SearchSpace__nrofCandidates__aggregationLevel4_n2;
+   pdcchCfg.numCandAggLvl8 = SearchSpace__nrofCandidates__aggregationLevel8_n1;
 #endif
 /* ======================================== */
-   pdcchCfg.numCandAggLvl8 = SearchSpace__nrofCandidates__aggregationLevel8_n1;
    pdcchCfg.numCandAggLvl16 = SearchSpace__nrofCandidates__aggregationLevel16_n0;
    pdcchCfg.searchSpcType = SearchSpace__searchSpaceType_PR_common;
    pdcchCfg.commSrchSpcDciFrmt = PDCCH_SERACH_SPACE_DCI_FORMAT;
