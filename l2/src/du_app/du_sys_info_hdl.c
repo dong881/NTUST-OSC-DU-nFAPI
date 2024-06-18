@@ -553,13 +553,13 @@ uint8_t BuildPlmnList(CellAccessRelatedInfo_t *cellAccessInfo)
       return RFAILED;
    }
 
-   /* RANAC */
-   ranac = &cellAccessInfo->plmn_IdentityList.list.array[idx]->ranac;
-   ret=BuildRanac(ranac);
-   if(ret != ROK)
-   {
-      return RFAILED;
-   }
+   // /* RANAC */
+   // ranac = &cellAccessInfo->plmn_IdentityList.list.array[idx]->ranac;
+   // ret=BuildRanac(ranac);
+   // if(ret != ROK)
+   // {
+   //    return RFAILED;
+   // }
 
    /* CellIdentity */
    cellIdentity = &cellAccessInfo->plmn_IdentityList.list.array[idx]->cellIdentity;
