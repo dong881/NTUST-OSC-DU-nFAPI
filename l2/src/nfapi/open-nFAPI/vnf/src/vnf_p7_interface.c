@@ -378,11 +378,16 @@ int nfapi_nr_vnf_p7_start(nfapi_vnf_p7_config_t* config)
 				if (UL_INFO.rach_ind.number_of_pdus > 0){
 					SCF_procRachInd(&UL_INFO.rach_ind);
 				}
-				// SCF_procCrcInd(&UL_INFO.crc_ind);
-				SCF_procUciInd(&UL_INFO.uci_ind);
-				SCF_procRxDataInd(&UL_INFO.rx_ind);
-				// gNB->if_inst->NR_UL_indication(&gNB->UL_INFO);
-				
+				if (UL_INFO.uci_ind.num_ucis > 0){
+					SCF_procUciInd(&UL_INFO.uci_ind);
+					UL_INFO.uci_ind.num_ucis = 0;
+				}
+				if (UL_INFO.rx_ind.number_of_pdus > 0 && UL_INFO.crc_ind.number_crcs > 0){
+					SCF_procRxDataInd(&UL_INFO.rx_ind);
+					SCF_procCrcInd(&UL_INFO.crc_ind);
+					UL_INFO.rx_ind.number_of_pdus = 0;
+					UL_INFO.crc_ind.number_crcs = 0;
+				}
 				prev_slot = UL_INFO.slot;
 			}
 			pthread_mutex_unlock(&UL_INFO_mutex);
