@@ -923,6 +923,20 @@ uint8_t BuildCommonSerachSpaceList( struct PDCCH_ConfigCommon__commonSearchSpace
    searchSpace->nrofCandidates->aggregationLevel8 = duPdcchCfg.numCandAggLvl8;
    searchSpace->nrofCandidates->aggregationLevel16 = duPdcchCfg.numCandAggLvl16;
 
+   DU_ALLOC(searchSpace->searchSpaceType, sizeof(*(searchSpace->searchSpaceType)));
+   DU_ALLOC(searchSpace->searchSpaceType->choice.common, sizeof(*(searchSpace->searchSpaceType->choice.common)));
+   DU_ALLOC(searchSpace->searchSpaceType->choice.common->dci_Format0_0_AndFormat1_0, sizeof(*(searchSpace->searchSpaceType->choice.common->dci_Format0_0_AndFormat1_0)));
+   searchSpace->searchSpaceType->present = 1; 
+
+
+//    if(searchSpace->searchSpaceType == NULL)
+//     searchSpace->searchSpaceType = calloc(1, sizeof(*searchSpace->searchSpaceType));
+//   if(searchSpace->searchSpaceType->choice.common == NULL)
+//     searchSpace->searchSpaceType->choice.common = calloc(1, sizeof(*searchSpace->searchSpaceType->choice.common));
+//   if(searchSpace->searchSpaceType->choice.common->dci_Format0_0_AndFormat1_0 == NULL)
+//     searchSpace->searchSpaceType->choice.common->dci_Format0_0_AndFormat1_0 = calloc(1, sizeof(*searchSpace->searchSpaceType->choice.common->dci_Format0_0_AndFormat1_0));
+
+
 /* Commented due to ASN decode failure in wireshark.
  * Parameters like dci_Format0_0_AndFormat1_0 which are pointer to a structure that 
  * does not have any member parameter lead to decode failure in wireshark. 
@@ -2412,6 +2426,31 @@ uint8_t BuildServCellCfgCommonSib(ServingCellConfigCommonSIB_t *srvCellCfg)
    return ROK;
 }
 
+/*
+ * Argument type and callback necessary for uper_encode_to_buffer().
+ */
+typedef struct enc_to_buf_arg {
+	void *buffer;
+	size_t left;
+} enc_to_buf_arg;
+static int encode_to_buffer_cb(const void *buffer, size_t size, void *key) {
+	enc_to_buf_arg *arg = (enc_to_buf_arg *)key;
+
+	if(arg->left < size)
+		return -1;	/* Data exceeds the available buffer size */
+
+	memcpy(arg->buffer, buffer, size);
+	arg->buffer = ((char *)arg->buffer) + size;
+	arg->left -= size;
+   // memcpy(arg->buffer + encBufSize, buffer, size);
+   // encBufSize += size;
+	return 0;
+}
+
+
+
+
+
 /*******************************************************************
  *
  * @brief Builds SIB message in Served Cell Info
@@ -2542,6 +2581,11 @@ uint8_t BuildSib1Msg()
          break;
       }
       ret1 =  BuildServCellCfgCommonSib(sib1Msg->servingCellConfigCommon);
+      // DU_ALLOC(sib1Msg->servingCellConfigCommon->downlinkConfigCommon.initialDownlinkBWP.pdcch_ConfigCommon->choice.setup->commonSearchSpaceList->list.array[0]->searchSpaceType, sizeof(*(sib1Msg->servingCellConfigCommon->downlinkConfigCommon.initialDownlinkBWP.pdcch_ConfigCommon->choice.setup->commonSearchSpaceList->list.array[0]->searchSpaceType)));
+      // DU_ALLOC(sib1Msg->servingCellConfigCommon->downlinkConfigCommon.initialDownlinkBWP.pdcch_ConfigCommon->choice.setup->commonSearchSpaceList->list.array[0]->searchSpaceType->choice.common, sizeof(*(sib1Msg->servingCellConfigCommon->downlinkConfigCommon.initialDownlinkBWP.pdcch_ConfigCommon->choice.setup->commonSearchSpaceList->list.array[0]->searchSpaceType->choice.common)));
+      // DU_ALLOC(sib1Msg->servingCellConfigCommon->downlinkConfigCommon.initialDownlinkBWP.pdcch_ConfigCommon->choice.setup->commonSearchSpaceList->list.array[0]->searchSpaceType->choice.common->dci_Format0_0_AndFormat1_0, sizeof(*(sib1Msg->servingCellConfigCommon->downlinkConfigCommon.initialDownlinkBWP.pdcch_ConfigCommon->choice.setup->commonSearchSpaceList->list.array[0]->searchSpaceType->choice.common->dci_Format0_0_AndFormat1_0)));
+      // sib1Msg->servingCellConfigCommon->downlinkConfigCommon.initialDownlinkBWP.pdcch_ConfigCommon->choice.setup->commonSearchSpaceList->list.array[0]->searchSpaceType->present = 1; 
+
       if(ret1 != ROK)
       {
          break;
@@ -2573,6 +2617,41 @@ uint8_t BuildSib1Msg()
                "unknown");
          break;
       }
+      printf("\n[NTUST] Unit test decode -> %d\n",encBufSize);
+
+      for (int i=0; i<encBufSize; i++) 
+         printf("%x ", (unsigned char)((unsigned char *)encBuf)[i]);
+      printf("\n");
+
+      // int array[] = {
+      //       124, 4294967168, 10, 2, 9, 4, 101, 64, 0, 0, 4, 0, 0, 0, 0, 123, 
+      //       4294967288, 0, 1, 1, 64, 4294967184, 4294967172, 4294967248, 86, 0, 0, 
+      //       38, 4294967190, 112, 4294967243, 53, 4294967262, 1, 4294967224, 32, 16, 
+      //       0, 0, 64, 64, 0, 65, 4294967202, 40, 27, 7, 76, 65, 96, 4294967168, 0, 
+      //       9, 4294967207, 39, 56, 101, 4294967193, 81, 4294967176, 0, 107, 83, 53, 
+      //       4294967287, 39, 1, 36, 4294967267, 26, 4294967206, 53, 4294967226, 112, 
+      //       4294967208, 14, 29, 0, 4294967170, 4294967232, 118, 1, 34, 51, 123, 16, 
+      //       4294967232
+      // };
+      // char encBufNN[2000];
+      // printf("\n");
+      // for (int i=0; i<encBufSize; i++) 
+      //    ((unsigned char *)encBufNN)[i] = (unsigned char)array[i];
+      // for(int i=0; i< encBufSize; i++)
+      //    printf("%x\t",encBufNN[i]);
+      // printf("\n");
+
+
+      BCCH_DL_SCH_Message_t *bcch_message = NULL;
+      asn_dec_rval_t rval = uper_decode(NULL, &asn_DEF_BCCH_DL_SCH_Message, &bcch_message, encBuf, encBufSize, 0, 0);
+      if(rval.code == RC_FAIL || rval.code == RC_WMORE)
+      {
+         DU_LOG("\nERROR  -->  ASN decode failed\n");
+         return RFAILED;
+      }
+      xer_fprint(stdout, &asn_DEF_BCCH_DL_SCH_Message, bcch_message);
+      printf("\n\n\n\n");
+
 #ifdef DEBUG_ASN_PRINT
       for(int i=0; i< encBufSize; i++)
       {
