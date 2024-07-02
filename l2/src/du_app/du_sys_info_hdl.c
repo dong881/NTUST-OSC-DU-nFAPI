@@ -32,7 +32,7 @@
 #include "BCCH-BCH-Message.h"
 #include "MIB.h"
 #include "PLMN-IdentityInfo.h"
-#include "PLMN-IdentitY.h"
+#include "PLMN-Identity.h"
 #include "SIB-TypeInfo.h"
 #include "SchedulingInfo.h"
 #include "SI-SchedulingInfo.h"
@@ -62,6 +62,13 @@
 #include "du_f1ap_conversions.h"
 #include "du_sys_info_hdl.h"
 #include "/home/hpe/mwnl-odu-at-oai-based-on-scf/src/codec_utils/RRC/UE-TimersAndConstants.h"
+
+#define asn1cSeqAdd(VaR, PtR) if (ASN_SEQUENCE_ADD(VaR,PtR)!=0) AssertFatal(false, "ASN.1 encoding error " #VaR "\n")
+#define asn1cCalloc(VaR, lOcPtr) \
+typeof(VaR) lOcPtr = VaR = calloc(1,sizeof(*VaR))
+#define asn1cSequenceAdd(VaR, TyPe, lOcPtr) \
+TyPe *lOcPtr= calloc(1,sizeof(TyPe)); \
+asn1cSeqAdd(&VaR,lOcPtr)
 
 void FreeSib1Msg(SIB1_t *sib1Msg);
 uint8_t FreqInfoUlret = RFAILED;
@@ -449,20 +456,20 @@ uint8_t BuildPlmnList(CellAccessRelatedInfo_t *cellAccessInfo)
    struct PLMN_IdentityInfo__plmn_IdentityList
       *plmnIdInfo;
 
-   DU_ALLOC(cellAccessInfo->plmn_IdentityList.list.array,
-         cellAccessInfo->plmn_IdentityList.list.size);
-   if(!cellAccessInfo->plmn_IdentityList.list.array)
+   DU_ALLOC(cellAccessInfo->plmn_IdentityInfoList.list.array,
+         cellAccessInfo->plmn_IdentityInfoList.list.size);
+   if(!cellAccessInfo->plmn_IdentityInfoList.list.array)
    {   
       DU_LOG("\nERROR  -->  DU APP: BuildPlmnList memory allocation failure");
       return RFAILED;
    }   
 
-   elementCnt = cellAccessInfo->plmn_IdentityList.list.count; 
+   elementCnt = cellAccessInfo->plmn_IdentityInfoList.list.count; 
    for(idx=0; idx<elementCnt; idx++)
    {   
-      DU_ALLOC(cellAccessInfo->plmn_IdentityList.list.array[idx],
+      DU_ALLOC(cellAccessInfo->plmn_IdentityInfoList.list.array[idx],
             sizeof(PLMN_IdentityInfo_t));
-      if(!cellAccessInfo->plmn_IdentityList.list.array[idx])
+      if(!cellAccessInfo->plmn_IdentityInfoList.list.array[idx])
       {
          DU_LOG("\nERROR  -->  DU APP: BuildPlmnList memory allocation failure");
          return RFAILED;
@@ -473,9 +480,9 @@ uint8_t BuildPlmnList(CellAccessRelatedInfo_t *cellAccessInfo)
    /* PLMN list */
    elementCnt = ODU_VALUE_ONE;
 
-   plmnIdInfo = &cellAccessInfo->plmn_IdentityList.list.array[idx]->plmn_IdentityList;
+   plmnIdInfo = &cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->plmn_IdentityList;
    plmnIdInfo->list.count = elementCnt;
-   plmnIdInfo->list.size  = elementCnt * sizeof(PLMN_IdentitY_t *);
+   plmnIdInfo->list.size  = elementCnt * sizeof(PLMN_Identity_t *);
    DU_ALLOC(plmnIdInfo->list.array, plmnIdInfo->list.size);
    if(!plmnIdInfo->list.array)
    {
@@ -485,7 +492,7 @@ uint8_t BuildPlmnList(CellAccessRelatedInfo_t *cellAccessInfo)
 
    for(idx1=0; idx1<elementCnt; idx1++)
    {
-      DU_ALLOC(plmnIdInfo->list.array[idx1], sizeof(PLMN_IdentitY_t));
+      DU_ALLOC(plmnIdInfo->list.array[idx1], sizeof(PLMN_Identity_t));
       if(!(plmnIdInfo->list.array[idx1]))
       {
          DU_LOG("\nERROR  -->  DU APP: BuildPlmnList memory allocation failure");
@@ -520,6 +527,7 @@ uint8_t BuildPlmnList(CellAccessRelatedInfo_t *cellAccessInfo)
       }
       *(plmnIdInfo->list.array[idx1]->mcc->list.array[idx2])=\
                                                              duCfgParam.sib1Params.plmn.mcc[idx2];
+      printf("MCC value: %d\n", *(plmnIdInfo->list.array[idx1]->mcc->list.array[idx2]));
    }
    idx2 = 0;
    plmnIdInfo->list.array[idx1]->mnc.list.count = elementCnt;
@@ -543,10 +551,11 @@ uint8_t BuildPlmnList(CellAccessRelatedInfo_t *cellAccessInfo)
       }
       *(plmnIdInfo->list.array[idx1]->mnc.list.array[idx2])=\
                                                             duCfgParam.sib1Params.plmn.mnc[idx2];
+      printf("MNC value: %d\n", *(plmnIdInfo->list.array[idx1]->mnc.list.array[idx2]));
    }
 
    /* Tracking Area Code */
-   tac = &cellAccessInfo->plmn_IdentityList.list.array[idx]->trackingAreaCode;
+   tac = &cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->trackingAreaCode;
    ret = BuildTac(tac);
    if(ret != ROK)
    {
@@ -554,7 +563,7 @@ uint8_t BuildPlmnList(CellAccessRelatedInfo_t *cellAccessInfo)
    }
 
    // /* RANAC */
-   // ranac = &cellAccessInfo->plmn_IdentityList.list.array[idx]->ranac;
+   // ranac = &cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->ranac;
    // ret=BuildRanac(ranac);
    // if(ret != ROK)
    // {
@@ -562,7 +571,7 @@ uint8_t BuildPlmnList(CellAccessRelatedInfo_t *cellAccessInfo)
    // }
 
    /* CellIdentity */
-   cellIdentity = &cellAccessInfo->plmn_IdentityList.list.array[idx]->cellIdentity;
+   cellIdentity = &cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->cellIdentity;
    ret=BuildCellIdentity(cellIdentity);
    if(ret != ROK)
    {
@@ -570,7 +579,7 @@ uint8_t BuildPlmnList(CellAccessRelatedInfo_t *cellAccessInfo)
    }
 
    /* cellReservedForOperatorUse */
-   cellAccessInfo->plmn_IdentityList.list.array[idx]->\
+   cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->\
       cellReservedForOperatorUse = duCfgParam.sib1Params.cellResvdForOpUse;
 
 
@@ -1009,12 +1018,12 @@ uint8_t BuildCommonSerachSpaceList( struct PDCCH_ConfigCommon__commonSearchSpace
  *    Functionality:
  *      Builds PDCCH configuration common
  *
- * @params[in] BWP_DownlinkCommon__pdcch_ConfigCommon pointer
+ * @params[in] SetupRelease_PDCCH_ConfigCommon pointer
  * @return ROK     - success
  *         RFAILED - failure
  *
  * ****************************************************************/
-uint8_t BuildPdcchCfgCommon(struct BWP_DownlinkCommon__pdcch_ConfigCommon *pdcchCfg)
+uint8_t BuildPdcchCfgCommon(struct SetupRelease_PDCCH_ConfigCommon *pdcchCfg)
 {
    uint8_t   ret;
    uint8_t   elementCnt;
@@ -1027,17 +1036,17 @@ uint8_t BuildPdcchCfgCommon(struct BWP_DownlinkCommon__pdcch_ConfigCommon *pdcch
 
    switch(pdcchCfg->present)
    {
-      case BWP_DownlinkCommon__pdcch_ConfigCommon_PR_NOTHING:
+      case SetupRelease_PDCCH_ConfigCommon_PR_NOTHING:
          {
             //TODO
             break;
          }
-      case BWP_DownlinkCommon__pdcch_ConfigCommon_PR_release:
+      case SetupRelease_PDCCH_ConfigCommon_PR_release:
          {
             //TODO
             break;
          }
-      case BWP_DownlinkCommon__pdcch_ConfigCommon_PR_setup:
+      case SetupRelease_PDCCH_ConfigCommon_PR_setup:
          {
             DU_ALLOC(pdcchCfg->choice.setup, sizeof(PDCCH_ConfigCommon_t));
             if(!pdcchCfg->choice.setup)
@@ -1137,7 +1146,7 @@ uint8_t BuildPdcchCfgCommon(struct BWP_DownlinkCommon__pdcch_ConfigCommon *pdcch
  *         RFAILED - failure
  *
  * ****************************************************************/
-uint8_t BuildPdschCfgCommon(struct BWP_DownlinkCommon__pdsch_ConfigCommon *pdschCfg)
+uint8_t BuildPdschCfgCommon(struct SetupRelease_PDSCH_ConfigCommon *pdschCfg)
 {
    uint8_t   idx;
    uint8_t   elementCnt;
@@ -1151,17 +1160,17 @@ uint8_t BuildPdschCfgCommon(struct BWP_DownlinkCommon__pdsch_ConfigCommon *pdsch
 
    switch(pdschCfg->present)
    {
-      case BWP_DownlinkCommon__pdsch_ConfigCommon_PR_NOTHING:
+      case SetupRelease_PDSCH_ConfigCommon_PR_NOTHING:
          {
             //TODO
             break;
          }
-      case BWP_DownlinkCommon__pdsch_ConfigCommon_PR_release:
+      case SetupRelease_PDSCH_ConfigCommon_PR_release:
          {
             //TODO
             break;
          }
-      case BWP_DownlinkCommon__pdsch_ConfigCommon_PR_setup:
+      case SetupRelease_PDSCH_ConfigCommon_PR_setup:
          {
             DU_ALLOC(pdschCfg->choice.setup, sizeof(PDSCH_ConfigCommon_t));
             if(!pdschCfg->choice.setup)
@@ -1256,7 +1265,7 @@ uint8_t BuildBwpDlCommon(BWP_DownlinkCommon_t *bwp)
    bwp->genericParameters.subcarrierSpacing = duDlCfg.dlScsCarrier.scs;
 
    /* PDCCH Config Common */
-   DU_ALLOC(bwp->pdcch_ConfigCommon, sizeof(struct BWP_DownlinkCommon__pdcch_ConfigCommon));
+   DU_ALLOC(bwp->pdcch_ConfigCommon, sizeof(struct SetupRelease_PDCCH_ConfigCommon));
    if(!bwp->pdcch_ConfigCommon)
    {
       DU_LOG("\nERROR  -->  DU APP : DL BWP memory allocation failed");
@@ -1269,7 +1278,7 @@ uint8_t BuildBwpDlCommon(BWP_DownlinkCommon_t *bwp)
    }
 
    /* PDSCH Config Common */
-   DU_ALLOC(bwp->pdsch_ConfigCommon, sizeof(struct BWP_DownlinkCommon__pdsch_ConfigCommon));
+   DU_ALLOC(bwp->pdsch_ConfigCommon, sizeof(struct SetupRelease_PDSCH_ConfigCommon));
    if(!bwp->pdsch_ConfigCommon)
    {
       DU_LOG("\nERROR  -->  DU APP : DL BWP memory allocation failed");
@@ -1792,7 +1801,7 @@ uint8_t BuildFreqInfoUlSib(FrequencyInfoUL_SIB_t *frequencyInfoUL)
  *
  * ****************************************************************/
 
-uint8_t  BuildRachCfgCommon(struct BWP_UplinkCommon__rach_ConfigCommon *rachCfg)
+uint8_t  BuildRachCfgCommon(struct SetupRelease_RACH_ConfigCommon *rachCfg)
 {
    RachCfgCommon    duRachCfg = duCfgParam.sib1Params.srvCellCfgCommSib.ulCfg.rachCfg;
    RACH_ConfigCommon_t  *setup = NULLP;
@@ -1800,17 +1809,17 @@ uint8_t  BuildRachCfgCommon(struct BWP_UplinkCommon__rach_ConfigCommon *rachCfg)
    rachCfg->present = duRachCfg.present;
    switch(rachCfg->present)
    {
-      case BWP_UplinkCommon__rach_ConfigCommon_PR_NOTHING:
+      case SetupRelease_RACH_ConfigCommon_PR_NOTHING:
          {
             //TODO
             break;
          }
-      case BWP_UplinkCommon__rach_ConfigCommon_PR_release:
+      case SetupRelease_RACH_ConfigCommon_PR_release:
          {
             //TODO
             break;
          }
-      case BWP_UplinkCommon__rach_ConfigCommon_PR_setup:
+      case SetupRelease_RACH_ConfigCommon_PR_setup:
          {
             DU_ALLOC(rachCfg->choice.setup, sizeof(RACH_ConfigCommon_t)); 
             if(!rachCfg->choice.setup)
@@ -1995,7 +2004,7 @@ uint8_t  BuildRachCfgCommon(struct BWP_UplinkCommon__rach_ConfigCommon *rachCfg)
  *
  * ****************************************************************/
 
-uint8_t BuildPuschCfgCommon(struct BWP_UplinkCommon__pusch_ConfigCommon *puschCfg)
+uint8_t BuildPuschCfgCommon(struct SetupRelease_PUSCH_ConfigCommon *puschCfg)
 {
    uint8_t           idx = 0;
    uint8_t           elementCnt = 0;   
@@ -2007,17 +2016,17 @@ uint8_t BuildPuschCfgCommon(struct BWP_UplinkCommon__pusch_ConfigCommon *puschCf
    puschCfg->present = duPuschCfg.puschCfgPresent;
    switch(puschCfg->present)
    {
-      case BWP_UplinkCommon__pusch_ConfigCommon_PR_NOTHING:
+      case SetupRelease_PUSCH_ConfigCommon_PR_NOTHING:
          {
             //TODO
             break;
          }
-      case BWP_UplinkCommon__pusch_ConfigCommon_PR_release:
+      case SetupRelease_PUSCH_ConfigCommon_PR_release:
          {
             //TODO
             break;
          }
-      case BWP_UplinkCommon__pusch_ConfigCommon_PR_setup:
+      case SetupRelease_PUSCH_ConfigCommon_PR_setup:
          {
             DU_ALLOC(puschCfg->choice.setup, sizeof(PUSCH_ConfigCommon_t));
             if(!puschCfg->choice.setup)
@@ -2131,7 +2140,7 @@ uint8_t BuildPuschCfgCommon(struct BWP_UplinkCommon__pusch_ConfigCommon *puschCf
  *
  * ****************************************************************/
 
-uint8_t BuildPucchCfgCommon( struct BWP_UplinkCommon__pucch_ConfigCommon *pucchCfg)
+uint8_t BuildPucchCfgCommon( struct SetupRelease_PUCCH_ConfigCommon *pucchCfg)
 {
    PucchCfgCommon    duPucchCfg;
    PUCCH_ConfigCommon_t *setup;
@@ -2141,17 +2150,17 @@ uint8_t BuildPucchCfgCommon( struct BWP_UplinkCommon__pucch_ConfigCommon *pucchC
    pucchCfg->present = duPucchCfg.present;
    switch(pucchCfg->present)
    {
-      case BWP_UplinkCommon__pucch_ConfigCommon_PR_NOTHING:
+      case SetupRelease_PUCCH_ConfigCommon_PR_NOTHING:
          {
             //TODO
             break;
          }
-      case BWP_UplinkCommon__pucch_ConfigCommon_PR_release:
+      case SetupRelease_PUCCH_ConfigCommon_PR_release:
          {
             //TODO
             break;
          }
-      case BWP_UplinkCommon__pucch_ConfigCommon_PR_setup:
+      case SetupRelease_PUCCH_ConfigCommon_PR_setup:
          {
             DU_ALLOC(pucchCfg->choice.setup, sizeof(PUCCH_ConfigCommon_t));
             if(!pucchCfg->choice.setup)
@@ -2225,7 +2234,7 @@ uint8_t BuildBwpUlCommon(BWP_UplinkCommon_t *bwp)
    bwp->genericParameters.subcarrierSpacing = duUlCfg.ulScsCarrier.scs;
 
    /* RACH Config Common */
-   DU_ALLOC(bwp->rach_ConfigCommon, sizeof(struct BWP_UplinkCommon__rach_ConfigCommon));
+   DU_ALLOC(bwp->rach_ConfigCommon, sizeof(struct SetupRelease_RACH_ConfigCommon));
    if(!bwp->rach_ConfigCommon)
    {
       DU_LOG("\nERROR  -->  DU APP : UL BWP memory allocation failed");
@@ -2240,7 +2249,7 @@ uint8_t BuildBwpUlCommon(BWP_UplinkCommon_t *bwp)
    RachCfgCommonret=ROK;
 
    /* PUSCH Config Common */
-   DU_ALLOC(bwp->pusch_ConfigCommon, sizeof(struct BWP_UplinkCommon__pusch_ConfigCommon));
+   DU_ALLOC(bwp->pusch_ConfigCommon, sizeof(struct SetupRelease_PUSCH_ConfigCommon));
    if(!bwp->pusch_ConfigCommon)
    {
       DU_LOG("\nERROR  -->  DU APP : UL BWP memory allocation failed");
@@ -2255,7 +2264,7 @@ uint8_t BuildBwpUlCommon(BWP_UplinkCommon_t *bwp)
    PuschCfgCommonret = ROK;
 
    /* PUCCH Config Common */
-   DU_ALLOC(bwp->pucch_ConfigCommon, sizeof(struct BWP_UplinkCommon__pucch_ConfigCommon));
+   DU_ALLOC(bwp->pucch_ConfigCommon, sizeof(struct SetupRelease_PUCCH_ConfigCommon));
    if(!bwp->pucch_ConfigCommon)
    {
       DU_LOG("\nERROR  -->  DU APP : UL BWP memory allocation failed");
@@ -2529,8 +2538,8 @@ uint8_t BuildSib1Msg()
 
       /* PLMN list */
       cellAccessInfo = &sib1Msg->cellAccessRelatedInfo;
-      cellAccessInfo->plmn_IdentityList.list.count = elementCnt;
-      cellAccessInfo->plmn_IdentityList.list.size = elementCnt * sizeof(PLMN_IdentityInfo_t *);
+      cellAccessInfo->plmn_IdentityInfoList.list.count = elementCnt;
+      cellAccessInfo->plmn_IdentityInfoList.list.size = elementCnt * sizeof(PLMN_IdentityInfo_t *);
 
       ret1 =  BuildPlmnList(cellAccessInfo);
       if(ret1 != ROK)
@@ -2600,10 +2609,14 @@ uint8_t BuildSib1Msg()
       sib1Msg->ue_TimersAndConstants->t311 = 1;
       sib1Msg->ue_TimersAndConstants->n311 = 0;
       sib1Msg->ue_TimersAndConstants->t319 = 3;
+      sib1Msg = bcchMsg.message.choice.c1->choice.systemInformationBlockType1;
+      // CellAccessRelatedInfo_t *cellAccessInfo = &sib1Msg->cellAccessRelatedInfo;
+      // struct PLMN_IdentityInfo__plmn_IdentityList *plmnIdInfo;
+      // plmnIdInfo = &cellAccessInfo->plmn_IdentityInfoList.list.array[0]->plmn_IdentityList;
+      // printf("MCC value: %d\n", *(plmnIdInfo->list.array[0]->mcc->list.array[0]));
 
       xer_fprint(stdout, &asn_DEF_BCCH_DL_SCH_Message, &bcchMsg);
-
-      /* Encode the F1SetupRequest type as APER */
+      /* Encode the SIB1 type as UPER */
       memset(encBuf, 0, ENC_BUF_MAX_LEN);
       encBufSize = 0;
       encRetVal = uper_encode(&asn_DEF_BCCH_DL_SCH_Message, 0, &bcchMsg, PrepFinalEncBuf,\
@@ -2834,8 +2847,8 @@ void FreeCommonSerachSpaceList( struct PDCCH_ConfigCommon__commonSearchSpaceList
 void FreeBwpDlCommon(BWP_DownlinkCommon_t *bwp)
 {
    uint8_t idx =0;
-   struct BWP_DownlinkCommon__pdsch_ConfigCommon *pdschCfg=bwp->pdsch_ConfigCommon;
-   struct BWP_DownlinkCommon__pdcch_ConfigCommon *pdcchCfg=bwp->pdcch_ConfigCommon;
+   struct SetupRelease_PDSCH_ConfigCommon *pdschCfg=bwp->pdsch_ConfigCommon;
+   struct SetupRelease_PDCCH_ConfigCommon *pdcchCfg=bwp->pdcch_ConfigCommon;
    pdcchCfg->present=duCfgParam.sib1Params.srvCellCfgCommSib.dlCfg.pdcchCfg.present; 
    pdschCfg->present=duCfgParam.sib1Params.srvCellCfgCommSib.dlCfg.pdschCfg.present;
 
@@ -2845,17 +2858,17 @@ void FreeBwpDlCommon(BWP_DownlinkCommon_t *bwp)
       {
          switch( pdschCfg->present)
          {
-            case BWP_DownlinkCommon__pdsch_ConfigCommon_PR_NOTHING:
+            case SetupRelease_PDSCH_ConfigCommon_PR_NOTHING:
                {
                   //TODO
                   break;
                }
-            case  BWP_DownlinkCommon__pdsch_ConfigCommon_PR_release:
+            case  SetupRelease_PDSCH_ConfigCommon_PR_release:
                { 
                   //TODO
                   break;
                }
-            case BWP_DownlinkCommon__pdsch_ConfigCommon_PR_setup:
+            case SetupRelease_PDSCH_ConfigCommon_PR_setup:
                {
                   if(pdschCfg->choice.setup)
                   {
@@ -2898,22 +2911,22 @@ void FreeBwpDlCommon(BWP_DownlinkCommon_t *bwp)
                break;
          }
          DU_FREE(bwp->pdsch_ConfigCommon,\
-               sizeof(struct BWP_DownlinkCommon__pdsch_ConfigCommon));
+               sizeof(struct SetupRelease_PDSCH_ConfigCommon));
       }
 
       switch(pdcchCfg->present)
       {
-         case BWP_DownlinkCommon__pdcch_ConfigCommon_PR_NOTHING:
+         case SetupRelease_PDCCH_ConfigCommon_PR_NOTHING:
             {
                //TODO
                break;
             }
-         case BWP_DownlinkCommon__pdcch_ConfigCommon_PR_release:
+         case SetupRelease_PDCCH_ConfigCommon_PR_release:
             {
                //TODO
                break;
             }
-         case BWP_DownlinkCommon__pdcch_ConfigCommon_PR_setup:
+         case SetupRelease_PDCCH_ConfigCommon_PR_setup:
             {
                if(pdcchCfg->choice.setup)
                {
@@ -2965,7 +2978,7 @@ void FreeBwpDlCommon(BWP_DownlinkCommon_t *bwp)
          default:
             break;
       }
-      DU_FREE(bwp->pdcch_ConfigCommon,sizeof(struct BWP_DownlinkCommon__pdcch_ConfigCommon));
+      DU_FREE(bwp->pdcch_ConfigCommon,sizeof(struct SetupRelease_PDCCH_ConfigCommon));
    }
 }
 
@@ -2984,7 +2997,7 @@ void FreeBwpDlCommon(BWP_DownlinkCommon_t *bwp)
  * @return void
  *
  * ****************************************************************/
-void FreePucchCfgCommon( struct BWP_UplinkCommon__pucch_ConfigCommon *pucchCfg)
+void FreePucchCfgCommon( struct SetupRelease_PUCCH_ConfigCommon *pucchCfg)
 {
    PUCCH_ConfigCommon_t *setup;
 
@@ -3017,7 +3030,7 @@ void FreePucchCfgCommon( struct BWP_UplinkCommon__pucch_ConfigCommon *pucchCfg)
  * @return void
  *
  * ****************************************************************/
-void FreePuschCfgCommon(struct BWP_UplinkCommon__pusch_ConfigCommon *puschCfg)
+void FreePuschCfgCommon(struct SetupRelease_PUSCH_ConfigCommon *puschCfg)
 {
    uint8_t           idx = 0;
    PUSCH_ConfigCommon_t *setup = NULLP;
@@ -3075,7 +3088,7 @@ void FreePuschCfgCommon(struct BWP_UplinkCommon__pusch_ConfigCommon *puschCfg)
  *
  * ****************************************************************/
 
-void FreeRachCfgCommon(struct BWP_UplinkCommon__rach_ConfigCommon *rachCfg)
+void FreeRachCfgCommon(struct SetupRelease_RACH_ConfigCommon *rachCfg)
 {
    RACH_ConfigCommon_t  *setup = NULLP;
 
@@ -3121,21 +3134,21 @@ void FreeBwpUlCommon(BWP_UplinkCommon_t *bwp)
    if(bwp->rach_ConfigCommon)
    {
       FreeRachCfgCommon(bwp->rach_ConfigCommon);
-      DU_FREE(bwp->rach_ConfigCommon, sizeof(struct BWP_UplinkCommon__rach_ConfigCommon));
+      DU_FREE(bwp->rach_ConfigCommon, sizeof(struct SetupRelease_RACH_ConfigCommon));
    }
 
    /* PUSCH Config Common */
    if(bwp->pusch_ConfigCommon)
    {
       FreePuschCfgCommon(bwp->pusch_ConfigCommon);
-      DU_FREE(bwp->pusch_ConfigCommon, sizeof(struct BWP_UplinkCommon__pusch_ConfigCommon));
+      DU_FREE(bwp->pusch_ConfigCommon, sizeof(struct SetupRelease_PUSCH_ConfigCommon));
    }
 
    /* PUCCH Config Common */
    if(bwp->pucch_ConfigCommon)
    {
       FreePucchCfgCommon(bwp->pucch_ConfigCommon);
-      DU_FREE(bwp->pucch_ConfigCommon, sizeof(struct BWP_UplinkCommon__pucch_ConfigCommon));
+      DU_FREE(bwp->pucch_ConfigCommon, sizeof(struct SetupRelease_PUCCH_ConfigCommon));
    }
 }/* FreeBwpUlCommon */
 
@@ -3244,12 +3257,12 @@ void FreeSib1Msg(SIB1_t *sib1Msg)
    if(sib1Msg != NULLP)
    {
       cellAccessInfo = &sib1Msg->cellAccessRelatedInfo;
-      if(cellAccessInfo->plmn_IdentityList.list.array !=NULLP)
+      if(cellAccessInfo->plmn_IdentityInfoList.list.array !=NULLP)
       {
-         if(cellAccessInfo->plmn_IdentityList.list.array[idx]!=NULLP)
+         if(cellAccessInfo->plmn_IdentityInfoList.list.array[idx]!=NULLP)
          {
             plmnIdInfo =
-               &cellAccessInfo->plmn_IdentityList.list.array[idx]->plmn_IdentityList;
+               &cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->plmn_IdentityList;
 
             if(plmnIdInfo->list.array !=NULLP)
             {
@@ -3262,16 +3275,16 @@ void FreeSib1Msg(SIB1_t *sib1Msg)
                         if(plmnIdInfo->list.array[idx]->mnc.list.array)
                         {	      
                            /*Free Tracking Area Code */
-                           if(cellAccessInfo->plmn_IdentityList.list.array[idx]->trackingAreaCode)
+                           if(cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->trackingAreaCode)
                            {	    
                               /*Free RANAC */
-                              if(cellAccessInfo->plmn_IdentityList.list.array[idx]->trackingAreaCode->buf)
+                              if(cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->trackingAreaCode->buf)
                               {	   
                                  /* Free CellIdentity */
-                                 if(cellAccessInfo->plmn_IdentityList.list.array[idx]->ranac)
+                                 if(cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->ranac)
                                  {
                                     cellIdentity
-                                       =&cellAccessInfo->plmn_IdentityList.\
+                                       =&cellAccessInfo->plmn_IdentityInfoList.\
                                        list.array[idx]->cellIdentity;
                                     if(cellIdentity->buf)
                                     {
@@ -3322,14 +3335,14 @@ void FreeSib1Msg(SIB1_t *sib1Msg)
                                        DU_FREE(cellIdentity->buf,cellIdentity->size);
 
                                     }
-                                    DU_FREE(cellAccessInfo->plmn_IdentityList.list.array[idx]->ranac, sizeof(RAN_AreaCode_t)); 
+                                    DU_FREE(cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->ranac, sizeof(RAN_AreaCode_t)); 
 
                                  }
-                                 DU_FREE(cellAccessInfo->plmn_IdentityList.list.array[idx]->trackingAreaCode->buf,\
-                                       cellAccessInfo->plmn_IdentityList.list.array[idx]->trackingAreaCode->size);
+                                 DU_FREE(cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->trackingAreaCode->buf,\
+                                       cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->trackingAreaCode->size);
 
                               }
-                              DU_FREE(cellAccessInfo->plmn_IdentityList.list.array[idx]->trackingAreaCode\
+                              DU_FREE(cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->trackingAreaCode\
                                     , sizeof(TrackingAreaCode_t));
                            }
 
@@ -3365,22 +3378,22 @@ void FreeSib1Msg(SIB1_t *sib1Msg)
                   if((plmnIdInfo->list.array[idx1]))
                   {
                      DU_FREE(plmnIdInfo->list.array[idx1],
-                           sizeof(PLMN_IdentitY_t));
+                           sizeof(PLMN_Identity_t));
                   }
                }
                DU_FREE(plmnIdInfo->list.array, plmnIdInfo->list.size);
             }
          }
-         for(idx=0; idx<cellAccessInfo->plmn_IdentityList.list.count; idx++)
+         for(idx=0; idx<cellAccessInfo->plmn_IdentityInfoList.list.count; idx++)
          {
-            if(cellAccessInfo->plmn_IdentityList.list.array[idx]!=NULLP)
+            if(cellAccessInfo->plmn_IdentityInfoList.list.array[idx]!=NULLP)
             { 
-               DU_FREE(cellAccessInfo->plmn_IdentityList.list.array[idx],
+               DU_FREE(cellAccessInfo->plmn_IdentityInfoList.list.array[idx],
                      sizeof(PLMN_IdentityInfo_t));
             }
          }
-         DU_FREE(cellAccessInfo->plmn_IdentityList.list.array,
-               cellAccessInfo->plmn_IdentityList.list.size);
+         DU_FREE(cellAccessInfo->plmn_IdentityInfoList.list.array,
+               cellAccessInfo->plmn_IdentityInfoList.list.size);
       }
       DU_FREE(sib1Msg, sizeof(SIB1_t)); 
    }

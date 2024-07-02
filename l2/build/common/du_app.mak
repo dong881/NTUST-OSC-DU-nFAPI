@@ -38,9 +38,10 @@ include $(COM_BUILD_DIR)/compile.mak
 I_OPTS+=-I$(ROOT_DIR)/src/mt
 I_OPTS+=-I$(ROOT_DIR)/src/codec_utils/common
 I_OPTS+=-I$(ROOT_DIR)/src/codec_utils/F1AP
-I_OPTS+=-I$(ROOT_DIR)/src/codec_utils/RRC
+I_OPTS+=-I$(ROOT_DIR)/src/codec_utils/RRC-SIB1
 I_OPTS+=-I$(ROOT_DIR)/src/codec_utils/E2AP
 I_OPTS+=-I$(ROOT_DIR)/src/codec_utils/E2SM_KPM
+@echo "Include paths: $(I_OPTS)"
 
 ifeq ($(NFAPI),YES)
 I_OPTS+=-I$(ROOT_DIR)/src/nfapi/open-nFAPI/vnf/public_inc
