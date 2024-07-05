@@ -451,109 +451,26 @@ uint8_t BuildPlmnList(CellAccessRelatedInfo_t *cellAccessInfo)
    RAN_AreaCode_t     **ranac;
    CellIdentity_t     *cellIdentity;
    uint8_t            ret;	
-   struct PLMN_IdentityInfo__plmn_IdentityList
-      *plmnIdInfo;
-
-   DU_ALLOC(cellAccessInfo->plmn_IdentityInfoList.list.array,
-         cellAccessInfo->plmn_IdentityInfoList.list.size);
-   if(!cellAccessInfo->plmn_IdentityInfoList.list.array)
-   {   
-      DU_LOG("\nERROR  -->  DU APP: BuildPlmnList memory allocation failure");
-      return RFAILED;
-   }   
-
-   elementCnt = cellAccessInfo->plmn_IdentityInfoList.list.count; 
-   for(idx=0; idx<elementCnt; idx++)
-   {   
-      DU_ALLOC(cellAccessInfo->plmn_IdentityInfoList.list.array[idx],
-            sizeof(PLMN_IdentityInfo_t));
-      if(!cellAccessInfo->plmn_IdentityInfoList.list.array[idx])
-      {
-         DU_LOG("\nERROR  -->  DU APP: BuildPlmnList memory allocation failure");
-         return RFAILED;
-      }
-   }
 
    idx = 0;
    /* PLMN list */
-   elementCnt = ODU_VALUE_ONE;
-
-   plmnIdInfo = &cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->plmn_IdentityList;
-   plmnIdInfo->list.count = elementCnt;
-   plmnIdInfo->list.size  = elementCnt * sizeof(PLMN_Identity_t *);
-   DU_ALLOC(plmnIdInfo->list.array, plmnIdInfo->list.size);
-   if(!plmnIdInfo->list.array)
-   {
-      DU_LOG("\nERROR  -->  DU APP: BuildPlmnList memory allocation failure");
-      return RFAILED;
-   }
-
-   for(idx1=0; idx1<elementCnt; idx1++)
-   {
-      DU_ALLOC(plmnIdInfo->list.array[idx1], sizeof(PLMN_Identity_t));
-      if(!(plmnIdInfo->list.array[idx1]))
-      {
-         DU_LOG("\nERROR  -->  DU APP: BuildPlmnList memory allocation failure");
-         return RFAILED;
-      }
-   }
-   idx1 = 0;
-   DU_ALLOC(plmnIdInfo->list.array[idx1]->mcc, sizeof(MCC_t));
-   if(!plmnIdInfo->list.array[idx1]->mcc)
-   {
-      DU_LOG("\nERROR  -->  DU APP: BuildPlmnList memory allocation failure");
-      return RFAILED;
-   }
-
-   elementCnt = ODU_VALUE_THREE;
-   plmnIdInfo->list.array[idx1]->mcc->list.count = elementCnt;
-   plmnIdInfo->list.array[idx1]->mcc->list.size = elementCnt * sizeof(MCC_MNC_Digit_t *);
-   DU_ALLOC(plmnIdInfo->list.array[idx1]->mcc->list.array, plmnIdInfo->list.array[idx1]->mcc->list.size);
-   if(!(plmnIdInfo->list.array[idx1]->mcc->list.array))
-   {
-      DU_LOG("\nERROR  -->  DU APP: BuildPlmnList memory allocation failure");
-      return RFAILED;
-   }
-   for(idx2=0; idx2<elementCnt; idx2++)
-   {
-      DU_ALLOC(plmnIdInfo->list.array[idx1]->mcc->list.array[idx2],
-            sizeof(MCC_MNC_Digit_t));
-      if(!plmnIdInfo->list.array[idx1]->mcc->list.array[idx2])
-      {
-         DU_LOG("\nERROR  -->  DU APP: BuildPlmnList memory allocation failure");
-         return RFAILED;
-      }
-      *(plmnIdInfo->list.array[idx1]->mcc->list.array[idx2])=\
-                                                             duCfgParam.sib1Params.plmn.mcc[idx2];
-      printf("MCC value: %d\n", *(plmnIdInfo->list.array[idx1]->mcc->list.array[idx2]));
-   }
-   idx2 = 0;
-   plmnIdInfo->list.array[idx1]->mnc.list.count = elementCnt;
-   plmnIdInfo->list.array[idx1]->mnc.list.size =\
-                                                elementCnt * sizeof(MCC_MNC_Digit_t *);
-   DU_ALLOC(plmnIdInfo->list.array[idx1]->mnc.list.array,\
-         plmnIdInfo->list.array[idx1]->mnc.list.size);
-   if(!plmnIdInfo->list.array[idx1]->mnc.list.array)
-   {
-      DU_LOG("\nERROR  -->  DU APP: BuildPlmnList memory allocation failure");
-      return RFAILED;
-   }
-   for(idx2=0; idx2<elementCnt; idx2++)
-   {
-      DU_ALLOC(plmnIdInfo->list.array[idx1]->mnc.list.array[idx2],
-            sizeof(MCC_MNC_Digit_t));
-      if(!plmnIdInfo->list.array[idx1]->mnc.list.array[idx2])
-      {
-         DU_LOG("\nERROR  -->  DU APP: BuildPlmnList memory allocation failure");
-         return RFAILED;
-      }
-      *(plmnIdInfo->list.array[idx1]->mnc.list.array[idx2])=\
-                                                            duCfgParam.sib1Params.plmn.mnc[idx2];
-      printf("MNC value: %d\n", *(plmnIdInfo->list.array[idx1]->mnc.list.array[idx2]));
-   }
+   asn1cSequenceAdd(cellAccessInfo->plmn_IdentityInfoList.list, struct PLMN_IdentityInfo, nr_plmn_info);
+   asn1cSequenceAdd(nr_plmn_info->plmn_IdentityList.list, struct PLMN_Identity, nr_plmn);
+   nr_plmn->mcc = (MCC_t *)calloc(1,sizeof(MCC_t));
+   asn1cSequenceAdd(nr_plmn->mcc->list, MCC_MNC_Digit_t, mcc0);
+   asn1cSequenceAdd(nr_plmn->mcc->list, MCC_MNC_Digit_t, mcc1);
+   asn1cSequenceAdd(nr_plmn->mcc->list, MCC_MNC_Digit_t, mcc2);
+   asn1cSequenceAdd(nr_plmn->mnc.list, MCC_MNC_Digit_t, mnc1);
+   asn1cSequenceAdd(nr_plmn->mnc.list, MCC_MNC_Digit_t, mnc2);
+   *mcc0 = duCfgParam.sib1Params.plmn.mcc[0];
+   *mcc1 = duCfgParam.sib1Params.plmn.mcc[1];
+   *mcc2 = duCfgParam.sib1Params.plmn.mcc[2];
+   *mnc1 = duCfgParam.sib1Params.plmn.mnc[1];
+   *mnc2 = duCfgParam.sib1Params.plmn.mnc[2];
 
    /* Tracking Area Code */
-   tac = &cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->trackingAreaCode;
+   nr_plmn_info->trackingAreaCode = CALLOC(1, sizeof(TrackingAreaCode_t));
+   tac = &nr_plmn_info->trackingAreaCode;
    ret = BuildTac(tac);
    if(ret != ROK)
    {
@@ -569,7 +486,8 @@ uint8_t BuildPlmnList(CellAccessRelatedInfo_t *cellAccessInfo)
    // }
 
    /* CellIdentity */
-   cellIdentity = &cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->cellIdentity;
+   printf("CellIdentity\n");
+   cellIdentity = &nr_plmn_info->cellIdentity;
    ret=BuildCellIdentity(cellIdentity);
    if(ret != ROK)
    {
@@ -577,8 +495,7 @@ uint8_t BuildPlmnList(CellAccessRelatedInfo_t *cellAccessInfo)
    }
 
    /* cellReservedForOperatorUse */
-   cellAccessInfo->plmn_IdentityInfoList.list.array[idx]->\
-      cellReservedForOperatorUse = duCfgParam.sib1Params.cellResvdForOpUse;
+   nr_plmn_info->cellReservedForOperatorUse = duCfgParam.sib1Params.cellResvdForOpUse;
 
 
    return ROK;
@@ -2536,8 +2453,8 @@ uint8_t BuildSib1Msg()
 
       /* PLMN list */
       cellAccessInfo = &sib1Msg->cellAccessRelatedInfo;
-      cellAccessInfo->plmn_IdentityInfoList.list.count = elementCnt;
-      cellAccessInfo->plmn_IdentityInfoList.list.size = elementCnt * sizeof(PLMN_IdentityInfo_t *);
+      // cellAccessInfo->plmn_IdentityInfoList.list.count = elementCnt;
+      // cellAccessInfo->plmn_IdentityInfoList.list.size = elementCnt * sizeof(PLMN_IdentityInfo_t *);
 
       ret1 =  BuildPlmnList(cellAccessInfo);
       if(ret1 != ROK)
