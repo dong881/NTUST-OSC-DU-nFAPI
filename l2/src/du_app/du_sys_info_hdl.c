@@ -2462,40 +2462,40 @@ uint8_t BuildSib1Msg()
          break;
       }
       /* Connection Establish Failure Control */
-      DU_ALLOC(sib1Msg->connEstFailureControl, sizeof(ConnEstFailureControl_t));
-      if(!sib1Msg->connEstFailureControl)
-      {
-         DU_LOG("\nERROR  -->  DU APP: sib1Msg->connEstFailureControl memory allocation failure");
-         break;
-      }
-      sib1Msg->connEstFailureControl->connEstFailCount = duCfgParam.sib1Params.connEstFailCnt;
-      sib1Msg->connEstFailureControl->connEstFailOffsetValidity = duCfgParam.sib1Params.connEstFailOffValidity;
+      // DU_ALLOC(sib1Msg->connEstFailureControl, sizeof(ConnEstFailureControl_t));
+      // if(!sib1Msg->connEstFailureControl)
+      // {
+      //    DU_LOG("\nERROR  -->  DU APP: sib1Msg->connEstFailureControl memory allocation failure");
+      //    break;
+      // }
+      // sib1Msg->connEstFailureControl->connEstFailCount = duCfgParam.sib1Params.connEstFailCnt;
+      // sib1Msg->connEstFailureControl->connEstFailOffsetValidity = duCfgParam.sib1Params.connEstFailOffValidity;
       
-      DU_ALLOC(sib1Msg->connEstFailureControl->connEstFailOffset, sizeof(long));
-      if(!sib1Msg->connEstFailureControl->connEstFailOffset)
-      {
-         DU_LOG("\nERROR  -->  DU APP: BuildSib1Msg(): Memory allocation failed for connEstFailOffset");
-         break;
-      }
-      *(sib1Msg->connEstFailureControl->connEstFailOffset) = duCfgParam.sib1Params.connEstFailOffset;
+      // DU_ALLOC(sib1Msg->connEstFailureControl->connEstFailOffset, sizeof(long));
+      // if(!sib1Msg->connEstFailureControl->connEstFailOffset)
+      // {
+      //    DU_LOG("\nERROR  -->  DU APP: BuildSib1Msg(): Memory allocation failed for connEstFailOffset");
+      //    break;
+      // }
+      // *(sib1Msg->connEstFailureControl->connEstFailOffset) = duCfgParam.sib1Params.connEstFailOffset;
 
-      /* SI Scheduling Info */
-      DU_ALLOC(sib1Msg->si_SchedulingInfo, sizeof(SI_SchedulingInfo_t));
-      if(!sib1Msg->si_SchedulingInfo)
-      {
-         DU_LOG("\nERROR  -->  DU APP: sib1Msg->si_SchedulingInfo memory allocation failure");
-         break;
-      } 
-      elementCnt = ODU_VALUE_ONE;
-      sib1Msg->si_SchedulingInfo->schedulingInfoList.list.count = elementCnt;
-      sib1Msg->si_SchedulingInfo->schedulingInfoList.list.size = elementCnt *
-         sizeof(struct SchedulingInfo *);
-      ret1 = BuildSiSchedInfoList(&sib1Msg->si_SchedulingInfo->schedulingInfoList);
-      if(ret1 != ROK)
-      {
-         break;
-      }
-      sib1Msg->si_SchedulingInfo->si_WindowLength = duCfgParam.sib1Params.siSchedInfo.winLen;
+      // /* SI Scheduling Info */
+      // DU_ALLOC(sib1Msg->si_SchedulingInfo, sizeof(SI_SchedulingInfo_t));
+      // if(!sib1Msg->si_SchedulingInfo)
+      // {
+      //    DU_LOG("\nERROR  -->  DU APP: sib1Msg->si_SchedulingInfo memory allocation failure");
+      //    break;
+      // } 
+      // elementCnt = ODU_VALUE_ONE;
+      // sib1Msg->si_SchedulingInfo->schedulingInfoList.list.count = elementCnt;
+      // sib1Msg->si_SchedulingInfo->schedulingInfoList.list.size = elementCnt *
+      //    sizeof(struct SchedulingInfo *);
+      // ret1 = BuildSiSchedInfoList(&sib1Msg->si_SchedulingInfo->schedulingInfoList);
+      // if(ret1 != ROK)
+      // {
+      //    break;
+      // }
+      // sib1Msg->si_SchedulingInfo->si_WindowLength = duCfgParam.sib1Params.siSchedInfo.winLen;
 
       /* Serving Cell Config Common */
       DU_ALLOC(sib1Msg->servingCellConfigCommon, sizeof(ServingCellConfigCommonSIB_t));
