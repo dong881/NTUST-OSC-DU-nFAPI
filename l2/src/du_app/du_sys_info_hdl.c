@@ -64,11 +64,9 @@
 #include "/home/hpe/mwnl-odu-at-oai-based-on-scf/src/codec_utils/RRC/UE-TimersAndConstants.h"
 
 #define asn1cSeqAdd(VaR, PtR) if (ASN_SEQUENCE_ADD(VaR,PtR)!=0) AssertFatal(false, "ASN.1 encoding error " #VaR "\n")
-#define asn1cCalloc(VaR, lOcPtr) \
-typeof(VaR) lOcPtr = VaR = calloc(1,sizeof(*VaR))
 #define asn1cSequenceAdd(VaR, TyPe, lOcPtr) \
 TyPe *lOcPtr= calloc(1,sizeof(TyPe)); \
-asn1cSeqAdd(&VaR,lOcPtr)
+ASN_SEQUENCE_ADD(&VaR,lOcPtr)
 
 void FreeSib1Msg(SIB1_t *sib1Msg);
 uint8_t FreqInfoUlret = RFAILED;
