@@ -5,7 +5,7 @@
  * 	`asn1c -D ../../E2_v3.0_output/ -fcompound-names -fno-include-deps -findirect-choice -gen-PER -no-gen-example`
  */
 
-#include "PLMN-Identity.h"
+#include "PLMN-IdentityE2AP.h"
 
 int
 PLMN_Identity_constraint(const asn_TYPE_descriptor_t *td, const void *sptr,
@@ -48,7 +48,7 @@ asn_per_constraints_t asn_PER_type_PLMN_Identity_constr_1 CC_NOTUSED = {
 static const ber_tlv_tag_t asn_DEF_PLMN_Identity_tags_1[] = {
 	(ASN_TAG_CLASS_UNIVERSAL | (4 << 2))
 };
-asn_TYPE_descriptor_t asn_DEF_PLMN_Identity = {
+asn_TYPE_descriptor_t asn_DEF_PLMN_IdentityE2AP = {
 	"PLMN-Identity",
 	"PLMN-Identity",
 	&asn_OP_OCTET_STRING,
