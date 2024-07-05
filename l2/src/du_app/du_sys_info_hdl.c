@@ -460,13 +460,15 @@ uint8_t BuildPlmnList(CellAccessRelatedInfo_t *cellAccessInfo)
    asn1cSequenceAdd(nr_plmn->mcc->list, MCC_MNC_Digit_t, mcc0);
    asn1cSequenceAdd(nr_plmn->mcc->list, MCC_MNC_Digit_t, mcc1);
    asn1cSequenceAdd(nr_plmn->mcc->list, MCC_MNC_Digit_t, mcc2);
+   asn1cSequenceAdd(nr_plmn->mnc.list, MCC_MNC_Digit_t, mnc0);
    asn1cSequenceAdd(nr_plmn->mnc.list, MCC_MNC_Digit_t, mnc1);
-   asn1cSequenceAdd(nr_plmn->mnc.list, MCC_MNC_Digit_t, mnc2);
+   // asn1cSequenceAdd(nr_plmn->mnc.list, MCC_MNC_Digit_t, mnc2);
    *mcc0 = duCfgParam.sib1Params.plmn.mcc[0];
    *mcc1 = duCfgParam.sib1Params.plmn.mcc[1];
    *mcc2 = duCfgParam.sib1Params.plmn.mcc[2];
+   *mnc0 = duCfgParam.sib1Params.plmn.mnc[0];
    *mnc1 = duCfgParam.sib1Params.plmn.mnc[1];
-   *mnc2 = duCfgParam.sib1Params.plmn.mnc[2];
+   // *mnc2 = duCfgParam.sib1Params.plmn.mnc[2];
 
    /* Tracking Area Code */
    nr_plmn_info->trackingAreaCode = CALLOC(1, sizeof(TrackingAreaCode_t));
