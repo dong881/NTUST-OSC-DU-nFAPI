@@ -75,7 +75,7 @@
 /* 5G ORAN phy delay */
 #ifdef NR_TDD
 #define PHY_DELTA_DL 2
-#define PHY_DELTA_UL 1
+#define PHY_DELTA_UL 0
 #else
 #define PHY_DELTA_DL 1
 #define PHY_DELTA_UL 0
