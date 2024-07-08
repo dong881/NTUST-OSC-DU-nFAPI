@@ -552,7 +552,7 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
    pdschCfg.timeDomAlloc[1].mapType = PDSCH_TimeDomainResourceAllocation__mappingType_typeA;
 /* ======== small cell integration ======== */
 #ifdef NFAPI
-   pdschCfg.numTimeDomRsrcAlloc = 2;
+   pdschCfg.numTimeDomRsrcAlloc = 3;
    pdschCfg.timeDomAlloc[0].sliv = 40;
    pdschCfg.timeDomAlloc[1].sliv = 54;
    pdschCfg.timeDomAlloc[2].k0 = PDSCH_K0_CFG2;
