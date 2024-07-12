@@ -234,11 +234,15 @@
 /* MACRO Ddefine for PDSCH Configuration */
 #define NUM_TIME_DOM_RSRC_ALLOC 2
 #define PDSCH_K0_CFG1  0
-#define PDSCH_K0_CFG2  1
+#define PDSCH_K0_CFG2  0
 /* ======== small cell integration ======== */
 #ifdef NFAPI
 #define PDSCH_START_SYMBOL  1
-#define PDSCH_LENGTH_SYMBOL 5
+#define PDSCH_LENGTH_SYMBOL 13
+#define PDSCH_START_SYMBOL_2  1
+#define PDSCH_LENGTH_SYMBOL_2 12
+#define PDSCH_START_SYMBOL_3  1
+#define PDSCH_LENGTH_SYMBOL_3 5
 #else
 #define PDSCH_START_SYMBOL  3
 #define PDSCH_LENGTH_SYMBOL 11

@@ -332,7 +332,26 @@ uint8_t readMacCfg()
       PDSCH_START_SYMBOL;
    duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdschCommon.timeDomRsrcAllocList[idx].lengthSymbol =
       PDSCH_LENGTH_SYMBOL;
+/* ======== small cell integration ======== */
+#ifdef NFAPI
+   idx++;
+   duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdschCommon.timeDomRsrcAllocList[idx].k0 = PDSCH_K0_CFG2;
+   duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdschCommon.timeDomRsrcAllocList[idx].mappingType = 
+      PDSCH_MAPPING_TYPE_A;
+   duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdschCommon.timeDomRsrcAllocList[idx].startSymbol = 
+      PDSCH_START_SYMBOL_2;
+   duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdschCommon.timeDomRsrcAllocList[idx].lengthSymbol =
+      PDSCH_LENGTH_SYMBOL_2;
 
+   idx++;
+   duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdschCommon.timeDomRsrcAllocList[idx].k0 = PDSCH_K0_CFG2;
+   duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdschCommon.timeDomRsrcAllocList[idx].mappingType = 
+      PDSCH_MAPPING_TYPE_A;
+   duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdschCommon.timeDomRsrcAllocList[idx].startSymbol = 
+      PDSCH_START_SYMBOL_3;
+   duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdschCommon.timeDomRsrcAllocList[idx].lengthSymbol =
+      PDSCH_LENGTH_SYMBOL_3;
+#else
    idx++;
    duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdschCommon.timeDomRsrcAllocList[idx].k0 = PDSCH_K0_CFG2;
    duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdschCommon.timeDomRsrcAllocList[idx].mappingType = 
@@ -341,7 +360,8 @@ uint8_t readMacCfg()
       PDSCH_START_SYMBOL;
    duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdschCommon.timeDomRsrcAllocList[idx].lengthSymbol =
       PDSCH_LENGTH_SYMBOL;
-
+#endif
+/* ======================================== */
    /* ra-searchSpace ID is set to 1 */
    duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdcchCommon.raSearchSpaceId = SEARCHSPACE_1_INDEX;
 
@@ -566,19 +586,19 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
    /* Configuring PDSCH Config Common For SIB1 */
    pdschCfg.present = SetupRelease_PDSCH_ConfigCommon_PR_setup;
 
-   pdschCfg.timeDomAlloc[0].k0 = PDSCH_K0_CFG1;
    pdschCfg.timeDomAlloc[0].mapType = PDSCH_TimeDomainResourceAllocation__mappingType_typeA;
-   pdschCfg.timeDomAlloc[1].k0 = PDSCH_K0_CFG2;
    pdschCfg.timeDomAlloc[1].mapType = PDSCH_TimeDomainResourceAllocation__mappingType_typeA;
 /* ======== small cell integration ======== */
 #ifdef NFAPI
    pdschCfg.numTimeDomRsrcAlloc = 3;
-   pdschCfg.timeDomAlloc[0].sliv = 40;
-   pdschCfg.timeDomAlloc[1].sliv = 54;
-   pdschCfg.timeDomAlloc[2].k0 = PDSCH_K0_CFG2;
+   pdschCfg.timeDomAlloc[0].sliv = calcSliv(PDSCH_START_SYMBOL,PDSCH_LENGTH_SYMBOL);
+   pdschCfg.timeDomAlloc[1].sliv = calcSliv(PDSCH_START_SYMBOL_2,PDSCH_LENGTH_SYMBOL_2);
+   // pdschCfg.timeDomAlloc[2].k0 = PDSCH_K0_CFG2;
    pdschCfg.timeDomAlloc[2].mapType = PDSCH_TimeDomainResourceAllocation__mappingType_typeA;
-   pdschCfg.timeDomAlloc[2].sliv = 57;
+   pdschCfg.timeDomAlloc[2].sliv = calcSliv(PDSCH_START_SYMBOL_3,PDSCH_LENGTH_SYMBOL_3);
 #else
+   pdschCfg.timeDomAlloc[0].k0 = PDSCH_K0_CFG1;
+   pdschCfg.timeDomAlloc[1].k0 = PDSCH_K0_CFG2;
    pdschCfg.numTimeDomRsrcAlloc = 2;
    pdschCfg.timeDomAlloc[0].sliv = calcSliv(PDSCH_START_SYMBOL,PDSCH_LENGTH_SYMBOL);
    pdschCfg.timeDomAlloc[1].sliv = calcSliv(PDSCH_START_SYMBOL,PDSCH_LENGTH_SYMBOL);
