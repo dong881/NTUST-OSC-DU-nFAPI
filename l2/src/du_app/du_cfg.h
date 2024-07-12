@@ -99,11 +99,11 @@
 
 #define TRANS_ID 1
 #define DU_TAC 1
-#define PLMN_MCC0 2
+#define PLMN_MCC0 0
 #define PLMN_MCC1 0
-#define PLMN_MCC2 8
-#define PLMN_MNC0 9
-#define PLMN_MNC1 5
+#define PLMN_MCC2 1
+#define PLMN_MNC0 0
+#define PLMN_MNC1 1
 #define PLMN_MNC2 0
 #define PLMN_SIZE 3
 
