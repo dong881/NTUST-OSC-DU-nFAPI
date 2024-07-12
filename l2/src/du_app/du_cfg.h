@@ -251,6 +251,7 @@
 
 /* MACRO Define for PUSCH Configuration */
 #define MAX_UL_ALLOC 16
+#define PUSCH_K2_NUM  4
 #ifdef NFAPI
 #define PUSCH_K2_CFG1  6
 #define PUSCH_K2_CFG2  6
