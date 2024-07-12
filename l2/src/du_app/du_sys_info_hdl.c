@@ -2048,14 +2048,8 @@ uint8_t BuildPuschCfgCommon(struct SetupRelease_PUSCH_ConfigCommon *puschCfg)
                DU_LOG("\nERROR  -->  DU APP : PUSCH Config memory alloc failed");
                return RFAILED;
             }
-/* ======== small cell integration ======== */
-#ifdef NFAPI
-            *setup->msg3_DeltaPreamble = 1;
-#else
             *setup->msg3_DeltaPreamble = duPuschCfg.msg3DeltaPreamble;
-#endif
-/* ======================================== */
-
+            
             /* P0 Nominal with grant */
             DU_ALLOC(setup->p0_NominalWithGrant, sizeof(long));
             if(!setup->p0_NominalWithGrant)
@@ -2063,14 +2057,7 @@ uint8_t BuildPuschCfgCommon(struct SetupRelease_PUSCH_ConfigCommon *puschCfg)
                DU_LOG("\nERROR  -->  DU APP : PUSCH Config memory alloc failed");
                return RFAILED;
             }
-/* ======== small cell integration ======== */
-#ifdef NFAPI
-            *setup->p0_NominalWithGrant = -90;
-#else
             *setup->p0_NominalWithGrant = duPuschCfg.p0NominalWithGrant;
-#endif
-/* ======================================== */
-
             break;
          }
       default:
