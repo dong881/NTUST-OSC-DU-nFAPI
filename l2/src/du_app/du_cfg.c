@@ -312,6 +312,17 @@ uint8_t readMacCfg()
    duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdcchCommon.commonSearchSpace.duration = 0;
    duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdcchCommon.commonSearchSpace.monitoringSymbol =
       SS_MONITORING_SYMBOL;
+/* ======== small cell integration ======== */
+#ifdef NFAPI
+   duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdcchCommon.commonSearchSpace.
+      candidate.aggLevel1	= 0;
+   duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdcchCommon.commonSearchSpace.
+      candidate.aggLevel2	= 0;
+   duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdcchCommon.commonSearchSpace.
+      candidate.aggLevel4	= 1;
+   duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdcchCommon.commonSearchSpace.
+      candidate.aggLevel8	= 0;
+#else
    duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdcchCommon.commonSearchSpace.
       candidate.aggLevel1	= 8;
    duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdcchCommon.commonSearchSpace.
@@ -320,6 +331,8 @@ uint8_t readMacCfg()
       candidate.aggLevel4	= 2;
    duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdcchCommon.commonSearchSpace.
       candidate.aggLevel8	= 1;
+#endif
+/* ======================================== */
    duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdcchCommon.commonSearchSpace.
       candidate.aggLevel16	= 0;
 
@@ -543,10 +556,10 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
    srvCellCfgComm->dlCfg.dlScsCarrier.scs = NR_SCS;
 /* ======== small cell integration ======== */
    #ifdef NFAPI
-   srvCellCfgComm->dlCfg.dlScsCarrier.scsBw = NR_SCS_BW;
-#else
-   srvCellCfgComm->dlCfg.dlScsCarrier.scsBw = NR_BANDWIDTH;
-#endif
+      srvCellCfgComm->dlCfg.dlScsCarrier.scsBw = NR_SCS_BW;
+   #else
+      srvCellCfgComm->dlCfg.dlScsCarrier.scsBw = NR_BANDWIDTH;
+   #endif
 /* ======================================== */
 #endif   
    srvCellCfgComm->dlCfg.locAndBw = FREQ_LOC_BW;
