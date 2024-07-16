@@ -257,8 +257,8 @@
 #define MAX_UL_ALLOC 16
 #define PUSCH_K2_NUM  4
 #ifdef NFAPI
-#define PUSCH_K2_CFG1  6
-#define PUSCH_K2_CFG2  6
+#define PUSCH_K2_CFG1  4
+#define PUSCH_K2_CFG2  5
 #define PUSCH_K2_CFG3  6
 #define PUSCH_K2_CFG4  7
 #define PUSCH_START_SYMBOL_CFG1  0
