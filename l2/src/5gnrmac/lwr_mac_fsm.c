@@ -4664,57 +4664,63 @@ void OAI_OSC_fillRarDlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *rarPdcch
        * RBLen = length of contiguously allocted RBs
        * Spec 38.214 Sec 5.1.2.2.2
        */
-
-      /* TODO: Fill values of coreset0Size, rbStart and rbLen */
-      coreset0Size= rarPdcchInfo->coresetCfg.coreSetSize;
+/* ======== small cell integration ======== */
+#ifdef NFAPI
+      rbStart = 0;
+      rbLen = 8;
+#else
       rbStart = rarPdcchInfo->dci.pdschCfg.pdschFreqAlloc.startPrb;
       rbLen = rarPdcchInfo->dci.pdschCfg.pdschFreqAlloc.numPrb;
+#endif
+/* ======================================== */
+      /* TODO: Fill values of coreset0Size, rbStart and rbLen */
+      coreset0Size= rarPdcchInfo->coresetCfg.coreSetSize;
 
-      if((rbLen >=1) && (rbLen <= coreset0Size - rbStart))
-      {
-	 if((rbLen - 1) <= floor(coreset0Size / 2))
-	    freqDomResAssign = (coreset0Size * (rbLen-1)) + rbStart;
-	 else
-	    freqDomResAssign = (coreset0Size * (coreset0Size - rbLen + 1)) \
-			       + (coreset0Size - 1 - rbStart);
 
-	 freqDomResAssignSize = ceil(log2(coreset0Size * (coreset0Size + 1) / 2));
+      int BWPsize = coreset0Size;
+      if((rbLen >=1) && (rbLen <= BWPsize - rbStart)) {
+         if((rbLen - 1) <= floor(BWPsize / 2))
+            freqDomResAssign = (BWPsize * (rbLen-1)) + rbStart;
+         else
+            freqDomResAssign = (BWPsize * (BWPsize - rbLen + 1)) \
+                     + (BWPsize - 1 - rbStart);
+         freqDomResAssignSize = ceil(log2(BWPsize * (BWPsize + 1) / 2));
       }
 
       /* Fetching DCI field values */
-      timeDomResAssign = rarPdcchInfo->dci.pdschCfg.pdschTimeAlloc.rowIndex;
+      timeDomResAssign = 2;//rarPdcchInfo->dci.pdschCfg.pdschTimeAlloc.rowIndex;
       VRB2PRBMap       = rarPdcchInfo->dci.pdschCfg.pdschFreqAlloc.vrbPrbMapping;
       modNCodScheme    = rarPdcchInfo->dci.pdschCfg.codeword[0].mcsIndex;
       tbScaling        = 0; /* configured to 0 scaling */
       reserved         = 0;
 
       /* Reversing bits in each DCI field */
-      freqDomResAssign = reverseBits(freqDomResAssign, freqDomResAssignSize);
-      timeDomResAssign = reverseBits(timeDomResAssign, timeDomResAssignSize);
-      VRB2PRBMap       = reverseBits(VRB2PRBMap, VRB2PRBMapSize);
-      modNCodScheme    = reverseBits(modNCodScheme, modNCodSchemeSize);
-      tbScaling        = reverseBits(tbScaling, tbScalingSize); 
+      // freqDomResAssign = reverseBits(freqDomResAssign, freqDomResAssignSize);
+      // timeDomResAssign = reverseBits(timeDomResAssign, timeDomResAssignSize);
+      // VRB2PRBMap       = reverseBits(VRB2PRBMap, VRB2PRBMapSize);
+      // modNCodScheme    = reverseBits(modNCodScheme, modNCodSchemeSize);
+      // tbScaling        = reverseBits(tbScaling, tbScalingSize); 
 
       /* Calulating total number of bytes in buffer */
       dlDciPtr->PayloadSizeBits = freqDomResAssignSize + timeDomResAssignSize\
 				  + VRB2PRBMapSize + modNCodSchemeSize + tbScalingSize + reservedSize;
 
       numBytes = dlDciPtr->PayloadSizeBits / 8;
-      if(dlDciPtr->PayloadSizeBits % 8)
-	 numBytes += 1;
-
+      if(dlDciPtr->PayloadSizeBits % 8){
+         numBytes += 1;
+         bitPos = 8 - (dlDciPtr->PayloadSizeBits % 8);
+      }
       if(numBytes > FAPI_DCI_PAYLOAD_BYTE_LEN)
       {
-	 DU_LOG("\nERROR  -->  LWR_MAC : Total bytes for DCI is more than expected");
-	 return;
+         DU_LOG("\nERROR  -->  LWR_MAC : Total bytes for DCI is more than expected");
+         return;
       }
 
       /* Initialize buffer */
       for(bytePos = 0; bytePos < numBytes; bytePos++)
-	 dlDciPtr->Payload[bytePos] = 0;
+	      dlDciPtr->Payload[bytePos] = 0;
 
       bytePos = numBytes - 1;
-      bitPos = 0;
 
       /* Packing DCI format fields */
       fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
@@ -4796,7 +4802,7 @@ void OAI_OSC_fillDlMsgDlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *pdcchI
       dlDciPtr->precodingAndBeamforming.prg_size = pdcchInfo->dci.beamPdcchInfo.prgSize;
       dlDciPtr->precodingAndBeamforming.dig_bf_interfaces = pdcchInfo->dci.beamPdcchInfo.digBfInterfaces;
       dlDciPtr->precodingAndBeamforming.prgs_list[0].pm_idx = pdcchInfo->dci.beamPdcchInfo.prg[0].pmIdx;
-      dlDciPtr->precodingAndBeamforming.prgs_list[0].dig_bf_interface_list[0].beam_idx = pdcchInfo->dci.beamPdcchInfo.prg[0].beamIdx[0];
+      dlDciPtr->precodingAndBeamforming.prgs_list[0].dig_bf_interface_list[0].beam_idx = 0;//pdcchInfo->dci.beamPdcchInfo.prg[0].beamIdx[0];
       dlDciPtr->beta_PDCCH_1_0 = pdcchInfo->dci.txPdcchPower.beta_pdcch_1_0;
       dlDciPtr->powerControlOffsetSS = pdcchInfo->dci.txPdcchPower.powerControlOffsetSS;
 
@@ -5924,9 +5930,7 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
                   pduIndex++;
                   MAC_FREE(currDlSlot->dlInfo.rarAlloc[ueIdx]->rarPdcchCfg, sizeof(PdcchCfg));
 
-                  DU_LOG("\033[1;32m");
                   DU_LOG("\nDEBUG  -->  LWR_MAC: RAR sent...");
-                  DU_LOG("\033[0m");
                }
             }
             
