@@ -4654,7 +4654,7 @@ void OAI_OSC_fillRarDlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *rarPdcch
       dlDciPtr->precodingAndBeamforming.prg_size = rarPdcchInfo->dci.beamPdcchInfo.prgSize;
       dlDciPtr->precodingAndBeamforming.dig_bf_interfaces = rarPdcchInfo->dci.beamPdcchInfo.digBfInterfaces;
       dlDciPtr->precodingAndBeamforming.prgs_list[0].pm_idx = rarPdcchInfo->dci.beamPdcchInfo.prg[0].pmIdx;
-      dlDciPtr->precodingAndBeamforming.prgs_list[0].dig_bf_interface_list[0].beam_idx = rarPdcchInfo->dci.beamPdcchInfo.prg[0].beamIdx[0];
+      dlDciPtr->precodingAndBeamforming.prgs_list[0].dig_bf_interface_list[0].beam_idx = 0;//rarPdcchInfo->dci.beamPdcchInfo.prg[0].beamIdx[0];
       dlDciPtr->beta_PDCCH_1_0 = rarPdcchInfo->dci.txPdcchPower.beta_pdcch_1_0;           
       dlDciPtr->powerControlOffsetSS = rarPdcchInfo->dci.txPdcchPower.powerControlOffsetSS;
 
