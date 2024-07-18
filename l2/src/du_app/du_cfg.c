@@ -301,8 +301,8 @@ uint8_t readMacCfg()
    }
 
    /* fill Intial DL BWP */
-   duCfgParam.macCellCfg.cellCfg.initialDlBwp.bwp.firstPrb = 0;
-   duCfgParam.macCellCfg.cellCfg.initialDlBwp.bwp.numPrb = TOTAL_PRB_20MHZ_MU0; /* configured to total BW */
+   duCfgParam.macCellCfg.cellCfg.initialDlBwp.bwp.firstPrb = 27;//0;
+   duCfgParam.macCellCfg.cellCfg.initialDlBwp.bwp.numPrb = 48;//TOTAL_PRB_20MHZ_MU0; /* configured to total BW */
    duCfgParam.macCellCfg.cellCfg.initialDlBwp.bwp.scs = duCfgParam.macCellCfg.ssbCfg.scsCmn;
    duCfgParam.macCellCfg.cellCfg.initialDlBwp.bwp.cyclicPrefix = NORMAL_CYCLIC_PREFIX;
    duCfgParam.macCellCfg.cellCfg.initialDlBwp.pdcchCommon.commonSearchSpace.searchSpaceId = SEARCHSPACE_1_INDEX;

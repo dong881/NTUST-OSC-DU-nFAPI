@@ -666,9 +666,14 @@ int phy_nr_rach_indication(nfapi_nr_rach_indication_t *ind)
     AssertFatal(rach_ind->pdu_list != NULL, "Memory not allocated for rach_ind->pdu_list in phy_nr_rach_indication.");
     for (int i = 0; i < ind->number_of_pdus; i++)
     {
-      rach_ind->pdu_list[i].num_preamble = ind->pdu_list[i].num_preamble;
-      rach_ind->pdu_list[i].freq_index = ind->pdu_list[i].freq_index;
-      rach_ind->pdu_list[i].symbol_index = ind->pdu_list[i].symbol_index;
+      // rach_ind->pdu_list[i].phy_cell_id = ind->pdu_list[i].phy_cell_id;
+      // rach_ind->pdu_list[i].slot_index = ind->pdu_list[i].slot_index;
+      // rach_ind->pdu_list[i].avg_rssi = ind->pdu_list[i].avg_rssi;
+      // rach_ind->pdu_list[i].avg_snr = ind->pdu_list[i].avg_snr;
+      // rach_ind->pdu_list[i].num_preamble = ind->pdu_list[i].num_preamble;
+      // rach_ind->pdu_list[i].freq_index = ind->pdu_list[i].freq_index;
+      // rach_ind->pdu_list[i].symbol_index = ind->pdu_list[i].symbol_index;
+      rach_ind->pdu_list[i] = ind->pdu_list[i];
       rach_ind->pdu_list[i].preamble_list = calloc(ind->pdu_list[i].num_preamble, sizeof(nfapi_nr_prach_indication_preamble_t));
       AssertFatal(rach_ind->pdu_list[i].preamble_list != NULL, "Memory not allocated for rach_ind->pdu_list[i].preamble_list  in phy_nr_rach_indication.");
       for (int j = 0; j < ind->number_of_pdus; j++)

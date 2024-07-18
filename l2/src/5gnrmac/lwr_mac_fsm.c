@@ -4664,20 +4664,13 @@ void OAI_OSC_fillRarDlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *rarPdcch
        * RBLen = length of contiguously allocted RBs
        * Spec 38.214 Sec 5.1.2.2.2
        */
-/* ======== small cell integration ======== */
-#ifdef NFAPI
-      rbStart = 0;
-      rbLen = 8;
-#else
       rbStart = rarPdcchInfo->dci.pdschCfg.pdschFreqAlloc.startPrb;
       rbLen = rarPdcchInfo->dci.pdschCfg.pdschFreqAlloc.numPrb;
-#endif
-/* ======================================== */
+      
       /* TODO: Fill values of coreset0Size, rbStart and rbLen */
       coreset0Size= rarPdcchInfo->coresetCfg.coreSetSize;
 
-
-      int BWPsize = coreset0Size;
+      
       if((rbLen >=1) && (rbLen <= BWPsize - rbStart)) {
          if((rbLen - 1) <= floor(BWPsize / 2))
             freqDomResAssign = (BWPsize * (rbLen-1)) + rbStart;

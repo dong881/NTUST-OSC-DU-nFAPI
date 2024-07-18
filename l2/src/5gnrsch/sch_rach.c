@@ -926,8 +926,8 @@ uint8_t schFillRar(SchCellCb *cell, SlotTimingInfo rarTime, uint16_t ueId, RarAl
    }
 
    /* fill BWP */
-   bwp->freqAlloc.numPrb   = 48;//initialBwp->bwp.freqAlloc.numPrb;
-   bwp->freqAlloc.startPrb = 27;//initialBwp->bwp.freqAlloc.startPrb;
+   bwp->freqAlloc.numPrb   = initialBwp->bwp.freqAlloc.numPrb;
+   bwp->freqAlloc.startPrb = initialBwp->bwp.freqAlloc.startPrb;
    bwp->subcarrierSpacing  = initialBwp->bwp.scs;
    bwp->cyclicPrefix       = initialBwp->bwp.cyclicPrefix;
 
@@ -950,7 +950,7 @@ uint8_t schFillRar(SchCellCb *cell, SlotTimingInfo rarTime, uint16_t ueId, RarAl
    pdcch->coresetCfg.shiftIndex = cell->cellCfg.phyCellId;
    pdcch->coresetCfg.precoderGranularity = 0; /* sameAsRegBundle */
    pdcch->numDlDci = 1;
-   pdcch->dci.rnti = 267;//cell->raReq[ueId-1]->raRnti; /* RA-RNTI */
+   pdcch->dci.rnti = cell->raReq[ueId-1]->raRnti; /* RA-RNTI */
    pdcch->dci.scramblingId = cell->cellCfg.phyCellId;
    pdcch->dci.scramblingRnti = 0;
    pdcch->dci.cceIndex = 0; /* considering SIB1 is sent at cce 0-1-2-3 */
@@ -967,7 +967,7 @@ uint8_t schFillRar(SchCellCb *cell, SlotTimingInfo rarTime, uint16_t ueId, RarAl
    /* fill the PDSCH PDU */
    uint8_t cwCount = 0;
    pdsch->pduBitmap = 0; /* PTRS and CBG params are excluded */
-   pdsch->rnti = 267;//cell->raReq[ueId-1]->raRnti; /* RA-RNTI */
+   pdsch->rnti = cell->raReq[ueId-1]->raRnti; /* RA-RNTI */
    pdsch->pduIndex = 0;
    pdsch->numCodewords = 1;
    for(cwCount = 0; cwCount < pdsch->numCodewords; cwCount++)
@@ -978,8 +978,8 @@ uint8_t schFillRar(SchCellCb *cell, SlotTimingInfo rarTime, uint16_t ueId, RarAl
       pdsch->codeword[cwCount].mcsTable = 0;   /* notqam256 */
       pdsch->codeword[cwCount].rvIndex = 0;
       /* RAR PDU length and FAPI payload header length */
-      tbSize = schCalcTbSize(RAR_PAYLOAD_SIZE + TX_PAYLOAD_HDR_LEN);
-      pdsch->codeword[cwCount].tbSize = 11;//tbSize;
+      tbSize = schCalcTbSize(RAR_PAYLOAD_SIZE + 1);// TX_PAYLOAD_HDR_LEN);
+      pdsch->codeword[cwCount].tbSize = tbSize;
    }
    pdsch->dataScramblingId = cell->cellCfg.phyCellId;
    pdsch->numLayers = 1;
@@ -996,8 +996,8 @@ uint8_t schFillRar(SchCellCb *cell, SlotTimingInfo rarTime, uint16_t ueId, RarAl
    pdsch->dmrs.dmrsAddPos       = DMRS_ADDITIONAL_POS;
 
    pdsch->pdschTimeAlloc.rowIndex = k0Index;
-   pdsch->pdschTimeAlloc.startSymb = 48;//initialBwp->pdschCommon.timeDomRsrcAllocList[k0Index].startSymbol;
-   pdsch->pdschTimeAlloc.numSymb = 27;//initialBwp->pdschCommon.timeDomRsrcAllocList[k0Index].lengthSymbol;
+   pdsch->pdschTimeAlloc.startSymb = initialBwp->pdschCommon.timeDomRsrcAllocList[k0Index].startSymbol;
+   pdsch->pdschTimeAlloc.numSymb = initialBwp->pdschCommon.timeDomRsrcAllocList[k0Index].lengthSymbol;
 
    pdsch->pdschFreqAlloc.vrbPrbMapping = 0; /* non-interleaved */
    pdsch->pdschFreqAlloc.resourceAllocType = 1; /* RAT type-1 RIV format */
