@@ -4670,7 +4670,7 @@ void OAI_OSC_fillRarDlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *rarPdcch
       /* TODO: Fill values of coreset0Size, rbStart and rbLen */
       coreset0Size= rarPdcchInfo->coresetCfg.coreSetSize;
 
-      
+      int BWPsize = coreset0Size;
       if((rbLen >=1) && (rbLen <= BWPsize - rbStart)) {
          if((rbLen - 1) <= floor(BWPsize / 2))
             freqDomResAssign = (BWPsize * (rbLen-1)) + rbStart;
