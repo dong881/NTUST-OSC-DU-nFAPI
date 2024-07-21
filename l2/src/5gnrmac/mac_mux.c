@@ -148,18 +148,9 @@ void fillRarPdu(RarInfo *rarInfo)
     * Spec 38.214 Sec 6.1.2.2.2
     */
    
-
-/* ======== small cell integration ======== */
-#ifdef NFAPI
-      rbStart = 0;
-      rbLen = 16;
-      bwpSize = 48;
-#else
       bwpSize = rarInfo->ulGrant.bwpSize;
       rbStart = rarInfo->ulGrant.msg3FreqAlloc.startPrb;
       rbLen = rarInfo->ulGrant.msg3FreqAlloc.numPrb;
-#endif
-/* ======================================== */
 
    if((rbLen >=1) && (rbLen <= bwpSize - rbStart))
    {
