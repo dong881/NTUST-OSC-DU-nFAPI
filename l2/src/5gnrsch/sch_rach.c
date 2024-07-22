@@ -716,6 +716,12 @@ bool schProcessRaReq(Inst schInst, SchCellCb *cell, SlotTimingInfo currTime, uin
             dciSlotAlloc->rarInfo.ulGrant.msg3FreqAlloc.numPrb = msg3PuschInfo->fdAlloc.resAlloc.type1.numPrb;
             dciSlotAlloc->rarInfo.ulGrant.k2Index = k2Index;
             dciSlotAlloc->rarInfo.ulGrant.mcs = msg3PuschInfo->tbInfo.mcs;
+
+
+            dciSlotAlloc->rarInfo.ulGrant.msg3FreqAlloc.startPrb = 0;
+            dciSlotAlloc->rarInfo.ulGrant.msg3FreqAlloc.numPrb = 8;
+            dciSlotAlloc->rarInfo.ulGrant.mcs = 1;
+
             dciSlotAlloc->rarInfo.ulGrant.tpc = 3;  /* TODO : Check appropriate value to be filled */
             /* Spec 38.213, section 8.2 : In a contention based random access
              * procedure, the CSI request field is reserved. */
