@@ -3961,14 +3961,14 @@ BwpCfg bwp, uint16_t pduIndex)
    dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.NrOfCodewords = pdschInfo->numCodewords;
    for(idx = 0; idx < MAX_CODEWORDS ; idx++)
    {
-            dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.targetCodeRate[idx] = pdschInfo->codeword[idx].targetCodeRate;
-   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.qamModOrder[idx] = pdschInfo->codeword[idx].qamModOrder;
-   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.mcsIndex[idx] = pdschInfo->codeword[idx].mcsIndex;
-   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.mcsTable[idx] = pdschInfo->codeword[idx].mcsTable;
-   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.rvIndex[idx] = pdschInfo->codeword[idx].rvIndex;
-   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.TBSize[idx] = pdschInfo->codeword[idx].tbSize;
+      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.targetCodeRate[idx] = pdschInfo->codeword[idx].targetCodeRate;
+      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.qamModOrder[idx] = pdschInfo->codeword[idx].qamModOrder;
+      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.mcsIndex[idx] = pdschInfo->codeword[idx].mcsIndex;
+      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.mcsTable[idx] = pdschInfo->codeword[idx].mcsTable;
+      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.rvIndex[idx] = pdschInfo->codeword[idx].rvIndex;
+      dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.TBSize[idx] = pdschInfo->codeword[idx].tbSize;
    }
-         dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dataScramblingId = pdschInfo->dataScramblingId;       
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dataScramblingId = pdschInfo->dataScramblingId;       
    dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.nrOfLayers = pdschInfo->numLayers;
    dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.transmissionScheme = pdschInfo->transmissionScheme;
    dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.refPoint = pdschInfo->refPoint;
