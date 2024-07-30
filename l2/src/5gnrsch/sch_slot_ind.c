@@ -731,7 +731,7 @@ uint8_t SchProcSlotInd(Pst *pst, SlotTimingInfo *slotInd)
 
       /* If DL-Msg PDCCH/PDSCH is scheduled for a UE at this slot, fill 
        * specific interface structure to send to MAC */
-      if(cell->schDlSlotInfo[dlSchedInfo.schSlotValue.dlMsgTime.slot]->dlMsgAlloc[ueIdx] != NULLP)
+      else if(cell->schDlSlotInfo[dlSchedInfo.schSlotValue.dlMsgTime.slot]->dlMsgAlloc[ueIdx] != NULLP)
       {
          slot = dlSchedInfo.schSlotValue.dlMsgTime.slot;
          dlSchedInfo.dlMsgAlloc[ueIdx] = cell->schDlSlotInfo[slot]->dlMsgAlloc[ueIdx];

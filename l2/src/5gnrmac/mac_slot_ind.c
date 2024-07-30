@@ -82,7 +82,7 @@ uint8_t MacProcDlAlloc(Pst *pst, DlSchedInfo *dlSchedInfo)
             fillRarPdu(&currDlSlot->dlInfo.rarAlloc[ueIdx]->rarInfo);
          }
 
-         else if(dlSchedInfo->dlMsgAlloc[ueIdx] != NULLP)
+         if(dlSchedInfo->dlMsgAlloc[ueIdx] != NULLP)
          {
             currDlSlot = &macCb.macCell[cellIdx]->\
                          dlSlot[dlSchedInfo->schSlotValue.dlMsgTime.slot];
