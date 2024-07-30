@@ -39,13 +39,7 @@
 #endif
 
 #define F1_EGTP_PORT  2152  /* As per the spec 29.281, the registered port number for GTP-U is 2152 */
-/* ======== small cell integration ======== */
-#ifdef NFAPI
-#define NR_PCI 0
-#else
 #define NR_PCI 1
-#endif
-/* ======================================== */
 #define NR_CELL_ID 1
 
 #define DU_NAME "ORAN OAM DU"
@@ -238,7 +232,7 @@
 /* ======== small cell integration ======== */
 #ifdef NFAPI
 #define PDSCH_START_SYMBOL  1
-#define PDSCH_LENGTH_SYMBOL 13
+#define PDSCH_LENGTH_SYMBOL 5
 #define PDSCH_START_SYMBOL_2  1
 #define PDSCH_LENGTH_SYMBOL_2 12
 #define PDSCH_START_SYMBOL_3  1
@@ -258,16 +252,16 @@
 #define PUSCH_K2_NUM  4
 #ifdef NFAPI
 #define PUSCH_K2_CFG1  4
-#define PUSCH_K2_CFG2  5
+#define PUSCH_K2_CFG2  6
 #define PUSCH_K2_CFG3  6
-#define PUSCH_K2_CFG4  7
+#define PUSCH_K2_CFG4  6
 #define PUSCH_START_SYMBOL_CFG1  0
 #define PUSCH_LENGTH_SYMBOL_CFG1 13
 #define PUSCH_START_SYMBOL_CFG2  0
 #define PUSCH_LENGTH_SYMBOL_CFG2 12
-#define PUSCH_START_SYMBOL  10
-#define PUSCH_LENGTH_SYMBOL 3
-#define PUSCH_MSG3_DELTA_PREAMBLE 1
+#define PUSCH_START_SYMBOL  0
+#define PUSCH_LENGTH_SYMBOL 13
+#define PUSCH_MSG3_DELTA_PREAMBLE 0
 #define PUSCH_P0_NOMINAL_WITH_GRANT -90
 #else
 #define PUSCH_K2_CFG1  4

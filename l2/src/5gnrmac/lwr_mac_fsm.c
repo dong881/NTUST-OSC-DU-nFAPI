@@ -4072,26 +4072,27 @@ void OAI_OSC_fillPuschPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu,
       ulTtiReqPdu->pusch_pdu.pdu_bit_map = 1;
       ulTtiReqPdu->pusch_pdu.rnti = currUlSlot->ulInfo.crnti;
       /* TODO : Fill handle in raCb when scheduling pusch and access here */
-      ulTtiReqPdu->pusch_pdu.handle = 100;
+      ulTtiReqPdu->pusch_pdu.handle = 0; //100
       ulTtiReqPdu->pusch_pdu.bwp_size = macCellCfg->cellCfg.initialUlBwp.bwp.numPrb;
       ulTtiReqPdu->pusch_pdu.bwp_start = macCellCfg->cellCfg.initialUlBwp.bwp.firstPrb;
       ulTtiReqPdu->pusch_pdu.subcarrier_spacing = \
          macCellCfg->cellCfg.initialUlBwp.bwp.scs;
       ulTtiReqPdu->pusch_pdu.cyclic_prefix = \
          macCellCfg->cellCfg.initialUlBwp.bwp.cyclicPrefix;
-      ulTtiReqPdu->pusch_pdu.target_code_rate = 308;
+      ulTtiReqPdu->pusch_pdu.target_code_rate = 1200; //308;
       ulTtiReqPdu->pusch_pdu.qam_mod_order = currUlSlot->ulInfo.schPuschInfo.tbInfo.qamOrder;
       ulTtiReqPdu->pusch_pdu.mcs_index = currUlSlot->ulInfo.schPuschInfo.tbInfo.mcs;
       ulTtiReqPdu->pusch_pdu.mcs_table = currUlSlot->ulInfo.schPuschInfo.tbInfo.mcsTable;
       ulTtiReqPdu->pusch_pdu.transform_precoding = 1;
-      ulTtiReqPdu->pusch_pdu.data_scrambling_id = currUlSlot->ulInfo.cellId;
+      ulTtiReqPdu->pusch_pdu.data_scrambling_id = currUlSlot->ulInfo.cellId; // 0
       ulTtiReqPdu->pusch_pdu.nrOfLayers = 1;
-      ulTtiReqPdu->pusch_pdu.ul_dmrs_symb_pos = 4;
+      ulTtiReqPdu->pusch_pdu.ul_dmrs_symb_pos = 1057; //4;
       ulTtiReqPdu->pusch_pdu.dmrs_config_type = 0;
-      ulTtiReqPdu->pusch_pdu.ul_dmrs_scrambling_id = currUlSlot->ulInfo.cellId;
+      ulTtiReqPdu->pusch_pdu.ul_dmrs_scrambling_id = currUlSlot->ulInfo.cellId; // 0
+      ulTtiReqPdu->pusch_pdu.pusch_identity = currUlSlot->ulInfo.cellId; // 0
       ulTtiReqPdu->pusch_pdu.scid = 0;
-      ulTtiReqPdu->pusch_pdu.num_dmrs_cdm_grps_no_data = 1;
-      ulTtiReqPdu->pusch_pdu.dmrs_ports = 0;
+      ulTtiReqPdu->pusch_pdu.num_dmrs_cdm_grps_no_data = 2; //1;
+      ulTtiReqPdu->pusch_pdu.dmrs_ports = 1; // 6.2.2 in 38.214 only port 0 to be used
       ulTtiReqPdu->pusch_pdu.resource_alloc = \
 	 currUlSlot->ulInfo.schPuschInfo.fdAlloc.resAllocType;
       ulTtiReqPdu->pusch_pdu.rb_start = \
@@ -4117,7 +4118,9 @@ void OAI_OSC_fillPuschPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu,
          currUlSlot->ulInfo.schPuschInfo.tbInfo.tbSize;
       /* numCb is 0 for new transmission */
       ulTtiReqPdu->pusch_pdu.pusch_data.num_cb = 0;
-
+/* ======== small cell integration ======== */
+      ulTtiReqPdu->pusch_pdu.maintenance_parms_v3.ldpcBaseGraph = 2;
+/* ======================================== */
       ulTtiReqPdu->pdu_size = sizeof(nfapi_nr_pusch_pdu_t);
    }
 }
@@ -4143,7 +4146,7 @@ void OAI_OSC_fillPucchPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu,
     memset(&ulTtiReqPdu->pucch_pdu, 0, sizeof(nfapi_nr_pucch_pdu_t));
     ulTtiReqPdu->pucch_pdu.rnti = currUlSlot->ulInfo.crnti;
     /* TODO : Fill handle in raCb when scheduling pucch and access here */
-    ulTtiReqPdu->pucch_pdu.handle = 100;
+    ulTtiReqPdu->pucch_pdu.handle = 0;
     ulTtiReqPdu->pucch_pdu.bwp_size =
         macCellCfg->cellCfg.initialUlBwp.bwp.numPrb;
     ulTtiReqPdu->pucch_pdu.bwp_start =
@@ -4681,7 +4684,7 @@ void OAI_OSC_fillRarDlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *rarPdcch
       }
 
       /* Fetching DCI field values */
-      timeDomResAssign = 2;//rarPdcchInfo->dci.pdschCfg.pdschTimeAlloc.rowIndex;
+      timeDomResAssign = rarPdcchInfo->dci.pdschCfg.pdschTimeAlloc.rowIndex;
       VRB2PRBMap       = rarPdcchInfo->dci.pdschCfg.pdschFreqAlloc.vrbPrbMapping;
       modNCodScheme    = rarPdcchInfo->dci.pdschCfg.codeword[0].mcsIndex;
       tbScaling        = 0; /* configured to 0 scaling */
