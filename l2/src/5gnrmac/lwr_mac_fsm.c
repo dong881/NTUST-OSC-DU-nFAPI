@@ -6750,15 +6750,16 @@ uint16_t OAI_OSC_sendTxDataReq(SlotTimingInfo currTimingInfo, MacDlSlot *dlSlot)
             MAC_FREE(dlSlot->dlInfo.brdcstAlloc.sib1Alloc.sib1PdcchCfg,sizeof(PdcchCfg));
             txDataReq->Number_of_PDUs++;
          }
-         if(dlSlot->pageAllocInfo != NULLP)
-         {
-            //TODO:OAI_OSC_fillPageTxDataReq done
-            OAI_OSC_fillPageTxDataReq(txDataReq->pdu_list, pduIndex, dlSlot->pageAllocInfo);
-            pduIndex++;
-            txDataReq->Number_of_PDUs++;
-            MAC_FREE(dlSlot->pageAllocInfo->pageDlSch.dlPagePdu, sizeof(dlSlot->pageAllocInfo->pageDlSch.dlPagePduLen));
-            MAC_FREE(dlSlot->pageAllocInfo,sizeof(DlPageAlloc));
-         }
+         // if(dlSlot->pageAllocInfo != NULLP)
+         // {
+         //    printf("\nDEBUG  -->  Page Alloc Info\n");
+         //    //TODO:OAI_OSC_fillPageTxDataReq done
+         //    OAI_OSC_fillPageTxDataReq(txDataReq->pdu_list, pduIndex, dlSlot->pageAllocInfo);
+         //    pduIndex++;
+         //    txDataReq->Number_of_PDUs++;
+         //    MAC_FREE(dlSlot->pageAllocInfo->pageDlSch.dlPagePdu, sizeof(dlSlot->pageAllocInfo->pageDlSch.dlPagePduLen));
+         //    MAC_FREE(dlSlot->pageAllocInfo,sizeof(DlPageAlloc));
+         // }
 
          for(ueIdx=0; ueIdx<MAX_NUM_UE; ueIdx++)
          {
