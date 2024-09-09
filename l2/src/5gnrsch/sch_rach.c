@@ -826,7 +826,7 @@ uint8_t SchProcRachInd(Pst *pst, RachIndInfo *rachInd)
    Inst      schInst = pst->dstInst-SCH_INST_START;
    SchCellCb *cell = schCb[schInst].cells[schInst];
 
-   DU_LOG("\nINFO  -->  SCH : Received Rach indication");
+   DU_LOG("\nINFO  -->  SCH : Received Rach indication\n");
 
    if(cell == NULLP)
    {

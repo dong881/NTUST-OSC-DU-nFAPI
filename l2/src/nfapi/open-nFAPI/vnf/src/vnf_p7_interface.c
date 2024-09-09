@@ -352,9 +352,6 @@ int nfapi_nr_vnf_p7_start(nfapi_vnf_p7_config_t* config)
 			UL_INFO.frame     = slot_ind->sfn;
 			UL_INFO.slot      = slot_ind->slot;
 
-
-			printf("[NFAPI_TRACE_DEBUG]  UL_INFO.frame = %d and slot %d, prev_slot = %d, setup_time = %d\n",
-				    UL_INFO.frame, UL_INFO.slot, prev_slot, setup_time);
 			if (setup_time > 3 && prev_slot != UL_INFO.slot) { 
 				//Give the VNF sufficient time to setup before starting scheduling  && prev_slot != gNB->UL_INFO.slot
 
@@ -385,11 +382,7 @@ int nfapi_nr_vnf_p7_start(nfapi_vnf_p7_config_t* config)
 			free(slot_ind);
 			slot_ind = NULL;
 		}
-		printf("\n[NTUST] Ready to pselect(%d,%d,NULL,NULL,%d:%d,NULL);",maxSock+1,rfds,pselect_timeout.tv_sec,pselect_timeout.tv_nsec);
-
 		selectRetval = pselect(maxSock+1, &rfds, NULL, NULL, &pselect_timeout, NULL);
-
-		printf("\n[NTUST] pselect value (selectRetval): %d",selectRetval);
 		if(selectRetval == 0)
 		{
 			// pselect timed out, continue
@@ -399,7 +392,6 @@ int nfapi_nr_vnf_p7_start(nfapi_vnf_p7_config_t* config)
 			// have a p7 message
 			if(FD_ISSET(vnf_p7->socket, &rfds))
 			{	
-				printf("\n[NTUST] have a p7 message.");
 				vnf_nr_p7_read_dispatch_message(vnf_p7); 				
 			}
 		}

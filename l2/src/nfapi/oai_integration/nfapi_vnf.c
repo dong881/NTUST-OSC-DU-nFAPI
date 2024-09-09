@@ -1237,7 +1237,6 @@ int phy_nr_slot_indication(nfapi_nr_slot_indication_scf_t *ind) {
   nr_slot_ind->header = ind->header;
   nr_slot_ind->sfn = vnf_sfn;
   nr_slot_ind->slot = vnf_slot;
-  printf("\n[NTUST] put_queue phy_nr_slot_indication\n");
   if (!put_queue(&gnb_slot_ind_queue, nr_slot_ind))
   {
     DU_LOG("\nINFO   --> [VNF] Put_queue failed for slot_ind\n");

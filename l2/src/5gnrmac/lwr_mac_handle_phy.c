@@ -132,7 +132,6 @@ UciIndFunc sendUciIndOpts[] =
  * ****************************************************************/
 uint8_t SCF_procSlotInd(NR_UL_IND_t *UL_INFO)
 {
-   printf("INFO  -->  FUNC : %s", __FUNCTION__);
    /* fill Pst structure to send to lwr_mac to MAC */
    Pst pst;
    uint16_t ret = 0;
@@ -140,7 +139,6 @@ uint8_t SCF_procSlotInd(NR_UL_IND_t *UL_INFO)
 
    if(lwrMacCb.phyState == PHY_STATE_CONFIGURED)
    {
-      DU_LOG("\nINFO  -->  LWR_MAC: PHY has moved to running state");
       lwrMacCb.phyState = PHY_STATE_RUNNING;
       lwrMacCb.cellCb[0].state = PHY_STATE_RUNNING;
    }
@@ -149,7 +147,6 @@ uint8_t SCF_procSlotInd(NR_UL_IND_t *UL_INFO)
 
    if(slotInd)
    {
-      printf("\n[DEBUG] memory allocation success, ready to send message to mac\n");
       slotInd->sfn = UL_INFO->frame;
       slotInd->slot = UL_INFO->slot;
       slotInd->cellId = lwrMacCb.cellCb[0].cellId; 
@@ -184,7 +181,6 @@ uint8_t SCF_procSlotInd(NR_UL_IND_t *UL_INFO)
  * ****************************************************************/
 uint8_t SCF_procRxDataInd(nfapi_nr_rx_data_indication_t  *nfapiRxDataInd)
 {   
-   printf("INFO  -->  FUNC : %s", __FUNCTION__);
    Pst           pst;
    uint8_t       pduIdx =0;
    uint8_t       ret;
@@ -245,7 +241,6 @@ uint8_t SCF_procRxDataInd(nfapi_nr_rx_data_indication_t  *nfapiRxDataInd)
  * ****************************************************************/
 uint8_t SCF_procCrcInd(nfapi_nr_crc_indication_t  *nfapiCrcInd)
 {
-   printf("\nINFO  -->  FUNC : %s", __FUNCTION__);
    Pst           pst;
    uint8_t      crcInfoIdx, ret;
    uint8_t      crcStatusIdx;
