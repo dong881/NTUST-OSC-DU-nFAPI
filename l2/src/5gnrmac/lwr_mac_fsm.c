@@ -6008,11 +6008,11 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
          //For OAI, we don't need to send ULtti and ULdci if DLtti num of PDU <= 0
          /* OAI L1 expects UL_TTI.request following DL_TTI.request */
          //TODO: OAI_OSC_fillUlTtiReq done
-         // OAI_OSC_fillUlTtiReq(currTimingInfo);
+         OAI_OSC_fillUlTtiReq(currTimingInfo);
 
          /* OAI L1 expects UL_DCI.request following DL_TTI.request */
          //TODO: OAI_OSC_fillUlDciReq done
-         // OAI_OSC_fillUlDciReq(dlTtiReqTimingInfo);
+         OAI_OSC_fillUlDciReq(dlTtiReqTimingInfo);
       }
       memset(currDlSlot, 0, sizeof(MacDlSlot));
             return ROK;
@@ -6581,7 +6581,6 @@ uint16_t OAI_OSC_fillUlTtiReq(SlotTimingInfo currTimingInfo)
             //TODO:OAI_OSC_fillPrachPdu done
             OAI_OSC_fillPrachPdu(&ulTtiReq->pdus_list[pduIdx], &macCellCfg, currUlSlot);
 		   }
-         printf("\nDEBUG  --> Finished OAI_OSC_fillPrachPdu\n");
 		   /* Fill PUSCH PDU */
 		   if(currUlSlot->ulInfo.dataType & SCH_DATATYPE_PUSCH)
 		   {

@@ -499,7 +499,7 @@ uint8_t schUlResAlloc(SchCellCb *cell, Inst schInst)
    ulSchedInfo.slotIndInfo.slot = ulTimingInfo.slot;
 
    /* Schedule resources for PRACH */
-   if(cell->firstSib1Transmitted)
+   if(cell->firstSib1Transmitted && ulTimingInfo.slot == 19)
     schPrachResAlloc(cell, &ulSchedInfo, ulTimingInfo);
 
    schUlSlotInfo = cell->schUlSlotInfo[ulTimingInfo.slot]; 

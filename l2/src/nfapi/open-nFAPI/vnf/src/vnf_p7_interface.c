@@ -365,6 +365,7 @@ int nfapi_nr_vnf_p7_start(nfapi_vnf_p7_config_t* config)
 				//TODO: Add switch case CRC、RACH、UCI、RX
 				if (UL_INFO.rach_ind.number_of_pdus > 0){
 					SCF_procRachInd(&UL_INFO.rach_ind);
+					UL_INFO.rach_ind.number_of_pdus = 0;
 				}
 				if (UL_INFO.uci_ind.num_ucis > 0){
 					SCF_procUciInd(&UL_INFO.uci_ind);

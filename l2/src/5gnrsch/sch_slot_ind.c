@@ -711,8 +711,7 @@ uint8_t SchProcSlotInd(Pst *pst, SlotTimingInfo *slotInd)
    }
 
    /*Process Paging Msg*/
-   schProcDlPageAlloc(cell, *slotInd, schInst);
-
+   // schProcDlPageAlloc(cell, *slotInd, schInst);
    cell->api->SchScheduleSlot(cell, slotInd, schInst);
 
    /* Check if any PDU is scheduled at this slot for any UE */
