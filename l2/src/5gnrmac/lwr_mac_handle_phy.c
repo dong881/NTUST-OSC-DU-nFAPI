@@ -303,9 +303,7 @@ uint8_t SCF_procCrcInd(nfapi_nr_crc_indication_t  *nfapiCrcInd)
  *         RFAILED - failure
  *
  * ****************************************************************/
-uint8_t OAI_OSC_fillUciIndPucchF0F1(
-    UciPucchF0F1 *pduInfo, nfapi_nr_uci_pucch_pdu_format_0_1_t *nfapiPduInfo) {
-  printf("INFO  -->  FUNC : %s", __FUNCTION__);
+uint8_t OAI_OSC_fillUciIndPucchF0F1(UciPucchF0F1 *pduInfo, nfapi_nr_uci_pucch_pdu_format_0_1_t *nfapiPduInfo) {
   uint8_t harqIdx;
   uint8_t ret = ROK;
 
@@ -368,7 +366,7 @@ uint8_t SCF_procUciInd(nfapi_nr_uci_indication_t  *nfapiUciInd)
    macUciInd->slotInd.sfn = nfapiUciInd->sfn; 
    macUciInd->slotInd.slot = nfapiUciInd->slot;
    macUciInd->numUcis = nfapiUciInd->num_ucis;
-   DU_LOG("\nINFO  -->  LWR_MAC: Number of UCI PDUs %d", macUciInd->numUcis);
+   DU_LOG("\nINFO  -->  LWR_MAC: Number of UCI PDUs %d\n", macUciInd->numUcis);
 
    for(pduIdx = 0; pduIdx < macUciInd->numUcis; pduIdx++)
    {
