@@ -61,7 +61,7 @@
 #include "BCCH-DL-SCH-Message.h"
 #include "du_f1ap_conversions.h"
 #include "du_sys_info_hdl.h"
-#include "/home/hpe/mwnl-odu-at-oai-based-on-scf/src/codec_utils/RRC/UE-TimersAndConstants.h"
+#include "UE-TimersAndConstants.h"
 
 #define asn1cSeqAdd(VaR, PtR) if (ASN_SEQUENCE_ADD(VaR,PtR)!=0) AssertFatal(false, "ASN.1 encoding error " #VaR "\n")
 #define asn1cSequenceAdd(VaR, TyPe, lOcPtr) \
