@@ -586,7 +586,7 @@ uint8_t schDlRsrcAllocMsg4(SchCellCb *cell, SlotTimingInfo msg4Time, uint8_t ueI
    uint8_t coreset0Idx = 0;
    uint8_t firstSymbol = 0;
    uint8_t numSymbols = 0;
-   uint8_t mcs = DEFAULT_MCS;                         /* MCS fixed to 4 */
+   uint8_t mcs = 0; //DEFAULT_MCS;                         /* MCS fixed to 4 */
    uint8_t dmrsStartSymbol = 0, startSymbol = 0, numSymbol = 0;
    uint16_t tbSize = 0;
    uint16_t numRbs;
@@ -661,7 +661,7 @@ uint8_t schDlRsrcAllocMsg4(SchCellCb *cell, SlotTimingInfo msg4Time, uint8_t ueI
    pdcch->dci.rnti = cell->raCb[ueId-1].tcrnti;
    pdcch->dci.scramblingId = cell->cellCfg.phyCellId;
    pdcch->dci.scramblingRnti = 0;
-   pdcch->dci.cceIndex = 4; /* considering SIB1 is sent at cce 0-1-2-3 */
+   pdcch->dci.cceIndex = 0; /* considering SIB1 is sent at cce 0-1-2-3 */
    pdcch->dci.aggregLevel = 4;
    pdcch->dci.beamPdcchInfo.numPrgs = 1;
    pdcch->dci.beamPdcchInfo.prgSize = 1;
@@ -680,13 +680,14 @@ uint8_t schDlRsrcAllocMsg4(SchCellCb *cell, SlotTimingInfo msg4Time, uint8_t ueI
    pdsch->numCodewords = 1;
    for(cwCount = 0; cwCount < pdsch->numCodewords; cwCount++)
    {
-      pdsch->codeword[cwCount].targetCodeRate = 308;
+      pdsch->codeword[cwCount].targetCodeRate = 1200; // 308;
       pdsch->codeword[cwCount].qamModOrder = 2;
       pdsch->codeword[cwCount].mcsIndex = mcs; /* mcs configured to 4 */
       pdsch->codeword[cwCount].mcsTable = 0; /* notqam256 */
       if(isRetx != TRUE)
       {
-         tbSize = schCalcTbSize(msg4Alloc->dlMsgPduLen + TX_PAYLOAD_HDR_LEN); /* MSG4 size + FAPI header size*/
+         /* Intel L1 requires adding a 32 byte header to transmitted payload */
+         tbSize = schCalcTbSize(msg4Alloc->dlMsgPduLen + 36); // TX_PAYLOAD_HDR_LEN /* MSG4 size + FAPI header size*/
          hqP->tbInfo[cwCount].tbSzReq = tbSize;
          pdsch->codeword[cwCount].rvIndex = 0;
       }
@@ -701,22 +702,27 @@ uint8_t schDlRsrcAllocMsg4(SchCellCb *cell, SlotTimingInfo msg4Time, uint8_t ueI
    pdsch->numLayers = 1;
    pdsch->transmissionScheme = 0;
    pdsch->refPoint = 0;
-   pdsch->dmrs.dlDmrsSymbPos = DL_DMRS_SYMBOL_POS; 
+   pdsch->dmrs.dlDmrsSymbPos = 2180; //DL_DMRS_SYMBOL_POS; 
    pdsch->dmrs.dmrsConfigType = 0; /* type-1 */
    pdsch->dmrs.dlDmrsScramblingId = cell->cellCfg.phyCellId;
    pdsch->dmrs.scid = 0;
-   pdsch->dmrs.numDmrsCdmGrpsNoData = 1;
-   pdsch->dmrs.dmrsPorts = 0;
+   pdsch->dmrs.numDmrsCdmGrpsNoData = 2; //1;
+   pdsch->dmrs.dmrsPorts = 1; //0;
    pdsch->dmrs.mappingType      = DMRS_MAP_TYPE_A; /* Setting to Type-A */
    pdsch->dmrs.nrOfDmrsSymbols  = NUM_DMRS_SYMBOLS;
    pdsch->dmrs.dmrsAddPos       = DMRS_ADDITIONAL_POS;
 
    pdsch->pdschTimeAlloc.startSymb = pdschStartSymbol; 
+/* ======== small cell integration ======== */
+#ifdef NFAPI   
+   pdsch->pdschTimeAlloc.numSymb = 13;
+#else
    pdsch->pdschTimeAlloc.numSymb = pdschNumSymbols;
-
+#endif
+/* ======================================== */
    pdsch->pdschFreqAlloc.resourceAllocType = 1; /* RAT type-1 RIV format */
-   pdsch->pdschFreqAlloc.startPrb = MAX_NUM_RB;
-   pdsch->pdschFreqAlloc.numPrb = schCalcNumPrb(tbSize, mcs, pdschNumSymbols);
+   pdsch->pdschFreqAlloc.startPrb = 0; //MAX_NUM_RB;
+   pdsch->pdschFreqAlloc.numPrb = 42; // [Ming TODO: quick modify] schCalcNumPrb(tbSize, mcs, pdschNumSymbols);
    pdsch->pdschFreqAlloc.vrbPrbMapping = 0; /* non-interleaved */
 
    /* Find total symbols occupied including DMRS */
@@ -734,6 +740,7 @@ uint8_t schDlRsrcAllocMsg4(SchCellCb *cell, SlotTimingInfo msg4Time, uint8_t ueI
       startSymbol = dmrsStartSymbol;
       numSymbol = pdsch->dmrs.nrOfDmrsSymbols + pdsch->pdschTimeAlloc.numSymb;
    }
+   numSymbol = 13; // [Ming TODO: quick modify] dmrsStartSymbol:2
 
    /* Allocate the number of PRBs required for RAR PDSCH */
    if((allocatePrbDl(cell, msg4Time, startSymbol, numSymbol,\
@@ -745,8 +752,8 @@ uint8_t schDlRsrcAllocMsg4(SchCellCb *cell, SlotTimingInfo msg4Time, uint8_t ueI
    }
 
    pdsch->beamPdschInfo.numPrgs = 1;
-   pdsch->beamPdschInfo.prgSize = 1;
-   pdsch->beamPdschInfo.digBfInterfaces = 0;
+   pdsch->beamPdschInfo.prgSize = 275; //1;
+   pdsch->beamPdschInfo.digBfInterfaces = 1; //0;
    pdsch->beamPdschInfo.prg[0].pmIdx = 0;
    pdsch->beamPdschInfo.prg[0].beamIdx[0] = 0;
    pdsch->txPdschPower.powerControlOffset = 0;

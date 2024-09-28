@@ -3976,6 +3976,7 @@ BwpCfg bwp, uint16_t pduIndex)
 
 /* ======== small cell integration ======== */
    dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.maintenance_parms_v3.ldpcBaseGraph = 2;
+   dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.maintenance_parms_v3.tbSizeLbrmBytes = 92200;
 /* ======================================== */
 
    dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.dmrsConfigType = pdschInfo->dmrs.dmrsConfigType;
@@ -4800,7 +4801,7 @@ void OAI_OSC_fillDlMsgDlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *pdcchI
       dlDciPtr->precodingAndBeamforming.prgs_list[0].pm_idx = pdcchInfo->dci.beamPdcchInfo.prg[0].pmIdx;
       dlDciPtr->precodingAndBeamforming.prgs_list[0].dig_bf_interface_list[0].beam_idx = 0;//pdcchInfo->dci.beamPdcchInfo.prg[0].beamIdx[0];
       dlDciPtr->beta_PDCCH_1_0 = pdcchInfo->dci.txPdcchPower.beta_pdcch_1_0;
-      dlDciPtr->powerControlOffsetSS = pdcchInfo->dci.txPdcchPower.powerControlOffsetSS;
+      dlDciPtr->powerControlOffsetSS = 1; //pdcchInfo->dci.txPdcchPower.powerControlOffsetSS;
 
       /* Calculating freq domain resource allocation field value and size
        * coreset0Size = Size of coreset 0
@@ -4811,44 +4812,42 @@ void OAI_OSC_fillDlMsgDlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *pdcchI
       coresetSize = pdcchInfo->coresetCfg.coreSetSize;
       rbStart = pdcchInfo->dci.pdschCfg.pdschFreqAlloc.startPrb;
       rbLen = pdcchInfo->dci.pdschCfg.pdschFreqAlloc.numPrb;
-
-      if((rbLen >=1) && (rbLen <= coresetSize - rbStart))
-      {
-         if((rbLen - 1) <= floor(coresetSize / 2))
-            freqDomResAssign = (coresetSize * (rbLen-1)) + rbStart;
+      uint16_t BWPsize = coresetSize;
+      if((rbLen >=1) && (rbLen <= BWPsize - rbStart)) {
+         if((rbLen - 1) <= floor(BWPsize / 2))
+            freqDomResAssign = (BWPsize * (rbLen-1)) + rbStart;
          else
-            freqDomResAssign = (coresetSize * (coresetSize - rbLen + 1)) \
-                               + (coresetSize - 1 - rbStart);
-
-         freqDomResAssignSize = ceil(log2(coresetSize * (coresetSize + 1) / 2));
+            freqDomResAssign = (BWPsize * (BWPsize - rbLen + 1)) \
+                     + (BWPsize - 1 - rbStart);
+         freqDomResAssignSize = ceil(log2(BWPsize * (BWPsize + 1) / 2));
       }
 
       /* Fetching DCI field values */
       dciFormatId      = dlMsgSchInfo->dciFormatId;     /* Always set to 1 for DL */
-      timeDomResAssign = pdcchInfo->dci.pdschCfg.pdschTimeAlloc.rowIndex -1;
+      timeDomResAssign = 0; //pdcchInfo->dci.pdschCfg.pdschTimeAlloc.rowIndex -1;
       VRB2PRBMap       = pdcchInfo->dci.pdschCfg.pdschFreqAlloc.vrbPrbMapping;
-      modNCodScheme    = pdcchInfo->dci.pdschCfg.codeword[0].mcsIndex;
+      modNCodScheme    = 0; //pdcchInfo->dci.pdschCfg.codeword[0].mcsIndex;
       ndi              = dlMsgSchInfo->transportBlock[0].ndi;
       redundancyVer    = pdcchInfo->dci.pdschCfg.codeword[0].rvIndex;
       harqProcessNum   = dlMsgSchInfo->harqProcNum;
       dlAssignmentIdx  = dlMsgSchInfo->dlAssignIdx;
       pucchTpc         = dlMsgSchInfo->pucchTpc;
       pucchResoInd     = dlMsgSchInfo->pucchResInd;
-      harqFeedbackInd  = dlMsgSchInfo->harqFeedbackInd;
+      harqFeedbackInd  = 2;//dlMsgSchInfo->harqFeedbackInd;
 
       /* Reversing bits in each DCI field */
-      dciFormatId      = reverseBits(dciFormatId, dciFormatIdSize);
-      freqDomResAssign = reverseBits(freqDomResAssign, freqDomResAssignSize);
-      timeDomResAssign = reverseBits(timeDomResAssign, timeDomResAssignSize);
-      VRB2PRBMap       = reverseBits(VRB2PRBMap, VRB2PRBMapSize);
-      modNCodScheme    = reverseBits(modNCodScheme, modNCodSchemeSize);
-      ndi              = reverseBits(ndi, ndiSize);
-      redundancyVer    = reverseBits(redundancyVer, redundancyVerSize);
-      harqProcessNum   = reverseBits(harqProcessNum, harqProcessNumSize);
-      dlAssignmentIdx  = reverseBits(dlAssignmentIdx , dlAssignmentIdxSize);
-      pucchTpc         = reverseBits(pucchTpc, pucchTpcSize);
-      pucchResoInd     = reverseBits(pucchResoInd, pucchResoIndSize);
-      harqFeedbackInd  = reverseBits(harqFeedbackInd, harqFeedbackIndSize);
+      // dciFormatId      = reverseBits(dciFormatId, dciFormatIdSize);
+      // freqDomResAssign = reverseBits(freqDomResAssign, freqDomResAssignSize);
+      // timeDomResAssign = reverseBits(timeDomResAssign, timeDomResAssignSize);
+      // VRB2PRBMap       = reverseBits(VRB2PRBMap, VRB2PRBMapSize);
+      // modNCodScheme    = reverseBits(modNCodScheme, modNCodSchemeSize);
+      // ndi              = reverseBits(ndi, ndiSize);
+      // redundancyVer    = reverseBits(redundancyVer, redundancyVerSize);
+      // harqProcessNum   = reverseBits(harqProcessNum, harqProcessNumSize);
+      // dlAssignmentIdx  = reverseBits(dlAssignmentIdx , dlAssignmentIdxSize);
+      // pucchTpc         = reverseBits(pucchTpc, pucchTpcSize);
+      // pucchResoInd     = reverseBits(pucchResoInd, pucchResoIndSize);
+      // harqFeedbackInd  = reverseBits(harqFeedbackInd, harqFeedbackIndSize);
 
 
       /* Calulating total number of bytes in buffer */
@@ -4858,9 +4857,10 @@ void OAI_OSC_fillDlMsgDlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *pdcchI
             + pucchTpcSize + pucchResoIndSize + harqFeedbackIndSize);
 
       numBytes = dlDciPtr->PayloadSizeBits / 8;
-      if(dlDciPtr->PayloadSizeBits % 8)
+      if(dlDciPtr->PayloadSizeBits % 8){
          numBytes += 1;
-
+         bitPos = 8 - (dlDciPtr->PayloadSizeBits % 8);
+      }
       if(numBytes > FAPI_DCI_PAYLOAD_BYTE_LEN)
       {
          DU_LOG("\nERROR  -->  LWR_MAC : Total bytes for DCI is more than expected");
@@ -4869,10 +4869,9 @@ void OAI_OSC_fillDlMsgDlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *pdcchI
 
       /* Initialize buffer */
       for(bytePos = 0; bytePos < numBytes; bytePos++)
-         dlDciPtr->Payload[bytePos] = 0;
+	      dlDciPtr->Payload[bytePos] = 0;
 
       bytePos = numBytes - 1;
-      bitPos = 0;
 
       /* Packing DCI format fields */
       fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
@@ -4887,8 +4886,6 @@ void OAI_OSC_fillDlMsgDlDciPdu(nfapi_nr_dl_dci_pdu_t *dlDciPtr, PdcchCfg *pdcchI
             modNCodScheme, modNCodSchemeSize);
       fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
             ndi, ndiSize);
-      fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
-            redundancyVer, redundancyVerSize);
       fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\
             redundancyVer, redundancyVerSize);
       fillDlDciPayload(dlDciPtr->Payload, &bytePos, &bitPos,\

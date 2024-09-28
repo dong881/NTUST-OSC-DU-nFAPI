@@ -842,13 +842,15 @@ uint8_t SchProcCellCfgReq(Pst *pst, SchCellCfg *schCellCfg)
    coreset0Idx = cellCb->cellCfg.dlCfgCommon.schInitialDlBwp.pdcchCommon.commonSearchSpace.coresetId;
    numRbs = coresetIdxTable[coreset0Idx][1];
    offset = coresetIdxTable[coreset0Idx][3];
-   fillCoresetFeqDomAllocMap(((cellCb->cellCfg.dlCfgCommon.schFreqInfoDlSib.offsetToPointA - offset)/6), \
-                                  (numRbs/6), freqDomainResource);
 /* ======== small cell integration ======== */
 #ifdef NFAPI
+   int CORESET0_inside_rbstart = 0;
+   fillCoresetFeqDomAllocMap(((CORESET0_inside_rbstart)/6), (numRbs/6), freqDomainResource);
    memcpy(cellCb->cellCfg.dlCfgCommon.schInitialDlBwp.pdcchCommon.commonSearchSpace.freqDomainRsrc,
           freqDomainResource, FREQ_DOM_RSRC_SIZE);
 #else
+   fillCoresetFeqDomAllocMap(((cellCb->cellCfg.dlCfgCommon.schFreqInfoDlSib.offsetToPointA - offset)/6), \
+                                  (numRbs/6), freqDomainResource);
    covertFreqDomRsrcMapToIAPIFormat(freqDomainResource, \
       cellCb->cellCfg.dlCfgCommon.schInitialDlBwp.pdcchCommon.commonSearchSpace.freqDomainRsrc);
 #endif
