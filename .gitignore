@@ -1,5 +1,5 @@
 openairinterface/
-l2/build/*
+l2/build/odu/bin/*
 l2/libs/*
 # Ignore built files for l2
 *.a
@@ -28,6 +28,30 @@ l2/libs/libasn_e2ap.a
 l2/libs/libasn_f1ap.a
 l2/libs/libduapp.a
 l2/libs/libkw.a
+l2/libs/libnfapi_oai_integration.a
+l2/libs/libnfapi_vnf.a
+l2/libs/libnfapi.a
+l2/libs/libphystub.a
+l2/libs/librg.a
+l2/build/odu/bin/ric_stub/ric_stub
+l2/build/odu/lib/odu/libasn_common.a
+l2/build/odu/lib/odu/libasn_e2ap.a
+l2/build/odu/lib/odu/libasn_f1ap.a
+l2/build/odu/lib/odu/libnfapi_common.a
+l2/build/odu/lib/odu/libnfapi_oai_integration.a
+l2/build/odu/lib/odu/libnfapi_vnf.a
+l2/build/odu/lib/odu/libnfapi.a
+l2/build/odu/lib/ric_stub/libasn_common.a
+l2/build/odu/lib/ric_stub/libasn_e2ap.a
+l2/build/odu/lib/ric_stub/libmt.a
+l2/build/odu/lib/ric_stub/libric.a
+l2/libs/libasn_common.a
+l2/libs/libasn_e2ap.a
+l2/libs/libasn_f1ap.a
+l2/libs/libduapp.a
+l2/libs/libkw.a
+l2/libs/libmt.a
+l2/libs/libnfapi_common.a
 l2/libs/libnfapi_oai_integration.a
 l2/libs/libnfapi_vnf.a
 l2/libs/libnfapi.a

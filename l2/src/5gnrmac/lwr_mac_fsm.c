@@ -5783,7 +5783,7 @@ uint16_t fillDlTtiReq(SlotTimingInfo currTimingInfo)
  * ****************************************************************/
 uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
 {
-   printf("\nINFO  --> %s()\n", __FUNCTION__);
+   // printf("\nINFO  --> %s()\n", __FUNCTION__);
    uint8_t idx = 0;
    uint8_t nPdu = 0;
    uint8_t numPduEncoded = 0;
@@ -5801,8 +5801,8 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
       GET_CELL_IDX(currTimingInfo.cellId, cellIdx);
       /* consider phy delay */
       ADD_DELTA_TO_TIME(currTimingInfo, dlTtiReqTimingInfo, PHY_DELTA_DL, macCb.macCell[cellIdx]->numOfSlots);
-      printf("\nINFO  ->  The current Timing Info : sfn : %d, slot : %d\n", currTimingInfo.sfn, currTimingInfo.slot);
-      printf("\nINFO  ->  The DL TTI Timing Info : sfn : %d, slot : %d\n", dlTtiReqTimingInfo.sfn, dlTtiReqTimingInfo.slot);
+      // printf("\nINFO  ->  [DlTtiReq] currTimingInfo: sfn : %d, slot : %d\n", currTimingInfo.sfn, currTimingInfo.slot);
+      printf("INFO   --> [DlTtiReq] dlTtiReqTimingInfo: sfn : %d, slot : %d\n", dlTtiReqTimingInfo.sfn, dlTtiReqTimingInfo.slot);
       dlTtiReqTimingInfo.cellId = currTimingInfo.cellId;
 
       macCellCfg = macCb.macCell[cellIdx]->macCellCfg;
@@ -5823,7 +5823,7 @@ uint16_t OAI_OSC_fillDlTtiReq(SlotTimingInfo currTimingInfo)
       nPdu = dlTtiReq->dl_tti_request_body.nPDUs;
       dlTtiReq->dl_tti_request_body.nGroup = 0;
 
-      printf("\n[DEBUG] -->  dlTtiReq->dl_tti_request_body.nPDUs:%d\n",dlTtiReq->dl_tti_request_body.nPDUs);
+      printf("[DEBUG] --> DLTTI nPDUs:%d\n",dlTtiReq->dl_tti_request_body.nPDUs);
 
       if (dlTtiReq->dl_tti_request_body.nPDUs > 0) // dlTtiReq->dl_tti_request_body.nPDUs > 0
       {
@@ -6537,7 +6537,7 @@ uint16_t fillUlTtiReq(SlotTimingInfo currTimingInfo, p_fapi_api_queue_elem_t pre
  ******************************************************************/
 uint16_t OAI_OSC_fillUlTtiReq(SlotTimingInfo currTimingInfo)
 {
-   printf("\nINFO  -->  %s()\n", __FUNCTION__);
+   // printf("\nINFO  -->  %s()\n", __FUNCTION__);
 #ifdef CALL_FLOW_DEBUG_LOG
    DU_LOG("\nCall Flow: ENTMAC -> ENTLWRMAC : UL_TTI_REQUEST\n");
 #endif
@@ -6567,7 +6567,7 @@ uint16_t OAI_OSC_fillUlTtiReq(SlotTimingInfo currTimingInfo)
       //TODO:OAI_OSC_getnPdus done
       ulTtiReq->n_pdus = OAI_OSC_getnPdus(ulTtiReq, currUlSlot);
       ulTtiReq->n_group = 0;
-      printf("\nINFO  -->  ulTtiReq->n_pdus :%d\n",ulTtiReq->n_pdus); 
+      printf("[DEBUG] --> ULTTI nPDUs:%d\n",ulTtiReq->n_pdus);
 
 	   if(ulTtiReq->n_pdus > 0)
 	   {
@@ -6639,7 +6639,7 @@ uint16_t OAI_OSC_fillUlTtiReq(SlotTimingInfo currTimingInfo)
  ******************************************************************/
 uint16_t OAI_OSC_fillUlDciReq(SlotTimingInfo currTimingInfo)
 {
-   printf("\nINFO  -->  %s()\n", __FUNCTION__);
+   // printf("\nINFO  -->  %s()\n", __FUNCTION__);
    uint8_t      cellIdx =0;
    uint8_t      numPduEncoded = 0;
    SlotTimingInfo  ulDciReqTimingInfo ={0};
@@ -6662,7 +6662,7 @@ uint16_t OAI_OSC_fillUlDciReq(SlotTimingInfo currTimingInfo)
       ulDciReq->SFN = ulDciReqTimingInfo.sfn;
       ulDciReq->Slot = ulDciReqTimingInfo.slot;
    
-      printf("\nDEBUG  -> Info : sfn : %d, slot : %d\n", ulDciReq->SFN, ulDciReq->Slot);
+      // printf("\nDEBUG  -> Info [UlDciReq]: sfn : %d, slot : %d\n", ulDciReq->SFN, ulDciReq->Slot);
 
       if(currDlSlot->dlInfo.ulGrant != NULLP)
       {

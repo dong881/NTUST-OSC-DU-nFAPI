@@ -151,7 +151,8 @@ uint8_t SCF_procSlotInd(NR_UL_IND_t *UL_INFO)
       slotInd->slot = UL_INFO->slot;
       slotInd->cellId = lwrMacCb.cellCb[0].cellId; 
       FILL_PST_LWR_MAC_TO_MAC(pst, EVENT_SLOT_IND_TO_MAC);
-      printf("\n[DEBUG] FILL_PST_LWR_MAC_TO_MAC EVENT:%d\n", EVENT_SLOT_IND_TO_MAC);
+      // printf("INFO  -->  [SCF_procSlotInd] slotInd->sfn:%d, slotInd->slot:%d\n",slotInd->sfn,slotInd->slot);
+      // printf("\n[DEBUG] FILL_PST_LWR_MAC_TO_MAC EVENT:%d\n", EVENT_SLOT_IND_TO_MAC);
       pst.selector = ODU_SELECTOR_TC;
       ret = (*sendSlotIndOpts[pst.selector])(&pst, slotInd);
    }

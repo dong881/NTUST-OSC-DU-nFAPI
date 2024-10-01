@@ -658,7 +658,7 @@ static uint8_t pack_dl_tti_request_body_value(void *tlv, uint8_t **ppWritePacked
   uint8_t *pPackedLengthField = *ppWritePackedMsg;
   if (!push16(value->PDUSize, ppWritePackedMsg, end))
     return 0;
-  printf("\n%s() PDU Type: %d\n",__FUNCTION__,value->PDUType);
+  printf("%s() PDU Type: %d\n",__FUNCTION__,value->PDUType);
   // first match the pdu type, then call the respective function
   switch (value->PDUType) {
     case NFAPI_NR_DL_TTI_CSI_RS_PDU_TYPE: {
@@ -845,7 +845,7 @@ static uint8_t pack_dl_tti_request(void *msg, uint8_t **ppWritePackedMsg, uint8_
     if (!pack_dl_tti_request_body_value(&pNfapiMsg->dl_tti_request_body.dl_tti_pdu_list[i], ppWritePackedMsg, end))
       return 0;
   }
-  printf("\nNumber of pNfapiMsg->dl_tti_request_body.nGroup %d\n",pNfapiMsg->dl_tti_request_body.nGroup);
+  // printf("\nNumber of pNfapiMsg->dl_tti_request_body.nGroup %d\n",pNfapiMsg->dl_tti_request_body.nGroup);
   for (int i = 0; i < pNfapiMsg->dl_tti_request_body.nGroup; i++) {
     if (!push8(pNfapiMsg->dl_tti_request_body.nUe[i], ppWritePackedMsg, end))
       return 0;

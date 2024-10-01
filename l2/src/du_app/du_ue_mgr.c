@@ -375,7 +375,7 @@ uint8_t duBuildAndSendDlCcchInd(uint16_t *cellId, uint16_t *crnti, \
    DlCcchIndInfo *dlCcchIndInfo = NULLP;
    Pst pst;
 
-   DU_LOG("\nDEBUG   -->  DU APP : Building and Sending DL CCCH Ind to MAC");
+   DU_LOG("\nDEBUG   -->  DU APP : Building and Sending DL CCCH Ind to MAC\n");
 
    DU_ALLOC_SHRABL_BUF(dlCcchIndInfo, sizeof(DlCcchIndInfo));
 
