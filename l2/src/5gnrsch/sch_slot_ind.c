@@ -194,6 +194,7 @@ bool schFillBoGrantDlSchedInfo(SchCellCb *cell, SlotTimingInfo currTime, uint8_t
       /* Allocate memory to schedule dlMsgAlloc to send DL_Msg, pointer will be checked at schProcessSlotInd() */
       if(cell->schDlSlotInfo[pdschTime.slot]->dlMsgAlloc[ueId-1] == NULLP)
       {
+         printf("\nINFO  -->  SCH : Allocating memory for dlMsgAlloc");
          SCH_ALLOC(dlMsgAlloc, sizeof(DlMsgSchInfo));
          if(dlMsgAlloc == NULLP)
          {
@@ -728,7 +729,7 @@ uint8_t SchProcSlotInd(Pst *pst, SlotTimingInfo *slotInd)
 
       /* If DL-Msg PDCCH/PDSCH is scheduled for a UE at this slot, fill 
        * specific interface structure to send to MAC */
-      else if(cell->schDlSlotInfo[dlSchedInfo.schSlotValue.dlMsgTime.slot]->dlMsgAlloc[ueIdx] != NULLP)
+      if(cell->schDlSlotInfo[dlSchedInfo.schSlotValue.dlMsgTime.slot]->dlMsgAlloc[ueIdx] != NULLP)
       {
          slot = dlSchedInfo.schSlotValue.dlMsgTime.slot;
          dlSchedInfo.dlMsgAlloc[ueIdx] = cell->schDlSlotInfo[slot]->dlMsgAlloc[ueIdx];
