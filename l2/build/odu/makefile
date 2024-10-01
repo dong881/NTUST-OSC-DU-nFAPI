@@ -45,9 +45,9 @@ PARALLEL_COMP=-j $(NUM_PARALLEL)
 # # These should be made available appropriately to the builds
 ifeq ($(MACHINE),BIT64)
 ifeq ($(COVERAGE),ENABLE)
-CC          =gcc -m64 --coverage
+CC          =gcc -m64 --coverage -fsanitize=bounds
 else
-CC          =gcc -m64
+CC          =gcc -m64 -fsanitize=bounds
 endif
 CC_STRIP    =strip --strip-all
 CC_LINKER   =gcc -m64
