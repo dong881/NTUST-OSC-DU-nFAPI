@@ -5404,7 +5404,7 @@ void OAI_OSC_fillPagePdschPdu(nfapi_nr_dl_tti_request_pdu_t *dlTtiReqPdu, DlPage
 
    if(dlTtiReqPdu != NULLP)
    {
-      dlTtiReqPdu->PDUSize = PDSCH_PDU_TYPE;
+      dlTtiReqPdu->PDUType = PDSCH_PDU_TYPE; // [Ming notion] Need to check
       memset(&dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15, 0, sizeof(nfapi_nr_dl_tti_pdsch_pdu_rel15_t));
       dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.pduBitmap = 0;
       dlTtiReqPdu->pdsch_pdu.pdsch_pdu_rel15.rnti = P_RNTI;         
