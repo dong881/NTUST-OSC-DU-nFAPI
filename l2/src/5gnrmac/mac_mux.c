@@ -335,7 +335,6 @@ void macMuxPdu(MacDlData *dlData, MacCeInfo *macCeData, uint8_t *txPdu, uint16_t
          case MAC_LCID_MIN ... MAC_LCID_MAX :
             {
                lenField = dlData->pduInfo[pduIdx].pduLen;
-               lenField = 137;
                if(dlData->pduInfo[pduIdx].pduLen > 255)
                {
                   FBit = 1;

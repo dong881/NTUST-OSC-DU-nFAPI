@@ -36,13 +36,21 @@
 #define PDSCH_START_RB 10
 /* Considering pdsch region from 3 to 13, DMRS exclued.
  * Overlapping of PDSCH DRMS and PDSCH not supported by Intel L1 */
-#define NUM_PDSCH_SYMBOL 11
+#ifdef NFAPI
+   #define NUM_PDSCH_SYMBOL 10
+#else
+   #define NUM_PDSCH_SYMBOL 11
+#endif
 #define PUSCH_START_RB 15
 #define PUCCH_NUM_PRB_FORMAT_0_1_4 1  /* number of PRBs in freq domain, spec 38.213 - 9.2.1 */
 #define SI_RNTI 0xFFFF
 #define P_RNTI  0xFFFE
 #define DMRS_MAP_TYPE_A 1
-#define NUM_DMRS_SYMBOLS 1
+#ifdef NFAPI
+   #define NUM_DMRS_SYMBOLS 3
+#else
+   #define NUM_DMRS_SYMBOLS 1
+#endif
 #define DMRS_ADDITIONAL_POS 0
 #define SCH_DEFAULT_K1 1
 #define SSB_IDX_SUPPORTED 1

@@ -895,7 +895,7 @@ uint8_t schFillRar(SchCellCb *cell, SlotTimingInfo rarTime, uint16_t ueId, RarAl
 {
    uint8_t  coreset0Idx = 0;
    uint8_t  firstSymbol = 0, numSymbols = 0;
-   uint8_t  mcs = 0;//DEFAULT_MCS;  /* MCS fixed to 4 */
+   uint8_t  mcs = DEFAULT_MCS;
    uint8_t  dmrsStartSymbol, startSymbol, numSymbol ;
    uint16_t numRbs = 0;
    uint16_t tbSize = 0;

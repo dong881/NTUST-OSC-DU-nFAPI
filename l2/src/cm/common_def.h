@@ -104,9 +104,10 @@
 #define PUCCH_FORMAT_3 3 
 #define PUCCH_FORMAT_4 4
 
+#define SIB1_MCS 5
 /* ======== small cell integration ======== */
 #ifdef NFAPI
-#define DEFAULT_MCS 5
+#define DEFAULT_MCS 0
 #else
 #define DEFAULT_MCS 4
 #endif
@@ -118,7 +119,6 @@
 
 /* PRB allocation as per 38.101, Section 5.3.2 */
 #define TOTAL_PRB_20MHZ_MU0 106
-#define TOTAL_PRB_40MHZ_MU1 106 //OAI
 #define TOTAL_PRB_100MHZ_MU1 273
 #ifdef NR_TDD
    #ifdef NFAPI
