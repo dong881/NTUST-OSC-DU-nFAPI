@@ -1145,7 +1145,7 @@ uint16_t schCalcNumPrb(uint16_t tbSize, uint16_t mcs, uint8_t numSymbols)
    uint8_t  qm     = mcsTable[mcs][1];
    uint16_t rValue = mcsTable[mcs][2];
    uint8_t  numLayer = 1;       /* v value */
-   uint8_t  numDmrsRePerPrb = 12;
+   uint8_t  numDmrsRePerPrb = 12*3;
 
    tbSize = tbSize * 8; //Calculate tbSize in bits
 
@@ -1154,14 +1154,15 @@ uint16_t schCalcNumPrb(uint16_t tbSize, uint16_t mcs, uint8_t numSymbols)
     * Nre' = Nsc . NsymPdsch - NdmrsSymb - Noh                       *
     * Nre = min(156,Nre') . nPrb                                     */
 
-   nre = ceil( (float)tbSize * 1024 / (qm * rValue * numLayer));
+  // Rx1024 is tabulated as 10 times the actual code rate
+   nre = ceil( (float)tbSize * 1024 / (rValue * qm * numLayer));
 
    nreDash = ceil( (12 * numSymbols) - numDmrsRePerPrb - 0);
 
    if (nreDash > 156)
       nreDash = 156;
 
-   numPrb = ceil((float)nre / nreDash);   
+   numPrb = floor((float)nre / nreDash);   //do not use ceil as per OAI
    return numPrb;
 }
 
