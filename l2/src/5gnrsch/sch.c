@@ -750,7 +750,7 @@ uint8_t fillSchSib1Cfg(uint8_t mu, uint8_t bandwidth, uint8_t numSlots,SchPdcchC
    printf("schCalcTbSize(sib1PduLen:%d)result.tbSize = %d\n",sib1PduLen,result.tbSize);
 /* ======== small cell integration ======== */
 #ifdef NFAPI
-   pdsch->pdschFreqAlloc.startPrb  = 27;
+   pdsch->pdschFreqAlloc.startPrb  = 0;
    result = schCalcNumPrb_withDmrs(result.tbSize, SIB1_MCS, NUM_PDSCH_SYMBOL, 12*pdsch->dmrs.nrOfDmrsSymbols);
 #else
    pdsch->pdschFreqAlloc.startPrb  = offsetPointA + SCH_SSB_NUM_PRB;
