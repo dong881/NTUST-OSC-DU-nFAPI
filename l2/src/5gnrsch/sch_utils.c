@@ -44,6 +44,7 @@
 #include "sch_tmr.h"
 #include "sch_utils.h"
 #include "math.h"
+#define max(a,b) ((a) > (b) ? (a) : (b))
 
 #ifdef NR_TDD
 /* spec-38.213 Table 13-4 for SCS=30KHz */
@@ -1056,6 +1057,70 @@ int getNumDmrsSymbols(uint16_t dmrsMask)
       numDmrsSymbols += ((dmrsMask >> i) & 1);
    }
    return numDmrsSymbols;
+}
+
+/**
+ * @brief frequency domain allocation function. 
+ *
+ * @details
+ *
+ *     Function: schCalcNumPrb_withDmrs
+ *     
+ *     This function calculates the number of Physical Resource Blocks (PRBs) required for a given Transport Block (TB) size,
+ *     taking into account the Demodulation Reference Signal (DMRS) overhead. It uses the 3GPP 38.214 specification formula
+ *     to determine the number of Resource Elements (REs) per PRB and adjusts the calculation based on the Modulation and Coding Scheme (MCS).
+ *     The function also performs a double-check using an OpenAirInterface (OAI) method to ensure the accuracy of the PRB calculation.
+ *     
+ *  @param[in]  tbSize - The size of the Transport Block (TB) in bytes.
+ *  @param[in]  mcs - The Modulation and Coding Scheme (MCS) index.
+ *  @param[in]  numSymbols - number of symbols
+ *  @param[in]  numDmrsRePerPrb - The number of DMRS Resource Elements (REs) per PRB.
+ *  @return  schCalcResult - A structure containing the calculated number of PRBs and the adjusted TB size.
+ **/
+schCalcResult schCalcNumPrb_withDmrs(uint16_t tbSize, uint16_t mcs, uint8_t numSymbols, uint8_t  numDmrsRePerPrb)
+{
+   schCalcResult result;
+   uint16_t numPrb = 0;
+   uint16_t nre = 0;
+   uint16_t nreDash = 0;
+   uint8_t  qm     = mcsTable[mcs][1];
+   uint16_t rValue = mcsTable[mcs][2];
+   uint8_t  numLayer = 1;       /* v value */
+   tbSize = tbSize * 8; //Calculate tbSize in bits
+
+   /* formula used for calculation of rbSize, 38.214 section 5.1.3.2 *
+    * Ninfo = S . Nre . R . Qm . v                                       *
+    * Nre' = Nsc . NsymPdsch - NdmrsSymb - Noh                       *
+    * Nre = min(156,Nre') . nPrb                                     */
+
+  // Rx1024 is tabulated as 10 times the actual code rate
+   // nre = ceil( (float)tbSize * 1024 / (rValue * qm * numLayer));
+
+   nreDash = ceil( (12 * numSymbols) - numDmrsRePerPrb - 0);
+
+   if (nreDash > 156)
+      nreDash = 156;
+
+   numPrb = floor(tbSize * 1024.0 / (rValue * qm * numLayer * nreDash));
+   /*Use OAI method double check*/
+   uint32_t n, ninfo, npinfo;
+   uint8_t tbsIndex;
+   for (int i = 0; i < 2; i++) {
+      ninfo = (rValue * qm * numLayer * nreDash * numPrb) >> 10;
+      n = max(3, floor(log2(ninfo)) - 6);
+      npinfo = max(24, (ninfo>>n)<<n);
+      tbsIndex = 0;
+      while(npinfo > tbSizeTable[tbsIndex]) /*search Table*/
+         tbsIndex++;
+      ninfo = tbSizeTable[tbsIndex];
+      if(tbSize <= tbSizeTable[tbsIndex])
+         break;
+      else
+         numPrb++;
+   } /* except execute less than once.*/
+   result.numPrb = numPrb;
+   result.tbSize = tbSizeTable[tbsIndex]/8;
+   return result;
 }
 
 /**

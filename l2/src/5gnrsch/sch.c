@@ -715,14 +715,6 @@ uint8_t fillSchSib1Cfg(uint8_t mu, uint8_t bandwidth, uint8_t numSlots,SchPdcchC
       pdsch->codeword[cwCount].mcsIndex = SIB1_MCS;
       pdsch->codeword[cwCount].mcsTable = 0; /* notqam256 */
       pdsch->codeword[cwCount].rvIndex = 0;
-      tbSize = schCalcTbSize(sib1PduLen + TX_PAYLOAD_HDR_LEN);
-/* ======== small cell integration ======== */
-#ifdef NFAPI
-      pdsch->codeword[cwCount].tbSize = tbSize +6;
-#else
-      pdsch->codeword[cwCount].tbSize = tbSize;
-#endif
-/* ======================================== */
    }
    pdsch->dataScramblingId                   = pci;
    pdsch->numLayers                          = 1;
@@ -753,17 +745,25 @@ uint8_t fillSchSib1Cfg(uint8_t mu, uint8_t bandwidth, uint8_t numSlots,SchPdcchC
 
    pdsch->pdschFreqAlloc.resourceAllocType   = 1; /* RAT type-1 RIV format */
    /* the RB numbering starts from coreset0, and PDSCH is always above SSB */
+   schCalcResult result;
+   result.tbSize = schCalcTbSize(sib1PduLen);
+   printf("schCalcTbSize(sib1PduLen:%d)result.tbSize = %d\n",sib1PduLen,result.tbSize);
 /* ======== small cell integration ======== */
 #ifdef NFAPI
    pdsch->pdschFreqAlloc.startPrb  = 27;
-   pdsch->pdschFreqAlloc.numPrb    = schCalcNumPrb(tbSize, DEFAULT_MCS, 10);
+   result = schCalcNumPrb_withDmrs(result.tbSize, SIB1_MCS, NUM_PDSCH_SYMBOL, 12*pdsch->dmrs.nrOfDmrsSymbols);
 #else
    pdsch->pdschFreqAlloc.startPrb  = offsetPointA + SCH_SSB_NUM_PRB;
-   pdsch->pdschFreqAlloc.numPrb    = schCalcNumPrb(tbSize, DEFAULT_MCS, NUM_PDSCH_SYMBOL);
+   result.numPrb = schCalcNumPrb(result.tbSize, DEFAULT_MCS, NUM_PDSCH_SYMBOL);
 #endif
 /* ======================================== */
    pdsch->pdschFreqAlloc.vrbPrbMapping       = 0; /* non-interleaved */
    pdsch->pdschTimeAlloc.rowIndex            = 1;
+   /*Update schCalcNumPrb_withDmrs() result value*/
+   pdsch->pdschFreqAlloc.numPrb    = result.numPrb;
+   for(cwCount = 0; cwCount < pdsch->numCodewords; cwCount++)
+      pdsch->codeword[cwCount].tbSize = result.tbSize;
+   
    /* This is Intel's requirement. PDSCH should start after PDSCH DRMS symbol */
 /* ======== small cell integration ======== */
 #ifdef NFAPI   
