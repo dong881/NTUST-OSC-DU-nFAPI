@@ -994,7 +994,7 @@ uint8_t schFillRar(SchCellCb *cell, SlotTimingInfo rarTime, uint16_t ueId, RarAl
    pdsch->dmrs.nrOfDmrsSymbols  = getNumDmrsSymbols(pdsch->dmrs.dlDmrsSymbPos);
    pdsch->dmrs.dmrsAddPos       = DMRS_ADDITIONAL_POS;
 
-   pdsch->pdschTimeAlloc.rowIndex = 2; // k0Index; //OSC==0
+   pdsch->pdschTimeAlloc.rowIndex = k0Index;
    schCalcResult result;
    /* RAR PDU length and FAPI payload header length */
    result.tbSize = schCalcTbSize(RAR_PAYLOAD_SIZE + TX_PAYLOAD_HDR_LEN);
@@ -1012,21 +1012,21 @@ uint8_t schFillRar(SchCellCb *cell, SlotTimingInfo rarTime, uint16_t ueId, RarAl
    pdsch->pdschFreqAlloc.startPrb = 0;//MAX_NUM_RB;
    pdsch->pdschFreqAlloc.numPrb = result.numPrb;
 
-   /* Find total symbols occupied including DMRS */
-   dmrsStartSymbol = findDmrsStartSymbol(pdsch->dmrs.dlDmrsSymbPos);
-   /* If there are no DRMS symbols, findDmrsStartSymbol() returns MAX_SYMB_PER_SLOT, 
-    * in that case only PDSCH symbols are marked as occupied */
-   if(dmrsStartSymbol == MAX_SYMB_PER_SLOT)
-   {
-      startSymbol = pdsch->pdschTimeAlloc.startSymb;
-      numSymbol = pdsch->pdschTimeAlloc.numSymb;
-   }
-   /* If DMRS symbol is found, mark DMRS and PDSCH symbols as occupied */
-   else
-   {
-      startSymbol = dmrsStartSymbol;
-      numSymbol = pdsch->dmrs.nrOfDmrsSymbols + pdsch->pdschTimeAlloc.numSymb;
-   }
+   // /* Find total symbols occupied including DMRS */
+   // dmrsStartSymbol = findDmrsStartSymbol(pdsch->dmrs.dlDmrsSymbPos);
+   // /* If there are no DRMS symbols, findDmrsStartSymbol() returns MAX_SYMB_PER_SLOT, 
+   //  * in that case only PDSCH symbols are marked as occupied */
+   // if(dmrsStartSymbol == MAX_SYMB_PER_SLOT)
+   // {
+   //    startSymbol = pdsch->pdschTimeAlloc.startSymb;
+   //    numSymbol = pdsch->pdschTimeAlloc.numSymb;
+   // }
+   // /* If DMRS symbol is found, mark DMRS and PDSCH symbols as occupied */
+   // else
+   // {
+   //    startSymbol = dmrsStartSymbol;
+   //    numSymbol = pdsch->dmrs.nrOfDmrsSymbols + pdsch->pdschTimeAlloc.numSymb;
+   // }
 
    /* Allocate the number of PRBs required for RAR PDSCH */
    if((allocatePrbDl(cell, rarTime, startSymbol, numSymbol,\
