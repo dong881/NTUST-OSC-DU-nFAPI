@@ -214,9 +214,9 @@ void fillRarPdu(RarInfo *rarInfo)
    packBytes(rarPdu, &bytePos, &bitPos, rarInfo->tcrnti, T_CRNTI_SIZE);
 
    /* padding of 2 bytes */
-   // packBytes(rarPdu, &bytePos, &bitPos, RBit, R_BIT_SIZE*2);
-   // packBytes(rarPdu, &bytePos, &bitPos, paddingLcid, LC_ID_SIZE);
-   // packBytes(rarPdu, &bytePos, &bitPos, 0, paddingSize);
+   packBytes(rarPdu, &bytePos, &bitPos, RBit, R_BIT_SIZE*2);
+   packBytes(rarPdu, &bytePos, &bitPos, paddingLcid, LC_ID_SIZE);
+   packBytes(rarPdu, &bytePos, &bitPos, 0, paddingSize);
 
 }
 
