@@ -687,7 +687,7 @@ uint8_t schDlRsrcAllocMsg4(SchCellCb *cell, SlotTimingInfo msg4Time, uint8_t ueI
       if(isRetx != TRUE)
       {
          /* Intel L1 requires adding a 32 byte header to transmitted payload */
-         tbSize = schCalcTbSize(msg4Alloc->dlMsgPduLen + 36); // TX_PAYLOAD_HDR_LEN /* MSG4 size + FAPI header size*/
+         tbSize = schCalcTbSize(msg4Alloc->dlMsgPduLen + TX_PAYLOAD_HDR_LEN); /* MSG4 size + FAPI header size*/
          hqP->tbInfo[cwCount].tbSzReq = tbSize;
          pdsch->codeword[cwCount].rvIndex = 0;
       }
@@ -702,7 +702,7 @@ uint8_t schDlRsrcAllocMsg4(SchCellCb *cell, SlotTimingInfo msg4Time, uint8_t ueI
    pdsch->numLayers = 1;
    pdsch->transmissionScheme = 0;
    pdsch->refPoint = 0;
-   pdsch->dmrs.dlDmrsSymbPos = 2180; //DL_DMRS_SYMBOL_POS; 
+   pdsch->dmrs.dlDmrsSymbPos = DL_DMRS_SYMBOL_POS; 
    pdsch->dmrs.dmrsConfigType = 0; /* type-1 */
    pdsch->dmrs.dlDmrsScramblingId = cell->cellCfg.phyCellId;
    pdsch->dmrs.scid = 0;
@@ -713,16 +713,10 @@ uint8_t schDlRsrcAllocMsg4(SchCellCb *cell, SlotTimingInfo msg4Time, uint8_t ueI
    pdsch->dmrs.dmrsAddPos       = DMRS_ADDITIONAL_POS;
 
    pdsch->pdschTimeAlloc.startSymb = pdschStartSymbol; 
-/* ======== small cell integration ======== */
-#ifdef NFAPI   
-   pdsch->pdschTimeAlloc.numSymb = 13;
-#else
    pdsch->pdschTimeAlloc.numSymb = pdschNumSymbols;
-#endif
-/* ======================================== */
    pdsch->pdschFreqAlloc.resourceAllocType = 1; /* RAT type-1 RIV format */
    pdsch->pdschFreqAlloc.startPrb = 0; //MAX_NUM_RB;
-   pdsch->pdschFreqAlloc.numPrb = 42; // [Ming TODO: quick modify] schCalcNumPrb(tbSize, mcs, pdschNumSymbols);
+   pdsch->pdschFreqAlloc.numPrb = schCalcNumPrb(tbSize, mcs, pdschNumSymbols);
    pdsch->pdschFreqAlloc.vrbPrbMapping = 0; /* non-interleaved */
 
    /* Find total symbols occupied including DMRS */

@@ -608,7 +608,7 @@ uint8_t fillSchSib1Cfg(uint8_t mu, uint8_t bandwidth, uint8_t numSlots,SchPdcchC
    coreset0Idx     = pdcchCfgSib1->coresetZeroIndex;
    searchSpace0Idx = pdcchCfgSib1->searchSpaceZeroIndex;
 
-   /* derive the sib1 coreset0 params from table 13-1 spec 38.213 */
+   /* derive the sib1 coreset0 params from table 13-4 spec 38.213 */
    //ssbMuxPattern = coresetIdxTable[coreset0Idx][0];
    numRbs        = coresetIdxTable[coreset0Idx][1];
    numSymbols    = coresetIdxTable[coreset0Idx][2];
@@ -636,12 +636,6 @@ uint8_t fillSchSib1Cfg(uint8_t mu, uint8_t bandwidth, uint8_t numSlots,SchPdcchC
             bwp->freqAlloc.numPrb = TOTAL_PRB_20MHZ_MU0;
 	 }
 	 break;
-/* ======== small cell integration ========*/
-      case BANDWIDTH_40MHZ:
-	 {
-            bwp->freqAlloc.numPrb = TOTAL_PRB_40MHZ_MU1;
-	 }
-/* ======================================== */
       case BANDWIDTH_100MHZ:
 	 {
 /* ======== small cell integration ======== */
@@ -736,7 +730,7 @@ uint8_t fillSchSib1Cfg(uint8_t mu, uint8_t bandwidth, uint8_t numSlots,SchPdcchC
 /* ======== small cell integration ======== */
 #ifdef NFAPI
    pdsch->refPoint                           = 1;
-   pdsch->dmrs.dlDmrsSymbPos                 = 580;
+   pdsch->dmrs.dlDmrsSymbPos                 = SIB1_DMRS_SYMBOL_POS;
 #else
    pdsch->refPoint                           = 0;
    pdsch->dmrs.dlDmrsSymbPos                 = DL_DMRS_SYMBOL_POS; 
@@ -774,16 +768,15 @@ uint8_t fillSchSib1Cfg(uint8_t mu, uint8_t bandwidth, uint8_t numSlots,SchPdcchC
 /* ======== small cell integration ======== */
 #ifdef NFAPI   
    pdsch->pdschTimeAlloc.startSymb = 2; /* spec-38.214, Table 5.1.2.1-1 */
-   pdsch->pdschTimeAlloc.numSymb   = 10;
    pdsch->beamPdschInfo.numPrgs              = 0;
    pdsch->beamPdschInfo.prgSize              = 0;
 #else
    pdsch->pdschTimeAlloc.startSymb = 3; /* spec-38.214, Table 5.1.2.1-1 */
-   pdsch->pdschTimeAlloc.numSymb   = NUM_PDSCH_SYMBOL;
    pdsch->beamPdschInfo.numPrgs              = 1;
    pdsch->beamPdschInfo.prgSize              = 1;
 #endif
 /* ======================================== */
+   pdsch->pdschTimeAlloc.numSymb   = NUM_PDSCH_SYMBOL;
    pdsch->beamPdschInfo.digBfInterfaces      = 0;
    pdsch->beamPdschInfo.prg[0].pmIdx         = 0;
    pdsch->beamPdschInfo.prg[0].beamIdx[0]    = 0;

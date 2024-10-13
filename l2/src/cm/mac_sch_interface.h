@@ -98,7 +98,7 @@
 #define QPSK_MODULATION 2
 
 #define RAR_PAYLOAD_SIZE 10             /* As per spec 38.321, sections 6.1.5 and 6.2.3, RAR PDU is 8 bytes long and 2 bytes of padding */
-#define TX_PAYLOAD_HDR_LEN 32           /* Intel L1 requires adding a 32 byte header to transmitted payload */
+#define TX_PAYLOAD_HDR_LEN 0           /* Intel L1 requires adding a 32 byte header to transmitted payload */
 #define UL_TX_BUFFER_SIZE 5
 
 #define MAX_NUM_CONFIG_SLOTS 160  /*Max number of slots as per the numerology*/
@@ -114,7 +114,12 @@
 #define DEFAULT_K2_VALUE_FOR_SCS120 3 
 
 #define MAX_PLMN 2
-#define DL_DMRS_SYMBOL_POS 4 /* Bitmap value 00000000000100 i.e. using 3rd symbol for PDSCH DMRS */
+#define SIB1_DMRS_SYMBOL_POS 580 
+#ifdef NFAPI
+   #define DL_DMRS_SYMBOL_POS 2180
+#else
+   #define DL_DMRS_SYMBOL_POS 4 /* Bitmap value 00000000000100 i.e. using 3rd symbol for PDSCH DMRS */
+#endif
 
 #define MAX_PHR_REPORT 1 /*TODO: Range of PHR reports in multiple PHR.*/
 #define MAX_FAILURE_DET_RESOURCES 10 /*Spec 38.331 'maxNrofFailureDetectionResources'*/

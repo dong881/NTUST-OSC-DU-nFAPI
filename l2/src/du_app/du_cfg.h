@@ -232,7 +232,7 @@
 /* ======== small cell integration ======== */
 #ifdef NFAPI
 #define PDSCH_START_SYMBOL  1
-#define PDSCH_LENGTH_SYMBOL 5
+#define PDSCH_LENGTH_SYMBOL 13
 #define PDSCH_START_SYMBOL_2  1
 #define PDSCH_LENGTH_SYMBOL_2 12
 #define PDSCH_START_SYMBOL_3  1
