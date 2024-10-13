@@ -226,7 +226,7 @@
 #define SIB1_VALUE_TAG 10
 
 /* MACRO Ddefine for PDSCH Configuration */
-#define NUM_TIME_DOM_RSRC_ALLOC 2
+#define NUM_TIME_DOM_RSRC_ALLOC 3
 #define PDSCH_K0_CFG1  0
 #define PDSCH_K0_CFG2  0
 /* ======== small cell integration ======== */
