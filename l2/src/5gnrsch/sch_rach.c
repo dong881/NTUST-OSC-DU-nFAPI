@@ -974,8 +974,8 @@ uint8_t schFillRar(SchCellCb *cell, SlotTimingInfo rarTime, uint16_t ueId, RarAl
    pdsch->numCodewords = 1;
    for(cwCount = 0; cwCount < pdsch->numCodewords; cwCount++)
    {
-      pdsch->codeword[cwCount].targetCodeRate = 1200;//308;
-      pdsch->codeword[cwCount].qamModOrder = 2;
+      pdsch->codeword[cwCount].targetCodeRate = getMcsTable(mcs,2);
+      pdsch->codeword[cwCount].qamModOrder = getMcsTable(mcs,1);
       pdsch->codeword[cwCount].mcsIndex = mcs; /* mcs configured to 4 */
       pdsch->codeword[cwCount].mcsTable = 0;   /* notqam256 */
       pdsch->codeword[cwCount].rvIndex = 0;

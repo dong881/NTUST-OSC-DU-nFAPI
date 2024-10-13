@@ -710,8 +710,8 @@ uint8_t fillSchSib1Cfg(uint8_t mu, uint8_t bandwidth, uint8_t numSlots,SchPdcchC
    pdsch->numCodewords = 1;
    for(cwCount = 0; cwCount < pdsch->numCodewords; cwCount++)
    {
-      pdsch->codeword[cwCount].targetCodeRate = 308;
-      pdsch->codeword[cwCount].qamModOrder = 2;
+      pdsch->codeword[cwCount].targetCodeRate = getMcsTable(SIB1_MCS,2);
+      pdsch->codeword[cwCount].qamModOrder = getMcsTable(SIB1_MCS,1);
       pdsch->codeword[cwCount].mcsIndex = DEFAULT_MCS;
       pdsch->codeword[cwCount].mcsTable = 0; /* notqam256 */
       pdsch->codeword[cwCount].rvIndex = 0;

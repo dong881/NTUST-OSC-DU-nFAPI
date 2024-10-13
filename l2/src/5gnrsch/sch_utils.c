@@ -985,6 +985,28 @@ void removeAllocatedPrbFromFreePrbList(CmLListCp *freePrbBlockList, CmLList *nod
 }
 
 /**
+ * @brief Get value from MCS table
+ *
+ * @details
+ *
+ *     Function: getMcsTable
+ *     
+ *     This function retrieves a value from the MCS table based on the MCS index and column index.
+ *     
+ *  @param[in]  mcs - MCS index
+ *  @param[in]  colIdx - Column index (1: Qm, 2: R)
+ *  @return     Value from the MCS table
+ **/
+uint16_t getMcsTable(uint16_t mcs, uint8_t colIdx)
+{
+   if (mcs < 32 && colIdx < 3)
+   {
+      return mcsTable[mcs][colIdx];
+   }
+   return 0; // Return 0 for invalid indices
+}
+
+/**
  * @brief frequency domain allocation function. 
  *
  * @details
