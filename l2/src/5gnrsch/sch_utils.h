@@ -119,6 +119,7 @@ uint8_t calculateSlotPatternLength(uint8_t scs, uint8_t periodicity);
 #endif
 
 /* Functions declarations : Resource allocation handler */
+uint16_t getMcsTable(uint16_t mcs, uint8_t colIdx);
 uint16_t schCalcTbSize(uint32_t payLoadSize);
 uint16_t schCalcNumPrb(uint16_t tbSize, uint16_t mcs, uint8_t numSymbols);
 uint16_t schCalcTbSizeFromNPrb(uint16_t numPrb, uint16_t mcs, uint8_t numSymbols);
