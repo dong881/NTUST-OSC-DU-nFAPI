@@ -748,7 +748,7 @@ uint8_t fillSchSib1Cfg(uint8_t mu, uint8_t bandwidth, uint8_t numSlots,SchPdcchC
 /* ======================================== */
    pdsch->dmrs.dmrsPorts                     = 0x0001;
    pdsch->dmrs.mappingType                   = DMRS_MAP_TYPE_A; /* Type-A */
-   pdsch->dmrs.nrOfDmrsSymbols               = NUM_DMRS_SYMBOLS;
+   pdsch->dmrs.nrOfDmrsSymbols               = getNumDmrsSymbols(pdsch->dmrs.dlDmrsSymbPos);
    pdsch->dmrs.dmrsAddPos                    = DMRS_ADDITIONAL_POS;
 
    pdsch->pdschFreqAlloc.resourceAllocType   = 1; /* RAT type-1 RIV format */

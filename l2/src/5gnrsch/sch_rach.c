@@ -994,7 +994,7 @@ uint8_t schFillRar(SchCellCb *cell, SlotTimingInfo rarTime, uint16_t ueId, RarAl
    pdsch->dmrs.numDmrsCdmGrpsNoData = 2;// 1;
    pdsch->dmrs.dmrsPorts = 1;//0;
    pdsch->dmrs.mappingType      = DMRS_MAP_TYPE_A;  /* Type-A */
-   pdsch->dmrs.nrOfDmrsSymbols  = NUM_DMRS_SYMBOLS;
+   pdsch->dmrs.nrOfDmrsSymbols  = getNumDmrsSymbols(pdsch->dmrs.dlDmrsSymbPos);
    pdsch->dmrs.dmrsAddPos       = DMRS_ADDITIONAL_POS;
 
    pdsch->pdschTimeAlloc.rowIndex = 2; // k0Index; //OSC==0

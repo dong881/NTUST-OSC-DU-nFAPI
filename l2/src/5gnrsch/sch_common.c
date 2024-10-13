@@ -709,7 +709,7 @@ uint8_t schDlRsrcAllocMsg4(SchCellCb *cell, SlotTimingInfo msg4Time, uint8_t ueI
    pdsch->dmrs.numDmrsCdmGrpsNoData = 2; //1;
    pdsch->dmrs.dmrsPorts = 1; //0;
    pdsch->dmrs.mappingType      = DMRS_MAP_TYPE_A; /* Setting to Type-A */
-   pdsch->dmrs.nrOfDmrsSymbols  = NUM_DMRS_SYMBOLS;
+   pdsch->dmrs.nrOfDmrsSymbols  = getNumDmrsSymbols(pdsch->dmrs.dlDmrsSymbPos);
    pdsch->dmrs.dmrsAddPos       = DMRS_ADDITIONAL_POS;
 
    pdsch->pdschTimeAlloc.startSymb = pdschStartSymbol; 
@@ -907,7 +907,7 @@ uint8_t schDlRsrcAllocDlMsg(SchCellCb *cell, SlotTimingInfo slotTime, uint16_t c
    pdsch->dmrs.numDmrsCdmGrpsNoData = 1;
    pdsch->dmrs.dmrsPorts = 0;
    pdsch->dmrs.mappingType      = DMRS_MAP_TYPE_A; /* Setting to Type-A */
-   pdsch->dmrs.nrOfDmrsSymbols  = NUM_DMRS_SYMBOLS;
+   pdsch->dmrs.nrOfDmrsSymbols  = getNumDmrsSymbols(pdsch->dmrs.dlDmrsSymbPos);
    pdsch->dmrs.dmrsAddPos       = pdschCfg.dmrsDlCfgForPdschMapTypeA.addPos;
 
    pdsch->pdschTimeAlloc.startSymb = pdschStartSymbol; 

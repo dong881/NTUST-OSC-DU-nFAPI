@@ -1036,6 +1036,27 @@ uint16_t schCalcTbSize(uint32_t payLoadSize)
    /* return the TBsize in bytes */
    return (tbSizeTable[tbsIndex]/8);
 }
+/**
+ * @brief Get the number of DMRS symbols
+ *
+ * @details
+ *
+ *     Function: getNumDmrsSymbols
+ *
+ *     This function calculates the number of DMRS symbols based on the DMRS mask.
+ *
+ *  @param[in]  dmrsMask - DMRS symbol position bitmap
+ *  @return     Number of DMRS symbols
+ **/
+int getNumDmrsSymbols(uint16_t dmrsMask)
+{
+   int numDmrsSymbols = 0;
+   for (int i = 0; i < 16; i++) 
+   {
+      numDmrsSymbols += ((dmrsMask >> i) & 1);
+   }
+   return numDmrsSymbols;
+}
 
 /**
  * @brief frequency domain allocation function. 
