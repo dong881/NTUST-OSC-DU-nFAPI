@@ -718,23 +718,23 @@ uint8_t schDlRsrcAllocMsg4(SchCellCb *cell, SlotTimingInfo msg4Time, uint8_t ueI
    pdsch->pdschFreqAlloc.startPrb = 0; //MAX_NUM_RB;
    pdsch->pdschFreqAlloc.numPrb = schCalcNumPrb(tbSize, mcs, pdschNumSymbols);
    pdsch->pdschFreqAlloc.vrbPrbMapping = 0; /* non-interleaved */
-
+   startSymbol = pdsch->pdschTimeAlloc.startSymb;
+   numSymbol = pdsch->pdschTimeAlloc.numSymb;
    /* Find total symbols occupied including DMRS */
-   dmrsStartSymbol = findDmrsStartSymbol(pdsch->dmrs.dlDmrsSymbPos);
-   /* If there are no DRMS symbols, findDmrsStartSymbol() returns MAX_SYMB_PER_SLOT,
-    * in that case only PDSCH symbols are marked as occupied */
-   if(dmrsStartSymbol == MAX_SYMB_PER_SLOT)
-   {
-      startSymbol = pdsch->pdschTimeAlloc.startSymb;
-      numSymbol = pdsch->pdschTimeAlloc.numSymb;
-   }
-   /* If DMRS symbol is found, mark DMRS and PDSCH symbols as occupied */
-   else
-   {
-      startSymbol = dmrsStartSymbol;
-      numSymbol = pdsch->dmrs.nrOfDmrsSymbols + pdsch->pdschTimeAlloc.numSymb;
-   }
-   numSymbol = 13; // [Ming TODO: quick modify] dmrsStartSymbol:2
+   // dmrsStartSymbol = findDmrsStartSymbol(pdsch->dmrs.dlDmrsSymbPos);
+   // /* If there are no DRMS symbols, findDmrsStartSymbol() returns MAX_SYMB_PER_SLOT,
+   //  * in that case only PDSCH symbols are marked as occupied */
+   // if(dmrsStartSymbol == MAX_SYMB_PER_SLOT)
+   // {
+   //    startSymbol = pdsch->pdschTimeAlloc.startSymb;
+   //    numSymbol = pdsch->pdschTimeAlloc.numSymb;
+   // }
+   // /* If DMRS symbol is found, mark DMRS and PDSCH symbols as occupied */
+   // else
+   // {
+   //    startSymbol = dmrsStartSymbol;
+   //    numSymbol = pdsch->dmrs.nrOfDmrsSymbols + pdsch->pdschTimeAlloc.numSymb;
+   // }
 
    /* Allocate the number of PRBs required for RAR PDSCH */
    if((allocatePrbDl(cell, msg4Time, startSymbol, numSymbol,\
