@@ -404,7 +404,6 @@ uint8_t SCF_procUciInd(nfapi_nr_uci_indication_t  *nfapiUciInd)
    {
       DU_LOG("\nERROR  -->  LWR_MAC: Failed sending UCI Ind to MAC");
    }
-   free(macUciInd);
    return ret;
 }
 
