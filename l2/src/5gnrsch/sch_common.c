@@ -458,7 +458,7 @@ uint16_t fillPucchResourceInfo(uint8_t ueId, SchPucchInfo *schPucchInfo, Inst in
          schPucchInfo->pucchFormat = pucchResourceSet[pucchIdx][0];
 
          /* set SR and UCI flag to false */
-         schPucchInfo->srFlag  = true;
+         schPucchInfo->srFlag  = false;
       }
    }
    return ROK;
