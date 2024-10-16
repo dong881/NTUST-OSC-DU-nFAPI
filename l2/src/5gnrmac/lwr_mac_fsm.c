@@ -4066,6 +4066,7 @@ void OAI_OSC_fillPrachPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu,
  * ****************************************************************/
 void OAI_OSC_fillPuschPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu, MacCellCfg *macCellCfg, MacUlSlot *currUlSlot)
 {
+   printf("\nDEBUG  --> OAI_OSC_fillPuschPdu()\n");
    if(ulTtiReqPdu != NULLP)
    {
       ulTtiReqPdu->pdu_type = PUSCH_PDU_TYPE;
@@ -4142,86 +4143,50 @@ void OAI_OSC_fillPuschPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu,
  *
  * ****************************************************************/
 void OAI_OSC_fillPucchPdu(nfapi_nr_ul_tti_request_number_of_pdus_t *ulTtiReqPdu, MacCellCfg *macCellCfg, MacUlSlot *currUlSlot){
-  if (ulTtiReqPdu != NULLP) {
-    ulTtiReqPdu->pdu_type = PUCCH_PDU_TYPE;
-    memset(&ulTtiReqPdu->pucch_pdu, 0, sizeof(nfapi_nr_pucch_pdu_t));
-    ulTtiReqPdu->pucch_pdu.rnti = currUlSlot->ulInfo.crnti;
-    /* TODO : Fill handle in raCb when scheduling pucch and access here */
-    ulTtiReqPdu->pucch_pdu.handle = 0;
-    ulTtiReqPdu->pucch_pdu.bwp_size =
-        macCellCfg->cellCfg.initialUlBwp.bwp.numPrb;
-    ulTtiReqPdu->pucch_pdu.bwp_start =
-        macCellCfg->cellCfg.initialUlBwp.bwp.firstPrb;
-    ulTtiReqPdu->pucch_pdu.subcarrier_spacing =
-        macCellCfg->cellCfg.initialUlBwp.bwp.scs;
-    ulTtiReqPdu->pucch_pdu.cyclic_prefix =
-        macCellCfg->cellCfg.initialUlBwp.bwp.cyclicPrefix;
-    ulTtiReqPdu->pucch_pdu.format_type =
-        currUlSlot->ulInfo.schPucchInfo
-            .pucchFormat; /* Supporting PUCCH Format 0 */
-    ulTtiReqPdu->pucch_pdu.multi_slot_tx_indicator =
-        0; /* No Multi Slot transmission */
+   printf("\nDEBUG  --> OAI_OSC_fillPucchPdu()\n");
+   if (ulTtiReqPdu != NULLP) {
+      ulTtiReqPdu->pdu_type = PUCCH_PDU_TYPE;
+      memset(&ulTtiReqPdu->pucch_pdu, 0, sizeof(nfapi_nr_pucch_pdu_t));
+      ulTtiReqPdu->pucch_pdu.rnti = currUlSlot->ulInfo.crnti;
+      /* TODO : Fill handle in raCb when scheduling pucch and access here */
+      ulTtiReqPdu->pucch_pdu.handle = 0;
+      ulTtiReqPdu->pucch_pdu.bwp_size = macCellCfg->cellCfg.initialUlBwp.bwp.numPrb;
+      ulTtiReqPdu->pucch_pdu.bwp_start = macCellCfg->cellCfg.initialUlBwp.bwp.firstPrb;
+      ulTtiReqPdu->pucch_pdu.subcarrier_spacing = macCellCfg->cellCfg.initialUlBwp.bwp.scs;
+      ulTtiReqPdu->pucch_pdu.cyclic_prefix = macCellCfg->cellCfg.initialUlBwp.bwp.cyclicPrefix;
+      ulTtiReqPdu->pucch_pdu.format_type = currUlSlot->ulInfo.schPucchInfo.pucchFormat; /* Supporting PUCCH Format 0 */
+      ulTtiReqPdu->pucch_pdu.multi_slot_tx_indicator = 0; /* No Multi Slot transmission */
+      
+      ulTtiReqPdu->pucch_pdu.prb_start = currUlSlot->ulInfo.schPucchInfo.fdAlloc.startPrb;
+      ulTtiReqPdu->pucch_pdu.prb_size = currUlSlot->ulInfo.schPucchInfo.fdAlloc.numPrb;
+      ulTtiReqPdu->pucch_pdu.start_symbol_index = currUlSlot->ulInfo.schPucchInfo.tdAlloc.startSymb;
+      ulTtiReqPdu->pucch_pdu.nr_of_symbols = currUlSlot->ulInfo.schPucchInfo.tdAlloc.numSymb;
+      ulTtiReqPdu->pucch_pdu.freq_hop_flag = currUlSlot->ulInfo.schPucchInfo.intraFreqHop;
+      ulTtiReqPdu->pucch_pdu.second_hop_prb = currUlSlot->ulInfo.schPucchInfo.secondPrbHop;
 
-    ulTtiReqPdu->pucch_pdu.prb_start =
-        currUlSlot->ulInfo.schPucchInfo.fdAlloc.startPrb;
-    ulTtiReqPdu->pucch_pdu.prb_size =
-        currUlSlot->ulInfo.schPucchInfo.fdAlloc.numPrb;
-    ulTtiReqPdu->pucch_pdu.start_symbol_index =
-        currUlSlot->ulInfo.schPucchInfo.tdAlloc.startSymb;
-    ulTtiReqPdu->pucch_pdu.nr_of_symbols =
-        currUlSlot->ulInfo.schPucchInfo.tdAlloc.numSymb;
-    ulTtiReqPdu->pucch_pdu.freq_hop_flag =
-        currUlSlot->ulInfo.schPucchInfo.intraFreqHop;
-    ulTtiReqPdu->pucch_pdu.second_hop_prb =
-        currUlSlot->ulInfo.schPucchInfo.secondPrbHop;
-    ulTtiReqPdu->pucch_pdu.group_hop_flag = 0;
-    ulTtiReqPdu->pucch_pdu.sequence_hop_flag = 0;
-    ulTtiReqPdu->pucch_pdu.hopping_id = 0;
-
-    ulTtiReqPdu->pucch_pdu.initial_cyclic_shift =
-        currUlSlot->ulInfo.schPucchInfo.initialCyclicShift;
-
-    ulTtiReqPdu->pucch_pdu.data_scrambling_id =
-        0; /* Valid for Format 2, 3, 4 */
-    ulTtiReqPdu->pucch_pdu.time_domain_occ_idx =
-        currUlSlot->ulInfo.schPucchInfo.timeDomOCC;
-    ulTtiReqPdu->pucch_pdu.pre_dft_occ_idx =
-        currUlSlot->ulInfo.schPucchInfo.occIdx; /* Valid for Format 4 only */
-    ulTtiReqPdu->pucch_pdu.pre_dft_occ_len =
-        currUlSlot->ulInfo.schPucchInfo.occLen; /* Valid for Format 4 only */
-    ulTtiReqPdu->pucch_pdu.pi_2bpsk =
-        currUlSlot->ulInfo.schPucchInfo.pi2BPSK;
-    ulTtiReqPdu->pucch_pdu.add_dmrs_flag =
-        currUlSlot->ulInfo.schPucchInfo
-            .addDmrs; /* Valid for Format 3, 4 only */
-    ulTtiReqPdu->pucch_pdu.dmrs_scrambling_id = 0; /* Valid for Format 2 */
-    ulTtiReqPdu->pucch_pdu.dmrs_cyclic_shift = 0;  /* Valid for Format 4 */
-    ulTtiReqPdu->pucch_pdu.sr_flag = currUlSlot->ulInfo.schPucchInfo.srFlag;
-    ulTtiReqPdu->pucch_pdu.bit_len_harq =
-        currUlSlot->ulInfo.schPucchInfo.harqInfo.harqBitLength;
-    ulTtiReqPdu->pucch_pdu.bit_len_csi_part1 =
-        0; /* Valid for Format 2, 3, 4 */
-    ulTtiReqPdu->pucch_pdu.bit_len_csi_part2 =
-        0; /* Valid for Format 2, 3, 4 */
-    ulTtiReqPdu->pucch_pdu.beamforming.num_prgs =
-        currUlSlot->ulInfo.schPucchInfo.beamPucchInfo.numPrgs;
-    ulTtiReqPdu->pucch_pdu.beamforming.prg_size =
-        currUlSlot->ulInfo.schPucchInfo.beamPucchInfo.prgSize;
-    ulTtiReqPdu->pucch_pdu.beamforming.dig_bf_interface =
-        currUlSlot->ulInfo.schPucchInfo.beamPucchInfo.digBfInterfaces;
-    ulTtiReqPdu->pucch_pdu.beamforming.prgs_list->dig_bf_interface_list->beam_idx =
-        currUlSlot->ulInfo.schPucchInfo.beamPucchInfo.prg[0].beamIdx[0];
-
-    ulTtiReqPdu->pdu_size = sizeof(nfapi_nr_pucch_pdu_t);
-   
-    /* UL TTI Vendor PDU 
-    ulTtiVendorPdu->pdu_type = FAPI_PUCCH_PDU_TYPE;
-    ulTtiVendorPdu->pdu.pucch_pdu.nr_of_rx_ru = 1;
-    ulTtiVendorPdu->pdu.pucch_pdu.group_id = 0;
-    for (int i = 0; i < FAPI_VENDOR_MAX_RXRU_NUM; i++) {
-      ulTtiVendorPdu->pdu.pucch_pdu.rx_ru_idx[i] = 0;
-    }*/
-  }
+      ulTtiReqPdu->pucch_pdu.group_hop_flag = 0;
+      ulTtiReqPdu->pucch_pdu.sequence_hop_flag = 0;
+      ulTtiReqPdu->pucch_pdu.hopping_id = 0;
+      ulTtiReqPdu->pucch_pdu.initial_cyclic_shift = currUlSlot->ulInfo.schPucchInfo.initialCyclicShift;
+      
+      ulTtiReqPdu->pucch_pdu.data_scrambling_id = 0; /* Valid for Format 2, 3, 4 */
+      ulTtiReqPdu->pucch_pdu.time_domain_occ_idx = currUlSlot->ulInfo.schPucchInfo.timeDomOCC;
+      ulTtiReqPdu->pucch_pdu.pre_dft_occ_idx = currUlSlot->ulInfo.schPucchInfo.occIdx; /* Valid for Format 4 only */
+      ulTtiReqPdu->pucch_pdu.pre_dft_occ_len = currUlSlot->ulInfo.schPucchInfo.occLen; /* Valid for Format 4 only */
+      ulTtiReqPdu->pucch_pdu.pi_2bpsk = currUlSlot->ulInfo.schPucchInfo.pi2BPSK;
+      ulTtiReqPdu->pucch_pdu.add_dmrs_flag = currUlSlot->ulInfo.schPucchInfo.addDmrs; /* Valid for Format 3, 4 only */
+      ulTtiReqPdu->pucch_pdu.dmrs_scrambling_id = 0; /* Valid for Format 2 */
+      ulTtiReqPdu->pucch_pdu.dmrs_cyclic_shift = 0;  /* Valid for Format 4 */
+      ulTtiReqPdu->pucch_pdu.sr_flag = currUlSlot->ulInfo.schPucchInfo.srFlag;
+      ulTtiReqPdu->pucch_pdu.bit_len_harq = currUlSlot->ulInfo.schPucchInfo.harqInfo.harqBitLength;
+      ulTtiReqPdu->pucch_pdu.bit_len_csi_part1 = 0; /* Valid for Format 2, 3, 4 */
+      ulTtiReqPdu->pucch_pdu.bit_len_csi_part2 = 0; /* Valid for Format 2, 3, 4 */
+      ulTtiReqPdu->pucch_pdu.beamforming.num_prgs = currUlSlot->ulInfo.schPucchInfo.beamPucchInfo.numPrgs;
+      ulTtiReqPdu->pucch_pdu.beamforming.prg_size = currUlSlot->ulInfo.schPucchInfo.beamPucchInfo.prgSize;
+      ulTtiReqPdu->pucch_pdu.beamforming.dig_bf_interface = currUlSlot->ulInfo.schPucchInfo.beamPucchInfo.digBfInterfaces;
+      ulTtiReqPdu->pucch_pdu.beamforming.prgs_list->dig_bf_interface_list->beam_idx = currUlSlot->ulInfo.schPucchInfo.beamPucchInfo.prg[0].beamIdx[0];
+      ulTtiReqPdu->pdu_size = sizeof(nfapi_nr_pucch_pdu_t);
+   }
 }
 
 /*******************************************************************
