@@ -565,7 +565,7 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
    srvCellCfgComm->dlCfg.locAndBw = FREQ_LOC_BW;
 
    /* Configuring PDCCH Config Common For SIB1 */
-   pdcchCfg.present = SetupRelease_PDCCH_ConfigCommon_PR_setup;
+   pdcchCfg.present = BWP_DownlinkCommon__pdcch_ConfigCommon_PR_setup;
    pdcchCfg.ctrlRsrcSetZero = CORESET_0_INDEX;
    pdcchCfg.searchSpcZero = SEARCHSPACE_0_INDEX;
    pdcchCfg.searchSpcId = PDCCH_SEARCH_SPACE_ID;
@@ -597,7 +597,7 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
    srvCellCfgComm->dlCfg.pdcchCfg = pdcchCfg;
 
    /* Configuring PDSCH Config Common For SIB1 */
-   pdschCfg.present = SetupRelease_PDSCH_ConfigCommon_PR_setup;
+   pdschCfg.present = BWP_DownlinkCommon__pdsch_ConfigCommon_PR_setup;
 
    pdschCfg.timeDomAlloc[0].mapType = PDSCH_TimeDomainResourceAllocation__mappingType_typeA;
    pdschCfg.timeDomAlloc[1].mapType = PDSCH_TimeDomainResourceAllocation__mappingType_typeA;
@@ -678,7 +678,7 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
    srvCellCfgComm->ulCfg.timeAlignTimerComm = TimeAlignmentTimer_infinity;
 
    /* Configuring RACH Config Common for SIB1 */
-   rachCfg.present = SetupRelease_RACH_ConfigCommon_PR_setup;
+   rachCfg.present = BWP_UplinkCommon__rach_ConfigCommon_PR_setup;
    rachCfg.prachCfgIdx = PRACH_CONFIG_IDX;
    rachCfg.msg1Fdm = RACH_ConfigGeneric__msg1_FDM_one;
    rachCfg.msg1FreqStart = PRACH_FREQ_START;
@@ -711,7 +711,7 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
    srvCellCfgComm->ulCfg.rachCfg = rachCfg;
 
    /* Configuring PUSCH Config Common for SIB1 */
-   puschCfg.puschCfgPresent = SetupRelease_PUSCH_ConfigCommon_PR_setup;
+   puschCfg.puschCfgPresent = BWP_UplinkCommon__pusch_ConfigCommon_PR_setup;
    puschCfg.numTimeDomRsrcAlloc = PUSCH_K2_NUM;
 /* ======== small cell integration ======== */
 #ifdef NFAPI
@@ -741,7 +741,7 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
    srvCellCfgComm->ulCfg.puschCfg = puschCfg;
 
    /* Configuring PUCCH Config Common for SIB1 */
-   pucchCfg.present = SetupRelease_PUCCH_ConfigCommon_PR_setup;
+   pucchCfg.present = BWP_UplinkCommon__pucch_ConfigCommon_PR_setup;
    pucchCfg.rsrcComm = PUCCH_RSRC_COMMON;
    pucchCfg.grpHop = PUCCH_ConfigCommon__pucch_GroupHopping_neither;
    pucchCfg.p0Nominal = PUCCH_P0_NOMINAL;
