@@ -213,13 +213,14 @@
 #define PDCCH_CTRL_RSRC_SET_ONE_ID  1
 #define PDCCH_CTRL_RSRC_SET_ONE_DURATION 2  /* Duration for control resource set id i */
 #define PDCCH_CTRL_RSRC_SET_ONE_PRECOD_GRANULARITY 1   /* Precoded granularity */
-#define PDCCH_SRCH_SPC_TWO_ID 2
-#define PDCCH_SRCH_SPC_TWO_AGG_LVL1_CANDIDATE 7   /* Num of candidate at aggregation level 1 */
-#define PDCCH_SRCH_SPC_TWO_AGG_LVL2_CANDIDATE 7   /* Num of candidate at aggregation level 2 */
-#define PDCCH_SRCH_SPC_TWO_AGG_LVL4_CANDIDATE 4   /* Num of candidate at aggregation level 4 */
-#define PDCCH_SRCH_SPC_TWO_AGG_LVL8_CANDIDATE 2   /* Num of candidate at aggregation level 8 */
-#define PDCCH_SRCH_SPC_TWO_AGG_LVL16_CANDIDATE 1  /* Num of candidate at aggregation level 16 */
-#define PDCCH_SRCH_SPC_TWO_UE_SPEC_DCI_FORMAT  0  /* format 0-0 and 1-0 */
+#define PDCCH_SRCH_SPC_TWO_ID 5
+#define PDCCH_SRCH_SPC_TWO_AGG_LVL1_CANDIDATE 0   /* Num of candidate at aggregation level 1 */
+#define PDCCH_SRCH_SPC_TWO_AGG_LVL2_CANDIDATE 2   /* Num of candidate at aggregation level 2 */
+#define PDCCH_SRCH_SPC_TWO_AGG_LVL4_CANDIDATE 0   /* Num of candidate at aggregation level 4 */
+#define PDCCH_SRCH_SPC_TWO_AGG_LVL8_CANDIDATE 0   /* Num of candidate at aggregation level 8 */
+#define PDCCH_SRCH_SPC_TWO_AGG_LVL16_CANDIDATE 0  /* Num of candidate at aggregation level 16 */
+// #define PDCCH_SRCH_SPC_TWO_UE_SPEC_DCI_FORMAT  0  /* format 0-0 and 1-0 */
+#define PDCCH_SRCH_SPC_TWO_UE_SPEC_DCI_FORMAT  1  /* format 0-1 and 1-1 */
 #define PDCCH_SYMBOL_WITHIN_SLOT 128     /* Symbol within Slot Value */
 
 
